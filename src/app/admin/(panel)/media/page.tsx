@@ -1,0 +1,45 @@
+import { desc } from 'drizzle-orm';
+import { db } from '@/db';
+import { mediaAssets } from '@/db/schema';
+import { MediaUploader } from '@/components/admin/MediaUploader';
+
+export const dynamic = 'force-dynamic';
+
+export default async function MediaPage() {
+  const assets = await db.select().from(mediaAssets).orderBy(desc(mediaAssets.createdAt)).limit(120);
+
+  return (
+    <div className="space-y-6">
+      <header>
+        <h1 className="text-2xl">Immagini</h1>
+        <p className="mt-1 max-w-2xl text-sm text-stone-600">
+          Carica una foto, copia il percorso e incollalo nel campo immagine della sezione che ti interessa. I file
+          restano sul tuo server, nella cartella <code className="rounded bg-stone-200 px-1">uploads</code>, e sono
+          inclusi nei backup.
+        </p>
+      </header>
+
+      <MediaUploader />
+
+      <section>
+        <h2 className="mb-3 text-lg">Caricate di recente</h2>
+        {assets.length === 0 ? (
+          <p className="text-sm text-stone-500">Ancora nessuna immagine.</p>
+        ) : (
+          <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
+            {assets.map((asset) => (
+              <li key={asset.id} className="admin-card overflow-hidden">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={asset.path} alt={asset.alt.it} className="h-32 w-full object-cover" />
+                <div className="p-3">
+                  <p className="truncate text-xs text-stone-500">{asset.originalName}</p>
+                  <code className="mt-1 block break-all text-[0.7rem] text-stone-800">{asset.path}</code>
+                </div>
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
+    </div>
+  );
+}

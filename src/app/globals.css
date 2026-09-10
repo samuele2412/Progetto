@@ -1,0 +1,488 @@
+@import 'tailwindcss';
+
+/* ==========================================================================
+   Fonts — self-hosted (public/fonts), latin + latin-ext subsets only.
+   Nothing is fetched from a third party at runtime: fewer round trips, no
+   consent banner needed for Google Fonts, and the build works offline.
+   ========================================================================== */
+
+@font-face {
+  font-family: 'Fraunces';
+  font-style: normal;
+  font-weight: 300 700;
+  font-display: swap;
+  src: url('/fonts/fraunces-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC,
+    U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Fraunces';
+  font-style: normal;
+  font-weight: 300 700;
+  font-display: swap;
+  src: url('/fonts/fraunces-latin-ext.woff2') format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304,
+    U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0,
+    U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'InterVar';
+  font-style: normal;
+  font-weight: 300 700;
+  font-display: swap;
+  src: url('/fonts/inter-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC,
+    U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'InterVar';
+  font-style: normal;
+  font-weight: 300 700;
+  font-display: swap;
+  src: url('/fonts/inter-latin-ext.woff2') format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304,
+    U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0,
+    U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+/* ==========================================================================
+   Design tokens
+   The public site commits to one dark palette on purpose (see
+   docs/04-design-system.md); the admin panel opts out with .admin-shell.
+   ========================================================================== */
+
+@theme {
+  --color-ink-950: #0a0908;
+  --color-ink-900: #100e0c;
+  --color-ink-850: #16130f;
+  --color-ink-800: #1c1814;
+  --color-ink-700: #262019;
+  --color-ink-600: #342c23;
+
+  --color-bone-50: #faf7f2;
+  --color-bone-100: #f2ece3;
+  --color-bone-200: #e2d9cc;
+  --color-bone-400: #b3a999;
+  --color-bone-500: #8f8577;
+
+  --color-brass-300: #e9d3a6;
+  --color-brass-400: #d8b87d;
+  --color-brass-500: #c9a46a;
+  --color-brass-600: #a8874f;
+
+  --color-bitter-500: #c05540;
+  --color-olive-500: #7d8b6a;
+
+  --font-display: 'Fraunces', ui-serif, Georgia, 'Times New Roman', serif;
+  --font-sans: 'InterVar', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+
+  --radius-card: 1rem;
+  --radius-panel: 1.5rem;
+
+  --shadow-lift: 0 24px 60px -28px rgb(0 0 0 / 0.75);
+  --shadow-soft: 0 2px 20px -8px rgb(0 0 0 / 0.5);
+
+  --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* ==========================================================================
+   Base
+   ========================================================================== */
+
+@layer base {
+  :root {
+    color-scheme: dark;
+    --hairline: color-mix(in srgb, var(--color-bone-100) 12%, transparent);
+    --hairline-strong: color-mix(in srgb, var(--color-bone-100) 22%, transparent);
+  }
+
+  * {
+    border-color: var(--hairline);
+  }
+
+  html {
+    scroll-behavior: smooth;
+    /* Sticky header + the mobile action bar both need clearance. */
+    scroll-padding-top: 5.5rem;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background-color: var(--color-ink-950);
+    color: var(--color-bone-100);
+    font-family: var(--font-sans);
+    font-synthesis-weight: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    /* Room for the persistent mobile CTA bar. */
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  h1, h2, h3, h4 {
+    font-family: var(--font-display);
+    font-weight: 400;
+    letter-spacing: -0.015em;
+    text-wrap: balance;
+  }
+
+  p { text-wrap: pretty; }
+
+  ::selection {
+    background: var(--color-brass-500);
+    color: var(--color-ink-950);
+  }
+
+  /* Visible, consistent focus for keyboard users everywhere. */
+  :focus-visible {
+    outline: 2px solid var(--color-brass-400);
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+
+  input, select, textarea, button { font: inherit; color: inherit; }
+
+  /* Firefox needs the hint; date inputs otherwise render a black-on-black icon. */
+  input[type='date']::-webkit-calendar-picker-indicator {
+    filter: invert(0.8) sepia(0.3) saturate(3) hue-rotate(2deg);
+    cursor: pointer;
+  }
+}
+
+/* ==========================================================================
+   Components
+   ========================================================================== */
+
+@layer components {
+  .container-page {
+    width: 100%;
+    margin-inline: auto;
+    max-width: 78rem;
+    padding-inline: 1.25rem;
+  }
+  @media (min-width: 768px) {
+    .container-page { padding-inline: 2rem; }
+  }
+
+  .section {
+    padding-block: clamp(3.5rem, 9vw, 7.5rem);
+  }
+
+  .eyebrow {
+    font-family: var(--font-sans);
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--color-brass-500);
+  }
+
+  .display-1 { font-size: clamp(2.5rem, 7.5vw, 5rem); line-height: 1.02; }
+  .display-2 { font-size: clamp(2rem, 4.6vw, 3.25rem); line-height: 1.08; }
+  .display-3 { font-size: clamp(1.5rem, 2.8vw, 2rem); line-height: 1.18; }
+
+  .lede {
+    font-size: clamp(1.05rem, 1.6vw, 1.25rem);
+    line-height: 1.6;
+    color: var(--color-bone-400);
+  }
+
+  /* --- Buttons ---------------------------------------------------------- */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    border-radius: 999px;
+    padding: 0.9rem 1.6rem;
+    font-size: 0.9375rem;
+    font-weight: 500;
+    line-height: 1;
+    text-align: center;
+    cursor: pointer;
+    transition: transform 0.25s var(--ease-out-soft), background-color 0.25s, border-color 0.25s, color 0.25s, box-shadow 0.25s;
+    /* Comfortable thumb target on phones. */
+    min-height: 3rem;
+  }
+  .btn:active { transform: translateY(1px); }
+  .btn:disabled { opacity: 0.55; cursor: not-allowed; }
+
+  .btn-primary {
+    background: var(--color-brass-500);
+    color: var(--color-ink-950);
+    font-weight: 600;
+    box-shadow: 0 10px 30px -14px color-mix(in srgb, var(--color-brass-500) 80%, transparent);
+  }
+  .btn-primary:hover { background: var(--color-brass-400); }
+
+  .btn-ghost {
+    background: transparent;
+    color: var(--color-bone-100);
+    border: 1px solid var(--hairline-strong);
+  }
+  .btn-ghost:hover {
+    border-color: var(--color-brass-500);
+    color: var(--color-brass-300);
+  }
+
+  .btn-whatsapp {
+    background: #1f6f4e;
+    color: #fff;
+  }
+  .btn-whatsapp:hover { background: #24805a; }
+
+  /* --- Surfaces --------------------------------------------------------- */
+  .card {
+    background: var(--color-ink-900);
+    border: 1px solid var(--hairline);
+    border-radius: var(--radius-card);
+    transition: border-color 0.3s, transform 0.4s var(--ease-out-soft), background-color 0.3s;
+  }
+  .card-hover:hover {
+    border-color: color-mix(in srgb, var(--color-brass-500) 45%, transparent);
+    transform: translateY(-3px);
+  }
+
+  .hairline { border-top: 1px solid var(--hairline); }
+
+  /* --- Forms ------------------------------------------------------------ */
+  .field-label {
+    display: block;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    color: var(--color-bone-400);
+    margin-bottom: 0.5rem;
+  }
+
+  .field {
+    width: 100%;
+    background: var(--color-ink-850);
+    border: 1px solid var(--hairline-strong);
+    border-radius: 0.75rem;
+    padding: 0.875rem 1rem;
+    /* 16px keeps iOS Safari from zooming when a field is focused. */
+    font-size: 1rem;
+    color: var(--color-bone-100);
+    transition: border-color 0.2s, background-color 0.2s;
+    min-height: 3rem;
+  }
+  .field::placeholder { color: var(--color-bone-500); }
+  .field:hover { border-color: color-mix(in srgb, var(--color-bone-100) 30%, transparent); }
+  .field:focus { border-color: var(--color-brass-500); background: var(--color-ink-800); }
+  .field[aria-invalid='true'] { border-color: var(--color-bitter-500); }
+
+  .field-error {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    margin-top: 0.4rem;
+    font-size: 0.8125rem;
+    color: #e08a76;
+  }
+
+  /* Chip-style radio / checkbox, driven by the peer input. */
+  .chip {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    text-align: center;
+    border: 1px solid var(--hairline-strong);
+    border-radius: 0.75rem;
+    padding: 0.8rem 0.9rem;
+    font-size: 0.9rem;
+    line-height: 1.25;
+    cursor: pointer;
+    background: var(--color-ink-850);
+    transition: border-color 0.2s, background-color 0.2s, color 0.2s;
+    min-height: 3rem;
+  }
+  .chip:hover { border-color: color-mix(in srgb, var(--color-brass-500) 50%, transparent); }
+  .peer:checked ~ .chip,
+  .chip[data-selected='true'] {
+    border-color: var(--color-brass-500);
+    background: color-mix(in srgb, var(--color-brass-500) 14%, var(--color-ink-850));
+    color: var(--color-brass-300);
+  }
+  .peer:focus-visible ~ .chip {
+    outline: 2px solid var(--color-brass-400);
+    outline-offset: 2px;
+  }
+
+  /* --- Prose ------------------------------------------------------------ */
+  .prose-cordiale { font-size: 1.0625rem; line-height: 1.75; color: var(--color-bone-200); }
+  .prose-cordiale h2 {
+    font-size: clamp(1.4rem, 2.4vw, 1.85rem);
+    margin-top: 2.75rem;
+    margin-bottom: 0.85rem;
+    color: var(--color-bone-100);
+  }
+  .prose-cordiale h3 {
+    font-size: 1.2rem;
+    margin-top: 2rem;
+    margin-bottom: 0.6rem;
+    color: var(--color-bone-100);
+  }
+  .prose-cordiale p { margin-bottom: 1.15rem; }
+  .prose-cordiale ul, .prose-cordiale ol { margin: 0 0 1.35rem 0; padding-left: 1.25rem; }
+  .prose-cordiale ul { list-style: none; padding-left: 0; }
+  .prose-cordiale ul li {
+    position: relative;
+    padding-left: 1.4rem;
+    margin-bottom: 0.6rem;
+  }
+  .prose-cordiale ul li::before {
+    content: '';
+    position: absolute;
+    left: 0.15rem;
+    top: 0.72em;
+    width: 0.375rem;
+    height: 0.375rem;
+    border-radius: 999px;
+    background: var(--color-brass-500);
+  }
+  .prose-cordiale ol { list-style: decimal; }
+  .prose-cordiale ol li { margin-bottom: 0.6rem; padding-left: 0.35rem; }
+  .prose-cordiale strong { color: var(--color-bone-50); font-weight: 600; }
+  .prose-cordiale a { color: var(--color-brass-300); text-decoration: underline; text-underline-offset: 3px; }
+
+  /* --- Decoration ------------------------------------------------------- */
+  .grain::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.5;
+    background-image: radial-gradient(color-mix(in srgb, var(--color-bone-100) 5%, transparent) 1px, transparent 1px);
+    background-size: 3px 3px;
+    mix-blend-mode: overlay;
+  }
+
+  .rule-brass {
+    width: 2.5rem;
+    height: 1px;
+    background: var(--color-brass-500);
+  }
+}
+
+/* ==========================================================================
+   Motion — every animation here is opt-out via prefers-reduced-motion.
+   ========================================================================== */
+
+@layer utilities {
+  .reveal {
+    opacity: 0;
+    transform: translateY(18px);
+    transition: opacity 0.7s var(--ease-out-soft), transform 0.7s var(--ease-out-soft);
+    will-change: opacity, transform;
+  }
+  .reveal.is-visible {
+    opacity: 1;
+    transform: none;
+  }
+  .reveal-delay-1 { transition-delay: 80ms; }
+  .reveal-delay-2 { transition-delay: 160ms; }
+  .reveal-delay-3 { transition-delay: 240ms; }
+  .reveal-delay-4 { transition-delay: 320ms; }
+
+  .fade-in-up {
+    animation: fade-in-up 0.8s var(--ease-out-soft) both;
+  }
+
+  .no-scrollbar::-webkit-scrollbar { display: none; }
+  .no-scrollbar { scrollbar-width: none; }
+
+  .text-shadow-hero { text-shadow: 0 2px 40px rgb(0 0 0 / 0.55); }
+}
+
+@keyframes fade-in-up {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+  .reveal { opacity: 1; transform: none; }
+}
+
+/* ==========================================================================
+   Admin — a light, high-density surface. Reading forty rows of leads in a
+   dark editorial palette is a worse experience than admitting the panel is a
+   tool, not a shop window.
+   ========================================================================== */
+
+.admin-shell {
+  color-scheme: light;
+  background: #f6f5f3;
+  color: #1c1917;
+  font-family: var(--font-sans);
+  min-height: 100vh;
+}
+.admin-shell h1, .admin-shell h2, .admin-shell h3 {
+  font-family: var(--font-sans);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: #1c1917;
+}
+.admin-shell .admin-card {
+  background: #fff;
+  border: 1px solid #e7e5e4;
+  border-radius: 0.875rem;
+}
+.admin-shell .admin-field {
+  width: 100%;
+  background: #fff;
+  border: 1px solid #d6d3d1;
+  border-radius: 0.5rem;
+  padding: 0.55rem 0.75rem;
+  font-size: 0.9375rem;
+  color: #1c1917;
+  min-height: 2.5rem;
+}
+.admin-shell .admin-field:focus {
+  outline: 2px solid #1c1917;
+  outline-offset: 1px;
+  border-color: #1c1917;
+}
+.admin-shell .admin-field[aria-invalid='true'] { border-color: #b91c1c; }
+.admin-shell .admin-label {
+  display: block;
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #78716c;
+  margin-bottom: 0.35rem;
+}
+.admin-shell .admin-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  border-radius: 0.5rem;
+  padding: 0.55rem 1rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  min-height: 2.5rem;
+  background: #1c1917;
+  color: #fff;
+  cursor: pointer;
+  transition: background-color 0.2s, opacity 0.2s;
+}
+.admin-shell .admin-btn:hover { background: #292524; }
+.admin-shell .admin-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.admin-shell .admin-btn-secondary {
+  background: #fff;
+  color: #1c1917;
+  border: 1px solid #d6d3d1;
+}
+.admin-shell .admin-btn-secondary:hover { background: #f5f5f4; }
+.admin-shell .admin-btn-danger { background: #b91c1c; }
+.admin-shell .admin-btn-danger:hover { background: #991b1b; }
+.admin-shell a { color: inherit; }
+.admin-shell :focus-visible { outline-color: #1c1917; }

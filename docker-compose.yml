@@ -1,0 +1,78 @@
+# =============================================================================
+# Cordiale — production stack for a single Ubuntu host behind Cloudflare Tunnel.
+#
+#   docker compose up -d --build
+#
+# Only cloudflared talks to the internet; the app listens on 127.0.0.1 and
+# Postgres is not published at all. There is no nginx: the tunnel already
+# terminates TLS and speaks HTTP to the app, so a reverse proxy in between would
+# be one more thing to keep patched for no benefit.
+# =============================================================================
+
+services:
+  db:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-cordiale}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}
+      POSTGRES_DB: ${POSTGRES_DB:-cordiale}
+      # Deterministic collation, so ORDER BY does not change under you.
+      POSTGRES_INITDB_ARGS: '--locale=C --encoding=UTF8'
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U ${POSTGRES_USER:-cordiale} -d ${POSTGRES_DB:-cordiale}']
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
+    networks: [internal]
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    env_file: .env
+    environment:
+      NODE_ENV: production
+      PORT: '3000'
+      UPLOAD_DIR: /app/public/uploads
+    volumes:
+      # Uploaded images must outlive the container.
+      - uploads:/app/public/uploads
+    ports:
+      # Bound to loopback: reachable by cloudflared, not from the network.
+      - '127.0.0.1:${APP_PORT:-3000}:3000'
+    healthcheck:
+      test: ['CMD', 'curl', '-fsS', 'http://127.0.0.1:3000/api/health']
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 60s
+    networks: [internal]
+
+  # Optional: comment this service out if you already run cloudflared on the host.
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    restart: unless-stopped
+    command: tunnel --no-autoupdate run
+    environment:
+      TUNNEL_TOKEN: ${CLOUDFLARE_TUNNEL_TOKEN:-}
+    depends_on:
+      app:
+        condition: service_started
+    profiles: ['tunnel']
+    networks: [internal]
+
+volumes:
+  db-data:
+  uploads:
+
+networks:
+  internal:
+    driver: bridge
