@@ -1,4 +1,5 @@
 import 'server-only';
+import { cache } from 'react';
 import { db } from '@/db';
 import { settings as settingsTable } from '@/db/schema';
 import { defaultSettings, type SiteSettings } from '@/content/settings';
@@ -7,12 +8,16 @@ export type { SiteSettings };
 export { defaultSettings };
 
 /**
+ * Memoised per request (`cache`): the layout, the shell and the page component
+ * each ask for the settings, and three identical round trips per render is a
+ * cost with no upside.
+ *
  * Settings live in the database so the owner can reword the site without a
  * deploy, but the defaults in `src/content/settings.ts` are always the base:
  * a key that was never edited (or a brand-new key added by an update) still
  * renders. Values are merged one level deep — a group is edited as a whole.
  */
-export async function getSettings(): Promise<SiteSettings> {
+export const getSettings = cache(async (): Promise<SiteSettings> => {
   let rows: { key: string; value: unknown }[] = [];
   try {
     rows = await db.select({ key: settingsTable.key, value: settingsTable.value }).from(settingsTable);
@@ -27,7 +32,7 @@ export async function getSettings(): Promise<SiteSettings> {
     merged[row.key] = { ...merged[row.key], ...(row.value as Record<string, unknown>) };
   }
   return merged as unknown as SiteSettings;
-}
+});
 
 export async function getSettingsGroup<K extends keyof SiteSettings>(key: K): Promise<SiteSettings[K]> {
   const all = await getSettings();

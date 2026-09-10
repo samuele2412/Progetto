@@ -31,7 +31,9 @@ export function Footer(props: FooterProps) {
 
   return (
     <footer className="hairline mt-auto bg-ink-900">
-      <div className="container-page py-14 md:py-20">
+      {/* pb-28 on small screens keeps the last rows clear of the fixed
+          mobile CTA bar, which otherwise covers the legal links. */}
+      <div className="container-page pb-28 pt-14 md:pb-20 md:pt-20 lg:pb-14">
         <div className="grid gap-12 md:grid-cols-[1.4fr_1fr_1fr_1fr]">
           <div>
             <p className="font-[family-name:var(--font-display)] text-2xl text-bone-50">{props.brandName}</p>
@@ -43,10 +45,10 @@ export function Footer(props: FooterProps) {
           {props.columns.map((column) => (
             <nav key={column.title} aria-label={column.title}>
               <p className="text-[0.68rem] uppercase tracking-[0.16em] text-brass-500">{column.title}</p>
-              <ul className="mt-4 space-y-2.5">
+              <ul className="mt-4 space-y-1">
                 {column.links.map((link) => (
                   <li key={link.href}>
-                    <Link href={link.href} className="text-sm text-bone-400 transition-colors hover:text-bone-50">
+                    <Link href={link.href} className="tap-target text-sm text-bone-400 transition-colors hover:text-bone-50">
                       {link.label}
                     </Link>
                   </li>
@@ -57,10 +59,10 @@ export function Footer(props: FooterProps) {
 
           <div>
             <p className="text-[0.68rem] uppercase tracking-[0.16em] text-brass-500">{props.labels.contact}</p>
-            <ul className="mt-4 space-y-2.5 text-sm">
+            <ul className="mt-4 space-y-1 text-sm">
               {!isPlaceholder(props.phone) && (
                 <li>
-                  <a href={props.phoneHref} className="text-bone-400 transition-colors hover:text-bone-50">
+                  <a href={props.phoneHref} className="tap-target text-bone-400 transition-colors hover:text-bone-50">
                     {props.phone}
                   </a>
                 </li>
@@ -70,14 +72,14 @@ export function Footer(props: FooterProps) {
                   href={props.whatsappHref}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-bone-400 transition-colors hover:text-bone-50"
+                  className="tap-target text-bone-400 transition-colors hover:text-bone-50"
                 >
                   WhatsApp
                 </a>
               </li>
               {!isPlaceholder(props.email) && (
                 <li>
-                  <a href={`mailto:${props.email}`} className="break-all text-bone-400 transition-colors hover:text-bone-50">
+                  <a href={`mailto:${props.email}`} className="tap-target break-all text-bone-400 transition-colors hover:text-bone-50">
                     {props.email}
                   </a>
                 </li>
@@ -88,14 +90,14 @@ export function Footer(props: FooterProps) {
             {socials.length > 0 && (
               <>
                 <p className="mt-8 text-[0.68rem] uppercase tracking-[0.16em] text-brass-500">{props.labels.follow}</p>
-                <ul className="mt-4 flex gap-4 text-sm">
+                <ul className="mt-4 flex gap-5 text-sm">
                   {socials.map((social) => (
                     <li key={social.label}>
                       <a
                         href={social.href}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-bone-400 transition-colors hover:text-bone-50"
+                        className="tap-target text-bone-400 transition-colors hover:text-bone-50"
                       >
                         {social.label}
                       </a>
@@ -112,10 +114,10 @@ export function Footer(props: FooterProps) {
             © {year} {isPlaceholder(props.legalName) ? props.brandName : props.legalName}
             {isPlaceholder(props.vatNumber) ? '' : ` · P.IVA ${props.vatNumber}`} — {props.labels.rights}
           </p>
-          <ul className="flex flex-wrap gap-x-5 gap-y-2">
+          <ul className="flex flex-wrap gap-x-5 gap-y-1">
             {props.legalLinks.map((link) => (
               <li key={link.href}>
-                <Link href={link.href} className="transition-colors hover:text-bone-200">
+                <Link href={link.href} className="tap-target transition-colors hover:text-bone-200">
                   {link.label}
                 </Link>
               </li>

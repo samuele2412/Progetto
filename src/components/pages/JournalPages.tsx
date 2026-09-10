@@ -101,7 +101,7 @@ export async function JournalPostPage({ locale, post }: { locale: Locale; post: 
       <article>
         <header className="border-b border-[var(--hairline)]">
           <div className="container-page max-w-3xl py-14 md:py-20">
-            <Link href={path('journal', locale)} className="text-sm text-bone-500 transition-colors hover:text-brass-300">
+            <Link href={path('journal', locale)} className="tap-target text-sm text-bone-500 transition-colors hover:text-brass-300">
               ← Journal
             </Link>
             <h1 className="display-2 fade-in-up mt-6 text-bone-50">{t(post.title, locale)}</h1>

@@ -37,6 +37,13 @@ async function guard() {
 
 export type ActionState = { ok?: boolean; error?: string; message?: string };
 
+/**
+ * bcrypt hash (cost 12) of a random string discarded at generation time. It is
+ * not a secret and unlocks nothing — its only job is to make a login attempt on
+ * an unknown address take as long as one on a real account.
+ */
+const DECOY_HASH = '$2b$12$xUfsCEfM5ZAW70ml8ejVYutFiboSo/EOonL.YPP9bmuVpc.KocsJ.';
+
 /* -------------------------------------------------------------------------- */
 /* Auth                                                                       */
 /* -------------------------------------------------------------------------- */
@@ -59,18 +66,22 @@ export async function loginAction(_prev: ActionState, formData: FormData): Promi
   if (!parsed.success) return { error: 'Email o password non validi.' };
 
   const [admin] = await db.select().from(admins).where(eq(admins.email, parsed.data.email)).limit(1);
-  // Always run a comparison so a missing account and a wrong password take the
-  // same time — otherwise the response time leaks which emails exist.
-  const hash = admin?.passwordHash ?? '$2b$12$invalidinvalidinvalidinvalidinvalidinvalidinvalidinvalidin';
-  const valid = await verifyPassword(parsed.data.password, hash);
+  // Burn the same CPU time whether or not the account exists, otherwise the
+  // response time answers "is this email registered?" for anyone who asks.
+  // DECOY_HASH must be a *valid* bcrypt hash: bcrypt rejects a malformed one
+  // in microseconds, which is exactly the leak this is meant to close.
+  const valid = await verifyPassword(parsed.data.password, admin?.passwordHash ?? DECOY_HASH);
 
   if (!admin || !valid) return { error: 'Email o password non validi.' };
 
   await db.update(admins).set({ lastLoginAt: new Date() }).where(eq(admins.id, admin.id));
   await createSession(admin);
 
-  const next = String(formData.get('next') ?? '/admin');
-  redirect(next.startsWith('/admin') ? next : '/admin');
+  // Only ever a path inside the panel: no scheme, no host, no protocol-relative
+  // "//evil.test" that a browser would read as an absolute URL.
+  const requested = String(formData.get('next') ?? '');
+  const safeNext = /^\/admin(?:\/[A-Za-z0-9\-_/]*)?$/.test(requested) ? requested : '/admin';
+  redirect(safeNext);
 }
 
 export async function logoutAction() {

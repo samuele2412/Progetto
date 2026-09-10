@@ -104,7 +104,7 @@ export default async function RequestsPage({
             {rows.map((request) => (
               <tr key={request.id} className="transition-colors hover:bg-stone-50">
                 <td className="px-4 py-3">
-                  <Link href={`/admin/richieste/${request.id}`} className="font-medium text-stone-900 hover:underline">
+                  <Link href={`/admin/richieste/${request.id}`} className="flex min-h-9 items-center font-medium text-stone-900 hover:underline">
                     {request.name}
                   </Link>
                   <span className="block text-xs text-stone-500">{request.reference}</span>

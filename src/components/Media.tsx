@@ -13,15 +13,33 @@ import { cn } from '@/lib/utils';
  */
 const publicDir = path.join(process.cwd(), 'public');
 
+/**
+ * Memoised because `existsSync` is a blocking syscall and the home page asks
+ * about ~25 images: without this every render stats the disk 25 times on the
+ * request thread. The answer only changes when files are added, which in this
+ * deployment means a redeploy for /images and an upload for /uploads.
+ */
+const existsCache = new Map<string, boolean>();
+
 function fileExists(src: string): boolean {
   if (!src.startsWith('/')) return false;
-  // Uploads live on a mounted volume; assume present and let the CDN 404.
+  // Uploads live on a mounted volume that can change under a running process,
+  // so they are assumed present and left to 404 if they are not.
   if (src.startsWith('/uploads/')) return true;
+
+  const cached = existsCache.get(src);
+  if (cached !== undefined) return cached;
+
+  let present = false;
   try {
-    return existsSync(path.join(publicDir, src.replace(/^\//, '').split('?')[0]));
+    present = existsSync(path.join(publicDir, src.replace(/^\//, '').split('?')[0]));
   } catch {
-    return false;
+    present = false;
   }
+  // Only cache in production: in development the point is to see a file appear
+  // as soon as it is dropped into the folder.
+  if (process.env.NODE_ENV === 'production') existsCache.set(src, present);
+  return present;
 }
 
 type MediaProps = {

@@ -118,7 +118,7 @@ function DeleteButton({ collection, id }: { collection: string; id: number }) {
 
   if (!confirming) {
     return (
-      <button type="button" onClick={() => setConfirming(true)} className="text-sm text-red-700 hover:underline">
+      <button type="button" onClick={() => setConfirming(true)} className="inline-flex min-h-11 items-center px-1 text-sm text-red-700 hover:underline">
         Elimina
       </button>
     );

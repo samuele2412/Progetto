@@ -48,17 +48,17 @@ export async function ThanksPage({ locale, reference }: { locale: Locale; refere
             </p>
             <ul className="mt-4 flex flex-wrap gap-3">
               <li>
-                <Link href={path('cocktails', locale)} className="btn btn-ghost !min-h-0 !py-2.5 text-sm">
+                <Link href={path('cocktails', locale)} className="btn btn-ghost !min-h-11 !py-2.5 text-sm">
                   {copy.cta.seeCocktails}
                 </Link>
               </li>
               <li>
-                <Link href={path('journal', locale)} className="btn btn-ghost !min-h-0 !py-2.5 text-sm">
+                <Link href={path('journal', locale)} className="btn btn-ghost !min-h-11 !py-2.5 text-sm">
                   Journal
                 </Link>
               </li>
               <li>
-                <Link href={path('home', locale)} className="btn btn-ghost !min-h-0 !py-2.5 text-sm">
+                <Link href={path('home', locale)} className="btn btn-ghost !min-h-11 !py-2.5 text-sm">
                   {copy.cta.backHome}
                 </Link>
               </li>

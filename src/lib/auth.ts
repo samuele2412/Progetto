@@ -6,8 +6,9 @@ import { eq } from 'drizzle-orm';
 import { db } from '@/db';
 import { admins } from '@/db/schema';
 import { env } from './env';
+import { SESSION_COOKIE } from './session-cookie';
 
-const COOKIE_NAME = 'cordiale_session';
+const COOKIE_NAME = SESSION_COOKIE;
 const secret = new TextEncoder().encode(env.SESSION_SECRET);
 
 export type SessionPayload = {

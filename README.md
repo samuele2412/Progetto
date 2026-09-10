@@ -132,6 +132,7 @@ Poi `nano .env` e completare **almeno** queste voci:
 | `POSTGRES_PASSWORD` | La password generata sopra |
 | `DATABASE_URL` | La stessa password dentro l'URL: `postgresql://cordiale:LA_PASSWORD@db:5432/cordiale` |
 | `SESSION_SECRET` | Il valore generato sopra |
+| `TRUSTED_IP_HEADER` | `cf-connecting-ip` dietro Cloudflare; vedi `.env.example` |
 | `IP_HASH_SALT` | Il valore generato sopra |
 | `ADMIN_EMAIL` / `ADMIN_PASSWORD` | Le credenziali del primo accesso (password: almeno 12 caratteri) |
 | `NOTIFY_EMAIL` | Dove ricevere le nuove richieste |
@@ -495,6 +496,19 @@ docker compose logs cloudflared --tail 50   # oppure: sudo journalctl -u cloudfl
 Controllare che il Public Hostname punti a `app:3000` (tunnel nel Compose) o a
 `localhost:3000` (cloudflared sull'host), e che i nameserver del dominio siano
 quelli di Cloudflare.
+
+### Il form accetta troppe richieste (o le blocca tutte)
+
+Il limite anti-spam conta per indirizzo IP, e l'IP viene letto **da un solo
+header**, indicato da `TRUSTED_IP_HEADER`. Se il valore non corrisponde al proxy
+che hai davvero davanti, succede una di due cose:
+
+- l'header non arriva mai → tutti i visitatori finiscono nello stesso conteggio
+  e il form inizia a rifiutare richieste legittime;
+- l'header è impostabile dal client → il limite si aggira banalmente.
+
+Dietro Cloudflare Tunnel lascia `cf-connecting-ip`. Dietro un tuo nginx usa
+`x-forwarded-for`. Senza nulla davanti, `none`.
 
 ### Le email non arrivano
 

@@ -42,13 +42,15 @@
     "eslint": "9.39.5",
     "eslint-config-next": "15.5.25",
     "tailwindcss": "4.3.3",
-    "tsx": "4.21.0",
+    "tsx": "^4.23.13",
     "typescript": "5.9.3"
   },
   "engines": {
     "node": ">=22"
   },
   "overrides": {
-    "typescript": "5.9.3"
+    "typescript": "5.9.3",
+    "postcss": "^8.5.28",
+    "esbuild": "$esbuild"
   }
 }

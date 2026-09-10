@@ -50,7 +50,7 @@ export async function HomePage({ locale }: { locale: Locale }) {
   return (
     <>
       {/* ================= HERO ================= */}
-      <section className="relative isolate flex min-h-[calc(100svh-4rem)] items-end overflow-hidden md:min-h-[min(88svh,52rem)]">
+      <section className="hero-viewport relative isolate flex items-end overflow-hidden">
         <div className="absolute inset-0 -z-10">
           {settings.hero.videoPath ? (
             <video
@@ -59,6 +59,9 @@ export async function HomePage({ locale }: { locale: Locale }) {
               muted
               loop
               playsInline
+              // Without a hint the browser downloads the whole file before it
+              // knows whether the poster alone would have done.
+              preload="metadata"
               poster={settings.hero.imagePath || undefined}
             >
               <source src={settings.hero.videoPath} type="video/mp4" />
@@ -83,7 +86,7 @@ export async function HomePage({ locale }: { locale: Locale }) {
           />
         </div>
 
-        <div className="container-page pb-16 pt-28 md:pb-24">
+        <div className="hero-content container-page pb-16 pt-28 md:pb-24">
           <div className="max-w-3xl">
             <p className="eyebrow fade-in-up">{t(settings.hero.eyebrow, locale)}</p>
             <h1 className="display-1 fade-in-up mt-5 text-bone-50 text-shadow-hero">
@@ -91,7 +94,7 @@ export async function HomePage({ locale }: { locale: Locale }) {
             </h1>
             <p className="lede fade-in-up mt-6 max-w-xl text-bone-200">{t(settings.hero.subtitle, locale)}</p>
 
-            <div className="fade-in-up mt-9 flex flex-col gap-3 sm:flex-row">
+            <div className="hero-actions fade-in-up mt-9 flex flex-col gap-3 sm:flex-row">
               <Link href={path('request', locale)} className="btn btn-primary">
                 {t(settings.hero.primaryCta, locale)}
               </Link>
@@ -101,7 +104,7 @@ export async function HomePage({ locale }: { locale: Locale }) {
             </div>
 
             {badges.length > 0 && (
-              <ul className="fade-in-up mt-10 flex flex-wrap gap-x-6 gap-y-2 text-sm text-bone-400">
+              <ul className="hero-badges fade-in-up mt-10 flex flex-wrap gap-x-6 gap-y-2 text-sm text-bone-400">
                 {badges.map((badge) => (
                   <li key={badge} className="flex items-center gap-2">
                     <span aria-hidden className="h-1 w-1 rounded-full bg-brass-500" />
@@ -156,7 +159,7 @@ export async function HomePage({ locale }: { locale: Locale }) {
               title={t(settings.home.packagesTitle, locale)}
               intro={t(settings.home.packagesIntro, locale)}
             />
-            <Link href={path('packages', locale)} className="btn btn-ghost !min-h-0 !py-2.5 text-sm">
+            <Link href={path('packages', locale)} className="btn btn-ghost !min-h-11 !py-2.5 text-sm">
               {copy.cta.seePackages}
             </Link>
           </div>
@@ -178,7 +181,7 @@ export async function HomePage({ locale }: { locale: Locale }) {
               title={t(settings.home.cocktailsTitle, locale)}
               intro={t(settings.home.cocktailsIntro, locale)}
             />
-            <Link href={path('cocktails', locale)} className="btn btn-ghost !min-h-0 !py-2.5 text-sm">
+            <Link href={path('cocktails', locale)} className="btn btn-ghost !min-h-11 !py-2.5 text-sm">
               {copy.cta.seeCocktails}
             </Link>
           </div>
@@ -299,7 +302,7 @@ export async function HomePage({ locale }: { locale: Locale }) {
               ))}
             </div>
             <div className="mt-8">
-              <Link href={path('gallery', locale)} className="btn btn-ghost !min-h-0 !py-2.5 text-sm">
+              <Link href={path('gallery', locale)} className="btn btn-ghost !min-h-11 !py-2.5 text-sm">
                 {copy.cta.seeAll}
               </Link>
             </div>
@@ -332,7 +335,7 @@ export async function HomePage({ locale }: { locale: Locale }) {
               <FaqList faqs={homeFaqs} locale={locale} />
             </div>
             <div className="mt-8">
-              <Link href={path('faq', locale)} className="btn btn-ghost !min-h-0 !py-2.5 text-sm">
+              <Link href={path('faq', locale)} className="btn btn-ghost !min-h-11 !py-2.5 text-sm">
                 {copy.cta.seeAll}
               </Link>
             </div>

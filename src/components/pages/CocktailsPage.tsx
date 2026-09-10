@@ -33,7 +33,7 @@ export async function CocktailsPage({ locale }: { locale: Locale }) {
               <a
                 key={group.category}
                 href={`#${group.category}`}
-                className="rounded-full border border-[var(--hairline-strong)] px-4 py-2 text-sm text-bone-300 transition-colors hover:border-brass-500 hover:text-brass-300"
+                className="inline-flex min-h-11 items-center rounded-full border border-[var(--hairline-strong)] px-4 text-sm text-bone-300 transition-colors hover:border-brass-500 hover:text-brass-300"
               >
                 {copy.cocktails[group.category]}
               </a>

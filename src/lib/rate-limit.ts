@@ -60,12 +60,28 @@ export function hashIp(ip: string): string {
   return createHash('sha256').update(`${env.IP_HASH_SALT}:${ip}`).digest('hex');
 }
 
-/** Extracts the client IP, trusting Cloudflare's header first. */
+/**
+ * Resolves the caller's IP from exactly one header, named by TRUSTED_IP_HEADER.
+ *
+ * Reading whichever forwarding header happens to be present is a hole, not a
+ * convenience: any client can send `X-Forwarded-For: <random>` and get a fresh
+ * rate-limit bucket on every request, which defeats both the anti-spam throttle
+ * and the login throttle. Only a header written by a proxy we actually sit
+ * behind can be trusted, so the deployment has to say which one that is.
+ *
+ * The default (`cf-connecting-ip`) matches the documented Cloudflare Tunnel
+ * setup. Set TRUSTED_IP_HEADER=none when nothing sits in front: every caller
+ * then shares one bucket, which throttles too much rather than not at all.
+ */
 export function clientIp(headers: Headers): string {
-  return (
-    headers.get('cf-connecting-ip') ??
-    headers.get('x-real-ip') ??
-    headers.get('x-forwarded-for')?.split(',')[0]?.trim() ??
-    '0.0.0.0'
-  );
+  const header = env.TRUSTED_IP_HEADER;
+  if (header === 'none') return 'direct';
+
+  const value = headers.get(header);
+  if (!value) return 'unknown';
+
+  // X-Forwarded-For is a chain: the client-most entry is the first one, and it
+  // is only meaningful because the trusted proxy is the one appending to it.
+  const first = value.split(',')[0]?.trim();
+  return first && first.length <= 45 ? first : 'unknown';
 }

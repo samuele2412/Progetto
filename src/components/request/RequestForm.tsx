@@ -305,7 +305,7 @@ export function RequestForm(props: Props) {
               aria-describedby="date-note"
               onChange={(event) => set('eventDate', event.target.value)}
             />
-            <label className="mt-3 flex cursor-pointer items-center gap-2.5 text-sm text-bone-400">
+            <label className="mt-2 flex min-h-11 cursor-pointer items-center gap-3 text-sm text-bone-400">
               <input
                 type="checkbox"
                 checked={values.dateFlexible}
@@ -313,7 +313,7 @@ export function RequestForm(props: Props) {
                   set('dateFlexible', event.target.checked);
                   if (event.target.checked) set('eventDate', '');
                 }}
-                className="h-4 w-4 accent-[var(--color-brass-500)]"
+                className="checkbox"
               />
               {props.copy.form.dateFlexible}
             </label>
@@ -552,23 +552,23 @@ export function RequestForm(props: Props) {
             </div>
           </div>
 
-          <label className="flex cursor-pointer items-center gap-2.5 text-sm text-bone-300">
+          <label className="flex min-h-11 cursor-pointer items-center gap-3 text-sm text-bone-300">
             <input
               type="checkbox"
               checked={values.prefersWhatsapp}
               onChange={(event) => set('prefersWhatsapp', event.target.checked)}
-              className="h-4 w-4 accent-[var(--color-brass-500)]"
+              className="checkbox"
             />
             {props.copy.form.prefersWhatsapp}
           </label>
 
-          <label className="flex cursor-pointer items-start gap-2.5 text-sm text-bone-300">
+          <label className="flex min-h-11 cursor-pointer items-start gap-3 py-1 text-sm text-bone-300">
             <input
               type="checkbox"
               checked={values.consentPrivacy}
               onChange={(event) => set('consentPrivacy', event.target.checked)}
               aria-invalid={Boolean(errors.consentPrivacy)}
-              className="mt-0.5 h-4 w-4 shrink-0 accent-[var(--color-brass-500)]"
+              className="checkbox mt-0.5"
             />
             <span>
               {props.copy.form.consent.replace(props.copy.form.consentLink, '')}

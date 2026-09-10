@@ -114,8 +114,6 @@
     font-synthesis-weight: none;
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
-    /* Room for the persistent mobile CTA bar. */
-    padding-bottom: env(safe-area-inset-bottom);
   }
 
   h1, h2, h3, h4 {
@@ -157,15 +155,33 @@
     width: 100%;
     margin-inline: auto;
     max-width: 78rem;
-    padding-inline: 1.25rem;
+    /* max() rather than a bare value: in landscape on a notched phone the
+       display cutout eats into the gutter, and 1.25rem is not enough to clear
+       it. env() resolves to 0 everywhere else, so nothing changes elsewhere. */
+    padding-left: max(1.25rem, env(safe-area-inset-left));
+    padding-right: max(1.25rem, env(safe-area-inset-right));
   }
   @media (min-width: 768px) {
-    .container-page { padding-inline: 2rem; }
+    .container-page {
+      padding-left: max(2rem, env(safe-area-inset-left));
+      padding-right: max(2rem, env(safe-area-inset-right));
+    }
   }
 
   .section {
     padding-block: clamp(3.5rem, 9vw, 7.5rem);
   }
+
+  /* The hero fills the viewport so the photograph reads as a full frame. On a
+     phone held sideways that same rule buries the primary CTA below the fold,
+     so short viewports get a content-sized hero instead. */
+  .hero-viewport {
+    min-height: calc(100svh - 4rem);
+  }
+  @media (min-width: 768px) {
+    .hero-viewport { min-height: min(88svh, 52rem); }
+  }
+
 
   .eyebrow {
     font-family: var(--font-sans);
@@ -244,6 +260,24 @@
 
   .hairline { border-top: 1px solid var(--hairline); }
 
+  /* Inline text links that are their own tap target (footer, back links, the
+     language switcher). A line of 14px text is a 17px target; these get a real
+     44px box on touch.
+
+     An invisible ::after overlay was tried first and made things worse: the
+     stretched boxes of adjacent links overlap, so a tap near the edge lands on
+     the neighbour. Growing the element itself is honest and predictable — the
+     footer is simply taller on a phone, which is the right trade. */
+  .tap-target {
+    display: inline-flex;
+    align-items: center;
+    min-height: 2.75rem;
+  }
+  @media (pointer: fine) {
+    /* A mouse needs no compensation; keep the desktop footer's density. */
+    .tap-target { min-height: 1.75rem; }
+  }
+
   /* --- Forms ------------------------------------------------------------ */
   .field-label {
     display: block;
@@ -270,6 +304,15 @@
   .field:hover { border-color: color-mix(in srgb, var(--color-bone-100) 30%, transparent); }
   .field:focus { border-color: var(--color-brass-500); background: var(--color-ink-800); }
   .field[aria-invalid='true'] { border-color: var(--color-bitter-500); }
+
+  /* The visible box stays modest; the surrounding label is the real target. */
+  .checkbox {
+    width: 1.15rem;
+    height: 1.15rem;
+    flex-shrink: 0;
+    accent-color: var(--color-brass-500);
+    cursor: pointer;
+  }
 
   .field-error {
     display: flex;
@@ -370,6 +413,24 @@
    ========================================================================== */
 
 @layer utilities {
+  /* A phone held sideways has ~390px of height. A full-size hero pushes the
+     primary CTA off-screen, so in short landscape viewports the type steps down
+     and the spacing tightens until the buttons sit above the fold. Nothing is
+     hidden — only scaled.
+
+     This lives in @layer utilities on purpose: the elements carry utilities
+     (pt-28, mt-9, mt-10) and layer order beats specificity in Tailwind v4, so
+     the same rules in @layer components would silently lose. */
+  @media (max-height: 560px) and (orientation: landscape) {
+    .hero-viewport { min-height: 0; }
+    .hero-viewport .hero-content { padding-top: 0.75rem; padding-bottom: 1rem; }
+    .hero-viewport .display-1 { font-size: 1.9rem; line-height: 1.06; }
+    .hero-viewport .lede { margin-top: 0.6rem; font-size: 0.875rem; line-height: 1.4; }
+    .hero-viewport .hero-actions { margin-top: 1rem; flex-direction: row; }
+    .hero-viewport .hero-badges { margin-top: 0.75rem; font-size: 0.78rem; }
+    .hero-viewport .btn { min-height: 2.75rem; padding-block: 0.65rem; }
+  }
+
   .reveal {
     opacity: 0;
     transform: translateY(18px);

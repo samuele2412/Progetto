@@ -126,7 +126,7 @@ Questo sito non utilizza cookie di profilazione, non installa pixel pubblicitari
 
 ## Cosa viene effettivamente salvato sul tuo dispositivo
 
-- **Cookie tecnico di sessione dell'area riservata** (cordiale_session) — presente solo se sei l'amministratore del sito e hai effettuato l'accesso al pannello. Scade alla chiusura della sessione. Non riguarda i visitatori.
+- **Cookie tecnico di sessione dell'area riservata** (__Host-cordiale_session) — presente solo se sei l'amministratore del sito e hai effettuato l'accesso al pannello. Scade alla chiusura della sessione. Non riguarda i visitatori.
 - **Nessun altro cookie** viene impostato dal sito nella navigazione ordinaria.
 
 I font sono ospitati sul nostro server: non viene effettuata alcuna chiamata a servizi di terze parti per caricarli.
@@ -149,7 +149,7 @@ This site uses no profiling cookies, installs no advertising pixels and shares n
 
 ## What is actually stored on your device
 
-- **A technical session cookie for the admin area** (cordiale_session) — present only if you are the site administrator and have signed in. It expires with the session and does not concern visitors.
+- **A technical session cookie for the admin area** (__Host-cordiale_session) — present only if you are the site administrator and have signed in. It expires with the session and does not concern visitors.
 - **No other cookie** is set by the site during ordinary browsing.
 
 Fonts are served from our own server: no third-party request is made to load them.

@@ -29,6 +29,15 @@ const schema = z.object({
   /** Salt for the one-way IP hash used by the anti-spam throttle. */
   IP_HASH_SALT: z.string().min(16).default('change-me-ip-salt-000000000000000'),
 
+  /**
+   * The single request header the rate limiter reads the client IP from.
+   * Must name a header written by the proxy in front of the app — anything a
+   * client can set itself turns the throttle off. 'none' shares one bucket.
+   */
+  TRUSTED_IP_HEADER: z
+    .enum(['cf-connecting-ip', 'x-forwarded-for', 'x-real-ip', 'none'])
+    .default('cf-connecting-ip'),
+
   // --- SMTP (optional: without it the site still records requests) ---
   SMTP_HOST: z.string().optional(),
   SMTP_PORT: z.coerce.number().int().positive().default(587),

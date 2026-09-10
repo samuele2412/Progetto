@@ -31,7 +31,7 @@ export default async function PanelLayout({ children }: { children: ReactNode })
             <Link
               key={link.href}
               href={link.href}
-              className="whitespace-nowrap rounded-lg px-3 py-2 text-sm font-medium text-stone-700 transition-colors hover:bg-stone-100"
+              className="flex min-h-11 items-center whitespace-nowrap rounded-lg px-3 text-sm font-medium text-stone-700 transition-colors hover:bg-stone-100"
             >
               {link.label}
             </Link>
@@ -42,13 +42,13 @@ export default async function PanelLayout({ children }: { children: ReactNode })
           </p>
           <Link
             href="/admin/contenuti"
-            className="whitespace-nowrap rounded-lg px-3 py-2 text-sm text-stone-700 transition-colors hover:bg-stone-100"
+            className="flex min-h-11 items-center whitespace-nowrap rounded-lg px-3 text-sm text-stone-700 transition-colors hover:bg-stone-100"
           >
             Testi e contatti
           </Link>
           <Link
             href="/admin/media"
-            className="whitespace-nowrap rounded-lg px-3 py-2 text-sm text-stone-700 transition-colors hover:bg-stone-100"
+            className="flex min-h-11 items-center whitespace-nowrap rounded-lg px-3 text-sm text-stone-700 transition-colors hover:bg-stone-100"
           >
             Immagini
           </Link>
@@ -56,7 +56,7 @@ export default async function PanelLayout({ children }: { children: ReactNode })
             <Link
               key={collection.slug}
               href={`/admin/${collection.slug}`}
-              className="whitespace-nowrap rounded-lg px-3 py-2 text-sm text-stone-700 transition-colors hover:bg-stone-100"
+              className="flex min-h-11 items-center whitespace-nowrap rounded-lg px-3 text-sm text-stone-700 transition-colors hover:bg-stone-100"
             >
               {collection.title}
             </Link>
@@ -67,7 +67,7 @@ export default async function PanelLayout({ children }: { children: ReactNode })
           </p>
           <Link
             href="/admin/account"
-            className="whitespace-nowrap rounded-lg px-3 py-2 text-sm text-stone-700 transition-colors hover:bg-stone-100"
+            className="flex min-h-11 items-center whitespace-nowrap rounded-lg px-3 text-sm text-stone-700 transition-colors hover:bg-stone-100"
           >
             Password
           </Link>
@@ -75,7 +75,7 @@ export default async function PanelLayout({ children }: { children: ReactNode })
             href="/"
             target="_blank"
             rel="noreferrer"
-            className="whitespace-nowrap rounded-lg px-3 py-2 text-sm text-stone-700 transition-colors hover:bg-stone-100"
+            className="flex min-h-11 items-center whitespace-nowrap rounded-lg px-3 text-sm text-stone-700 transition-colors hover:bg-stone-100"
           >
             Vedi il sito ↗
           </a>
@@ -83,7 +83,7 @@ export default async function PanelLayout({ children }: { children: ReactNode })
 
         <form action={logoutAction} className="border-t border-stone-200 px-5 py-4">
           <p className="truncate text-xs text-stone-500">{session.email}</p>
-          <button type="submit" className="mt-2 text-sm text-stone-700 hover:underline">
+          <button type="submit" className="mt-2 flex min-h-11 items-center text-sm text-stone-700 hover:underline">
             Esci
           </button>
         </form>

@@ -13,7 +13,7 @@ export function FaqList({ faqs, locale }: { faqs: Faq[]; locale: Locale }) {
     <div className="divide-y divide-[var(--hairline)] border-y border-[var(--hairline)]">
       {faqs.map((faq) => (
         <details key={faq.id} className="group py-5">
-          <summary className="flex cursor-pointer list-none items-start justify-between gap-6 text-left">
+          <summary className="flex min-h-11 cursor-pointer list-none items-start justify-between gap-6 text-left">
             <h3 className="font-[family-name:var(--font-display)] text-lg leading-snug text-bone-50 transition-colors group-hover:text-brass-300 md:text-xl">
               {t(faq.question, locale)}
             </h3>

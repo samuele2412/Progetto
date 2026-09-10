@@ -139,12 +139,18 @@ Aggiungere una riga sulla liberatoria fotografica al preventivo o al contratto
 
 Cosa è già in atto:
 
-- HTTPS obbligatorio (terminato da Cloudflare)
-- Password del pannello con bcrypt, costo 12
-- Sessioni JWT firmate in cookie HttpOnly + SameSite=Lax, con invalidazione
-  immediata di tutte le sessioni al cambio password
+- HTTPS obbligatorio (terminato da Cloudflare) e HSTS inviato dall'applicazione
+- Content-Security-Policy con nonce per richiesta, senza `unsafe-eval`
+- Password del pannello con bcrypt, costo 12, e tempi di risposta uniformi fra
+  account esistenti e inesistenti (nessuna enumerazione degli indirizzi)
+- Sessioni JWT firmate in cookie HttpOnly + SameSite=Lax con prefisso `__Host-`
+  in produzione, con invalidazione immediata di tutte le sessioni al cambio
+  password
 - Controllo dell'origine su ogni azione che modifica dati (CSRF)
-- Rate limiting su modulo pubblico e login
+- Rate limiting su modulo pubblico e login, con l'IP letto da un solo header
+  attendibile (`TRUSTED_IP_HEADER`) e non da qualunque header di forwarding
+- Upload verificati sui byte reali del file, non sul tipo dichiarato dal client,
+  e rifiutati prima di essere caricati in memoria se troppo grandi
 - Validazione e normalizzazione di ogni input lato server (zod)
 - Query parametrizzate ovunque (Drizzle): nessuna SQL injection possibile
 - Header di sicurezza (`X-Content-Type-Options`, `X-Frame-Options`,

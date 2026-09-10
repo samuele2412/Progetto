@@ -66,7 +66,11 @@ export function Header(props: HeaderProps) {
       )}
     >
       <div className="container-page flex h-16 items-center justify-between gap-4 md:h-20">
-        <Link href={props.homeHref} className="group flex flex-col leading-none" aria-label={props.brandName}>
+        <Link
+          href={props.homeHref}
+          className="group flex min-h-11 flex-col justify-center leading-none"
+          aria-label={props.brandName}
+        >
           <span className="font-[family-name:var(--font-display)] text-xl tracking-tight text-bone-50 transition-colors group-hover:text-brass-300 md:text-[1.4rem]">
             {props.brandName}
           </span>
@@ -119,7 +123,7 @@ export function Header(props: HeaderProps) {
 
         <div className="flex items-center gap-3">
           <LanguageSwitcher locale={props.locale} slugPairs={props.slugPairs} className="hidden sm:flex" />
-          <Link href={props.ctaHref} className="btn btn-primary hidden !min-h-0 !px-5 !py-2.5 text-sm lg:inline-flex">
+          <Link href={props.ctaHref} className="btn btn-primary hidden !min-h-11 !px-5 !py-2.5 text-sm lg:inline-flex">
             {props.ctaLabel}
           </Link>
           <button

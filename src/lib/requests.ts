@@ -1,5 +1,5 @@
 import 'server-only';
-import { and, count, desc, eq, gte, isNotNull, lte, sql } from 'drizzle-orm';
+import { and, count, desc, eq, gte, isNotNull, sql } from 'drizzle-orm';
 import { db } from '@/db';
 import { eventRequests, type RequestStatus, type StatusChange } from '@/db/schema';
 
@@ -163,14 +163,4 @@ export async function getDashboardStats() {
     last30Days: Number(last30.total),
     conversionRate,
   };
-}
-
-/** Requests older than the retention window, for the clean-up script. */
-export async function findExpiredRequests(months: number) {
-  const cutoff = new Date();
-  cutoff.setMonth(cutoff.getMonth() - months);
-  return db
-    .select({ id: eventRequests.id, reference: eventRequests.reference })
-    .from(eventRequests)
-    .where(and(lte(eventRequests.updatedAt, cutoff), sql`${eventRequests.status} in ('new','contacted','quoted','lost')`));
 }

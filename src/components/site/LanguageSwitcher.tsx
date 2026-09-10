@@ -64,7 +64,7 @@ export function LanguageSwitcher({
             hrefLang={target}
             aria-current={target === locale ? 'true' : undefined}
             className={cn(
-              'rounded px-1 py-0.5 tracking-wider transition-colors',
+              'tap-target rounded px-2 py-2 tracking-wider transition-colors',
               target === locale ? 'text-brass-400' : 'text-bone-500 hover:text-bone-100',
             )}
           >
