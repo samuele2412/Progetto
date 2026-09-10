@@ -3,8 +3,9 @@
 #
 #   docker compose up -d --build
 #
-# Only cloudflared talks to the internet; the app listens on 127.0.0.1 and
-# Postgres is not published at all. There is no nginx: the tunnel already
+# Only cloudflared talks to the internet; the app listens on the address given
+# by APP_BIND (loopback unless you change it) and Postgres is not published at
+# all — nothing on the network should be able to reach the database directly. There is no nginx: the tunnel already
 # terminates TLS and speaks HTTP to the app, so a reverse proxy in between would
 # be one more thing to keep patched for no benefit.
 # =============================================================================
@@ -46,8 +47,11 @@ services:
       # Uploaded images must outlive the container.
       - uploads:/app/public/uploads
     ports:
-      # Bound to loopback: reachable by cloudflared, not from the network.
-      - '127.0.0.1:${APP_PORT:-3000}:3000'
+      # APP_BIND decides who can reach the app directly.
+      #   127.0.0.1 (default) — only this machine and cloudflared
+      #   192.168.x.y         — also every device on the LAN (see README)
+      #   0.0.0.0             — every interface, including any public one
+      - '${APP_BIND:-127.0.0.1}:${APP_PORT:-3000}:3000'
     healthcheck:
       test: ['CMD', 'curl', '-fsS', 'http://127.0.0.1:3000/api/health']
       interval: 30s

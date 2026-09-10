@@ -6,9 +6,7 @@ import { eq } from 'drizzle-orm';
 import { db } from '@/db';
 import { admins } from '@/db/schema';
 import { env } from './env';
-import { SESSION_COOKIE } from './session-cookie';
-
-const COOKIE_NAME = SESSION_COOKIE;
+import { sessionCookieName, usesSecureCookies } from './session-cookie';
 const secret = new TextEncoder().encode(env.SESSION_SECRET);
 
 export type SessionPayload = {
@@ -36,10 +34,12 @@ export async function createSession(admin: { id: number; email: string; name: st
     .sign(secret);
 
   const store = await cookies();
-  store.set(COOKIE_NAME, token, {
+  store.set(sessionCookieName(), token, {
     httpOnly: true,
     sameSite: 'lax',
-    secure: env.NODE_ENV === 'production',
+    // Tied to the scheme of SITE_URL, not to NODE_ENV: a Secure cookie sent
+    // over plain http is dropped by the browser, which would lock the panel.
+    secure: usesSecureCookies(),
     path: '/',
     maxAge: env.SESSION_TTL_HOURS * 3600,
   });
@@ -47,13 +47,13 @@ export async function createSession(admin: { id: number; email: string; name: st
 
 export async function destroySession() {
   const store = await cookies();
-  store.delete(COOKIE_NAME);
+  store.delete(sessionCookieName());
 }
 
 /** Reads and verifies the session cookie. Returns null when absent or stale. */
 export async function getSession(): Promise<SessionPayload | null> {
   const store = await cookies();
-  const token = store.get(COOKIE_NAME)?.value;
+  const token = store.get(sessionCookieName())?.value;
   if (!token) return null;
 
   try {

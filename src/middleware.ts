@@ -1,7 +1,7 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import { buildCsp, generateNonce } from '@/lib/csp';
 import { defaultLocale, isLocale } from '@/lib/i18n';
-import { SESSION_COOKIE } from '@/lib/session-cookie';
+import { SESSION_COOKIE_NAMES, usesSecureCookies } from '@/lib/session-cookie';
 
 /**
  * Three jobs:
@@ -65,7 +65,8 @@ export function middleware(request: NextRequest) {
   const nonce = generateNonce();
   const analyticsUrl = process.env.ANALYTICS_SCRIPT_URL;
   const csp = buildCsp(nonce, {
-    isProduction: process.env.NODE_ENV === 'production',
+    // Only when the public origin really is https — see buildCsp.
+    upgradeInsecureRequests: usesSecureCookies(),
     analyticsOrigin: analyticsUrl ? safeOrigin(analyticsUrl) : undefined,
   });
 
@@ -79,7 +80,7 @@ export function middleware(request: NextRequest) {
   };
 
   if (pathname === '/admin' || pathname.startsWith('/admin/')) {
-    if (pathname !== '/admin/login' && !request.cookies.get(SESSION_COOKIE)) {
+    if (pathname !== '/admin/login' && !SESSION_COOKIE_NAMES.some((name) => request.cookies.get(name))) {
       const target =
         pathname === '/admin' ? '/admin/login' : `/admin/login?next=${encodeURIComponent(pathname)}`;
       return withCsp(redirectTo(request, target));

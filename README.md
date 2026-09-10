@@ -133,6 +133,7 @@ Poi `nano .env` e completare **almeno** queste voci:
 | `DATABASE_URL` | La stessa password dentro l'URL: `postgresql://cordiale:LA_PASSWORD@db:5432/cordiale` |
 | `SESSION_SECRET` | Il valore generato sopra |
 | `TRUSTED_IP_HEADER` | `cf-connecting-ip` dietro Cloudflare; vedi `.env.example` |
+| `APP_BIND` | `127.0.0.1` (default). Solo per esporre il sito alla rete locale — vedi § 12 |
 | `IP_HASH_SALT` | Il valore generato sopra |
 | `ADMIN_EMAIL` / `ADMIN_PASSWORD` | Le credenziali del primo accesso (password: almeno 12 caratteri) |
 | `NOTIFY_EMAIL` | Dove ricevere le nuove richieste |
@@ -496,6 +497,42 @@ docker compose logs cloudflared --tail 50   # oppure: sudo journalctl -u cloudfl
 Controllare che il Public Hostname punti a `app:3000` (tunnel nel Compose) o a
 `localhost:3000` (cloudflared sull'host), e che i nameserver del dominio siano
 quelli di Cloudflare.
+
+### Aprire il sito agli altri dispositivi della rete locale
+
+Utile per provarlo dal telefono. Servono **due** variabili in `.env`, non una:
+
+```env
+APP_BIND=192.168.0.82          # l'IP del server nella tua rete
+APP_PORT=3000
+SITE_URL=http://192.168.0.82:3000
+```
+
+Poi `docker compose up -d`. Il sito risponde su `http://192.168.0.82:3000` da
+qualsiasi dispositivo della rete.
+
+**Perché anche `SITE_URL`.** Da quell'indirizzo si viaggia in HTTP, non HTTPS, e
+l'applicazione adatta due cose allo schema dichiarato in `SITE_URL`:
+
+- il **cookie di sessione** perde il flag `Secure` e il prefisso `__Host-`, che i
+  browser accettano solo su HTTPS. Senza questo, il pannello rimbalza in eterno
+  sulla pagina di login;
+- la CSP non emette `upgrade-insecure-requests`, che altrimenti riscriverebbe a
+  `https://` anche l'invio del form di login, facendolo bloccare.
+
+Se lasci `SITE_URL` sul dominio HTTPS mentre navighi via IP, il sito pubblico si
+vede ma **il pannello non funziona**. All'avvio l'applicazione scrive un avviso
+nei log quando `SITE_URL` è in HTTP, così è chiaro cosa sta succedendo.
+
+**Cosa stai accettando.** Su quell'indirizzo `/admin` è raggiungibile da
+chiunque sia sulla stessa rete — ospiti sul Wi-Fi compresi — e le credenziali
+viaggiano in chiaro. Va bene per provare il sito sul tuo telefono; non è il modo
+in cui mettere online il sito. Per quello resta Cloudflare Tunnel, che serve
+HTTPS e non richiede di esporre nulla sulla rete: rimetti `APP_BIND=127.0.0.1`
+e il dominio in `SITE_URL` quando hai finito.
+
+Il database non viene mai esposto: `docker-compose.yml` non pubblica affatto la
+porta di Postgres, e questa modifica non la tocca.
 
 ### Il form accetta troppe richieste (o le blocca tutte)
 

@@ -36,7 +36,7 @@ ok "Images rebuilt"
 say "4/4 — Restarting"
 docker compose up -d
 for attempt in $(seq 1 40); do
-  if curl -fsS "http://127.0.0.1:${APP_PORT:-3000}/api/health" >/dev/null 2>&1; then
+  if curl -fsS "http://${APP_BIND:-127.0.0.1}:${APP_PORT:-3000}/api/health" >/dev/null 2>&1; then
     ok "The application is back up"
     break
   fi

@@ -91,6 +91,19 @@ function read() {
 
 export const env = read();
 
+/**
+ * A production deployment reachable over plain http is a legitimate setup (a
+ * LAN address for testing, a proxy that terminates TLS elsewhere), but it costs
+ * the Secure cookie flag and HSTS — so it is worth saying out loud once at
+ * boot rather than leaving someone to discover it from a browser warning.
+ */
+if (env.NODE_ENV === 'production' && env.SITE_URL.startsWith('http://')) {
+  console.warn(
+    `[config] SITE_URL is plain http (${env.SITE_URL}): the session cookie will be sent without the Secure flag ` +
+      'and without the __Host- prefix. Fine on a trusted LAN, not for a public deployment — use https there.',
+  );
+}
+
 export const mailEnabled = Boolean(env.SMTP_HOST && env.NOTIFY_EMAIL);
 export const turnstileEnabled = Boolean(env.TURNSTILE_SITE_KEY && env.TURNSTILE_SECRET_KEY);
 export const analyticsEnabled = Boolean(env.ANALYTICS_SCRIPT_URL);

@@ -74,8 +74,8 @@ ok "Containers started"
 
 say "5/5 — Waiting for the application"
 for attempt in $(seq 1 40); do
-  if curl -fsS "http://127.0.0.1:${APP_PORT:-3000}/api/health" >/dev/null 2>&1; then
-    ok "The application is answering on port ${APP_PORT:-3000}"
+  if curl -fsS "http://${APP_BIND:-127.0.0.1}:${APP_PORT:-3000}/api/health" >/dev/null 2>&1; then
+    ok "The application is answering on ${APP_BIND:-127.0.0.1}:${APP_PORT:-3000}"
     break
   fi
   [ "$attempt" -eq 40 ] && die "The app did not come up. Check: docker compose logs -f app"
@@ -86,8 +86,8 @@ cat <<EOF
 
   Done.
 
-    Site           http://127.0.0.1:${APP_PORT:-3000}
-    Admin panel    http://127.0.0.1:${APP_PORT:-3000}/admin
+    Site           http://${APP_BIND:-127.0.0.1}:${APP_PORT:-3000}
+    Admin panel    http://${APP_BIND:-127.0.0.1}:${APP_PORT:-3000}/admin
     Sign in as     ${ADMIN_EMAIL}
 
   Next steps

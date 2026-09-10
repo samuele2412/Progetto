@@ -14,7 +14,10 @@ export function generateNonce(): string {
   return btoa(String.fromCharCode(...bytes));
 }
 
-export function buildCsp(nonce: string, options: { isProduction: boolean; analyticsOrigin?: string }): string {
+export function buildCsp(
+  nonce: string,
+  options: { upgradeInsecureRequests: boolean; analyticsOrigin?: string },
+): string {
   const turnstile = 'https://challenges.cloudflare.com';
 
   const directives: Record<string, string[]> = {
@@ -41,5 +44,12 @@ export function buildCsp(nonce: string, options: { isProduction: boolean; analyt
     .map(([name, values]) => `${name} ${values.join(' ')}`)
     .join('; ');
 
-  return options.isProduction ? `${policy}; upgrade-insecure-requests` : policy;
+  /**
+   * `upgrade-insecure-requests` is tied to the scheme the site is actually
+   * served on, not to NODE_ENV. On a plain-http origin it rewrites every
+   * subresource — and the login form's action — to https, which the server does
+   * not speak: the panel then fails with "Refused to send form data … violates
+   * form-action 'self'". Harmless behind Cloudflare, fatal on a LAN address.
+   */
+  return options.upgradeInsecureRequests ? `${policy}; upgrade-insecure-requests` : policy;
 }
