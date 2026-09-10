@@ -5,7 +5,7 @@ export function StepList({ steps }: { steps: Step[] }) {
     <ol className="grid gap-px overflow-hidden rounded-[var(--radius-card)] border border-[var(--hairline)] bg-[var(--hairline)] md:grid-cols-2 lg:grid-cols-4">
       {steps.map((step, index) => (
         <li
-          key={step.title}
+          key={`${index}-${step.title}`}
           className={`reveal reveal-delay-${Math.min(index + 1, 4)} flex flex-col bg-ink-900 p-6 md:p-7`}
         >
           <span className="font-[family-name:var(--font-display)] text-3xl text-brass-500/70">

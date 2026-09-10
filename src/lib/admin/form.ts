@@ -1,3 +1,4 @@
+import { routeSlugs } from '../routes';
 import type { FieldDef } from './collections';
 
 // Pure helpers — deliberately not server-only: the field renderer in the admin
@@ -93,9 +94,33 @@ export function validateRecord(fields: FieldDef[], record: Record<string, unknow
     }
   }
 
-  const slug = record.slug ?? record.slugIt ?? record.key;
-  if (typeof slug === 'string' && slug && !/^[a-z0-9-]+$/.test(slug)) {
-    return 'Gli slug possono contenere solo lettere minuscole, numeri e trattini.';
+  // Every slug-ish field, not just the first one that happens to exist: slugEn
+  // and key used to go through unchecked and only failed at the database.
+  for (const field of ['slug', 'slugIt', 'slugEn', 'key'] as const) {
+    const value = record[field];
+    if (typeof value !== 'string' || !value) continue;
+    if (!/^[a-z0-9-]+$/.test(value)) {
+      return `“${field}” può contenere solo lettere minuscole, numeri e trattini.`;
+    }
+    if (RESERVED_SLUGS.has(value)) {
+      return `“${value}” è un indirizzo già usato dal sito: scegline un altro.`;
+    }
   }
   return null;
 }
+
+/**
+ * Slugs the router resolves before ever looking in the database. A landing page
+ * called "cocktail" was simply unreachable — the static route won and the page
+ * existed only in the panel.
+ */
+const RESERVED_SLUGS = new Set([
+  'admin',
+  'api',
+  'uploads',
+  'images',
+  'fonts',
+  'it',
+  'en',
+  ...Object.values(routeSlugs).flatMap((entry) => [entry.it, entry.en]).filter(Boolean),
+]);

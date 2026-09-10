@@ -1,10 +1,11 @@
 import { NextResponse } from 'next/server';
 import { headers } from 'next/headers';
-import { mkdir, writeFile } from 'node:fs/promises';
+import { mkdir, unlink, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { db } from '@/db';
 import { mediaAssets } from '@/db/schema';
 import { getSession, isSameOrigin } from '@/lib/auth';
+import { describeDbError } from '@/lib/db-errors';
 import { env } from '@/lib/env';
 import { slugify } from '@/lib/utils';
 
@@ -116,13 +117,21 @@ export async function POST(request: Request) {
   }
 
   const alt = String(formData.get('alt') ?? '').slice(0, 200);
-  await db.insert(mediaAssets).values({
-    path: publicPath,
-    originalName: file.name.slice(0, 255),
-    mimeType: sniffed,
-    sizeBytes: file.size,
-    alt: { it: alt, en: alt },
-  });
+  try {
+    await db.insert(mediaAssets).values({
+      path: publicPath,
+      originalName: file.name.slice(0, 255),
+      mimeType: sniffed,
+      sizeBytes: file.size,
+      alt: { it: alt, en: alt },
+    });
+  } catch (error) {
+    // Otherwise the bytes stay on the volume with nothing pointing at them,
+    // and the owner has no way to find or remove them from the panel.
+    await unlink(targetPath).catch(() => {});
+    console.error('[upload] could not record the asset:', describeDbError(error));
+    return NextResponse.json({ ok: false, error: 'Impossibile registrare il file.' }, { status: 500 });
+  }
 
   return NextResponse.json({ ok: true, path: publicPath }, { status: 201 });
 }

@@ -25,11 +25,17 @@ echo "[entrypoint] database is up"
 echo "[entrypoint] applying migrations…"
 node dist-scripts/migrate.cjs
 
+# Plants the initial content on the very first boot only. The script keeps its
+# own marker in the database, so this is a no-op from the second start onwards
+# and content deleted from the panel never comes back.
 if [ "${SEED_ON_START:-true}" = "true" ]; then
-  echo "[entrypoint] seeding content (existing rows are left untouched)…"
+  echo "[entrypoint] planting initial content if this is the first boot…"
   node dist-scripts/seed.cjs || echo "[entrypoint] seed skipped"
 fi
 
+# Creates the account if it is missing. It does NOT reset an existing password:
+# that would undo a password changed from the panel on every restart. Use
+# ADMIN_RESET_PASSWORD=true, or run the script by hand, to force one.
 if [ -n "${ADMIN_EMAIL:-}" ] && [ -n "${ADMIN_PASSWORD:-}" ]; then
   echo "[entrypoint] ensuring the administrator account exists…"
   node dist-scripts/create-admin.cjs || echo "[entrypoint] admin creation skipped"

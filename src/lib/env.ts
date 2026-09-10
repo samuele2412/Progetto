@@ -44,9 +44,16 @@ const schema = z.object({
   SMTP_SECURE: bool(false),
   SMTP_USER: z.string().optional(),
   SMTP_PASSWORD: z.string().optional(),
-  MAIL_FROM: z.string().optional(),
+  // An empty value in .env is "not set", not "send from an empty address".
+  MAIL_FROM: z
+    .string()
+    .optional()
+    .transform((value) => value?.trim() || undefined),
   /** Where new-request notifications are delivered. */
-  NOTIFY_EMAIL: z.string().optional(),
+  NOTIFY_EMAIL: z
+    .string()
+    .optional()
+    .transform((value) => value?.trim() || undefined),
 
   // --- Anti-spam (optional) ---
   TURNSTILE_SITE_KEY: z.string().optional(),
@@ -62,6 +69,16 @@ const schema = z.object({
 
   /** Requests accepted per IP per hour before the form starts refusing. */
   RATE_LIMIT_PER_HOUR: z.coerce.number().int().positive().default(5),
+
+  /**
+   * HSTS. `includeSubDomains` and `preload` are commitments that are hard to
+   * take back: they force *every* subdomain to https for the lifetime of the
+   * max-age, which breaks an unrelated http service on the same domain. Off by
+   * default; turn them on once you know the whole domain is https.
+   */
+  HSTS_MAX_AGE: z.coerce.number().int().nonnegative().default(31_536_000),
+  HSTS_INCLUDE_SUBDOMAINS: bool(false),
+  HSTS_PRELOAD: bool(false),
 });
 
 /**

@@ -22,25 +22,59 @@ export function parseMarkdown(source: string): Block[] {
     const chunk = raw.trim();
     if (!chunk) continue;
 
-    const lines = chunk.split('\n').map((l) => l.trim());
+    const lines = chunk.split('\n').map((l) => l.trim()).filter(Boolean);
 
-    if (lines.every((l) => /^[-*]\s+/.test(l))) {
-      blocks.push({ kind: 'ul', items: lines.map((l) => l.replace(/^[-*]\s+/, '')) });
-      continue;
+    /**
+     * A paragraph ends wherever the *kind* of line changes, not only at a blank
+     * line. Previously a heading immediately followed by a sentence swallowed
+     * the sentence into the <h2>, and a list written straight under a line of
+     * text turned into a paragraph full of hyphens — both of which happen
+     * constantly when writing in the admin panel.
+     */
+    let paragraph: string[] = [];
+    let list: { kind: 'ul' | 'ol'; items: string[] } | null = null;
+
+    const flush = () => {
+      if (paragraph.length) {
+        blocks.push({ kind: 'p', text: paragraph.join(' ') });
+        paragraph = [];
+      }
+      if (list) {
+        blocks.push(list);
+        list = null;
+      }
+    };
+
+    for (const line of lines) {
+      const bullet = /^[-*]\s+(.*)$/.exec(line);
+      const numbered = /^\d+\.\s+(.*)$/.exec(line);
+
+      if (line.startsWith('### ')) {
+        flush();
+        blocks.push({ kind: 'h3', text: line.slice(4) });
+      } else if (line.startsWith('## ')) {
+        flush();
+        blocks.push({ kind: 'h2', text: line.slice(3) });
+      } else if (bullet) {
+        if (paragraph.length) flush();
+        if (list?.kind !== 'ul') {
+          if (list) flush();
+          list = { kind: 'ul', items: [] };
+        }
+        list.items.push(bullet[1]);
+      } else if (numbered) {
+        if (paragraph.length) flush();
+        if (list?.kind !== 'ol') {
+          if (list) flush();
+          list = { kind: 'ol', items: [] };
+        }
+        list.items.push(numbered[1]);
+      } else {
+        if (list) flush();
+        paragraph.push(line);
+      }
     }
-    if (lines.every((l) => /^\d+\.\s+/.test(l))) {
-      blocks.push({ kind: 'ol', items: lines.map((l) => l.replace(/^\d+\.\s+/, '')) });
-      continue;
-    }
-    if (chunk.startsWith('### ')) {
-      blocks.push({ kind: 'h3', text: chunk.slice(4) });
-      continue;
-    }
-    if (chunk.startsWith('## ')) {
-      blocks.push({ kind: 'h2', text: chunk.slice(3) });
-      continue;
-    }
-    blocks.push({ kind: 'p', text: lines.join(' ') });
+    flush();
   }
 
   return blocks;

@@ -24,18 +24,30 @@ export function captureSource(): RequestSource {
   }
 
   const params = new URLSearchParams(window.location.search);
-  const referrer = document.referrer && !document.referrer.includes(window.location.host)
-    ? document.referrer.slice(0, 300)
-    : '';
+
+  /**
+   * Every value is clipped to what the server accepts. A campaign name longer
+   * than the limit used to fail validation on a field the form never shows,
+   * so the visitor saw "check the highlighted fields" with nothing highlighted
+   * — and because the value was cached in sessionStorage, every retry failed
+   * the same way. Attribution is worth having, never worth losing a lead over.
+   */
+  const clip = (value: string | null, max: number) => {
+    const trimmed = value?.trim();
+    return trimmed ? trimmed.slice(0, max) : undefined;
+  };
+
+  const referrer =
+    document.referrer && !document.referrer.includes(window.location.host) ? document.referrer : '';
 
   const source: RequestSource = {
-    utmSource: params.get('utm_source') ?? undefined,
-    utmMedium: params.get('utm_medium') ?? undefined,
-    utmCampaign: params.get('utm_campaign') ?? undefined,
-    utmTerm: params.get('utm_term') ?? undefined,
-    utmContent: params.get('utm_content') ?? undefined,
-    referrer: referrer || undefined,
-    landingPath: window.location.pathname,
+    utmSource: clip(params.get('utm_source'), 120),
+    utmMedium: clip(params.get('utm_medium'), 120),
+    utmCampaign: clip(params.get('utm_campaign'), 160),
+    utmTerm: clip(params.get('utm_term'), 160),
+    utmContent: clip(params.get('utm_content'), 160),
+    referrer: clip(referrer, 300),
+    landingPath: window.location.pathname.slice(0, 300),
   };
 
   try {

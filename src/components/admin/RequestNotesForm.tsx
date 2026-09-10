@@ -33,7 +33,8 @@ export function RequestNotesForm({
         name="estimatedValue"
         type="number"
         min="0"
-        step="10"
+        max="2000000000"
+        step="1"
         defaultValue={estimatedValue ?? ''}
         className="admin-field sm:w-48"
       />

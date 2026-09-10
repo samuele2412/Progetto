@@ -42,9 +42,11 @@ export function FinalCta({
             >
               {copy.cta.quoteLong}
             </Link>
-            <a href={whatsappHref} target="_blank" rel="noopener noreferrer" className="btn btn-ghost">
-              {copy.cta.whatsappLong}
-            </a>
+            {whatsappHref && (
+              <a href={whatsappHref} target="_blank" rel="noopener noreferrer" className="btn btn-ghost">
+                {copy.cta.whatsappLong}
+              </a>
+            )}
           </div>
         </div>
       </div>

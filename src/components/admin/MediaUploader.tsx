@@ -3,7 +3,7 @@
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
-export function MediaUploader() {
+export function MediaUploader({ maxMb }: { maxMb: number }) {
   const router = useRouter();
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -43,7 +43,7 @@ export function MediaUploader() {
   return (
     <form onSubmit={handleSubmit} className="admin-card p-5">
       <label htmlFor="file" className="admin-label">
-        Nuova immagine (max 6 MB — JPG, PNG, WebP, AVIF)
+        Nuova immagine (max {maxMb} MB — JPG, PNG, WebP, AVIF)
       </label>
       <input
         id="file"

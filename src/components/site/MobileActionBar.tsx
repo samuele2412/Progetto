@@ -48,6 +48,9 @@ export function MobileActionBar({
       aria-hidden={!visible}
     >
       <div className="flex gap-2 px-4 py-3">
+        {/* Without a configured number the link would open WhatsApp with no
+            recipient, so the quote button simply takes the whole bar. */}
+        {whatsappHref && (
         <a
           href={whatsappHref}
           target="_blank"
@@ -60,6 +63,7 @@ export function MobileActionBar({
           </svg>
           {whatsappLabel}
         </a>
+        )}
         <Link href={quoteHref} className="btn btn-primary flex-1 !px-3 text-sm" tabIndex={visible ? 0 : -1}>
           {quoteLabel}
         </Link>

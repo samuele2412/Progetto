@@ -11,7 +11,7 @@ export async function AboutPage({ locale }: { locale: Locale }) {
   const settings = await getSettings();
   const copy = d(locale);
   const whatsappHref = whatsappLink(settings.contact.whatsapp, t(settings.contact.whatsappMessage, locale));
-  const steps = settings.home.steps[locale] ?? settings.home.steps.it;
+  const steps = settings.home.steps[locale]?.length ? settings.home.steps[locale] : settings.home.steps.it;
 
   return (
     <>
@@ -32,8 +32,8 @@ export async function AboutPage({ locale }: { locale: Locale }) {
             <div className="space-y-5 text-[1.02rem] leading-relaxed text-bone-300">
               {t(settings.about.body, locale)
                 .split('\n\n')
-                .map((paragraph) => (
-                  <p key={paragraph.slice(0, 40)}>{paragraph}</p>
+                .map((paragraph, index) => (
+                  <p key={`${index}-${paragraph.slice(0, 24)}`}>{paragraph}</p>
                 ))}
             </div>
             <ul className="mt-9 space-y-3 border-t border-[var(--hairline)] pt-8 text-sm text-bone-200">

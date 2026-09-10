@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { deleteRequestAction, setRequestStatusAction } from '@/app/admin/actions';
 import { RequestNotesForm } from '@/components/admin/RequestNotesForm';
+import { ConfirmSubmit } from '@/components/admin/ConfirmSubmit';
 import { SubmitButton } from '@/components/admin/SubmitButton';
 import {
   areaLabels,
@@ -15,6 +16,7 @@ import {
 import { getRequest, requestStatuses, statusLabels, statusStyles } from '@/lib/requests';
 import { getSettings } from '@/lib/settings';
 import { whatsappLink } from '@/lib/utils';
+import { SITE_TIME_ZONE } from '@/lib/i18n';
 
 export const dynamic = 'force-dynamic';
 
@@ -23,11 +25,11 @@ function fullDate(value: string | Date | null) {
   const date = typeof value === 'string' ? new Date(`${value}T00:00:00`) : value;
   return Number.isNaN(date.getTime())
     ? '—'
-    : new Intl.DateTimeFormat('it-IT', { dateStyle: 'full' }).format(date);
+    : new Intl.DateTimeFormat('it-IT', { timeZone: SITE_TIME_ZONE, dateStyle: 'full' }).format(date);
 }
 
 function dateTime(value: Date) {
-  return new Intl.DateTimeFormat('it-IT', { dateStyle: 'short', timeStyle: 'short' }).format(value);
+  return new Intl.DateTimeFormat('it-IT', { timeZone: SITE_TIME_ZONE, dateStyle: 'short', timeStyle: 'short' }).format(value);
 }
 
 export default async function RequestDetailPage({ params }: { params: Promise<{ id: string }> }) {
@@ -41,7 +43,9 @@ export default async function RequestDetailPage({ params }: { params: Promise<{ 
   const replyMessage =
     `Ciao ${request.name.split(' ')[0]}, ti scrivo da ${settings.brand.name} per la tua richiesta ` +
     `${request.reference}${request.eventDate ? ` del ${fullDate(request.eventDate)}` : ''}. `;
-  const whatsappHref = whatsappLink(request.phone, replyMessage);
+  // The client's own number, normalised: without a country code wa.me reads
+  // "333 1234567" as France and opens a chat with a stranger.
+  const whatsappHref = whatsappLink(request.phone, replyMessage, settings.contact.defaultCountryCode);
 
   const rows: [string, string][] = [
     ['Riferimento', request.reference],
@@ -61,6 +65,7 @@ export default async function RequestDetailPage({ params }: { params: Promise<{ 
         ? request.preferences.map((key) => cocktailPreferenceLabels[key as CocktailPreference]?.it ?? key).join(', ')
         : '—',
     ],
+    ['Tipo di contatto', request.isPartner ? 'Professionista (da Collaboriamo)' : 'Cliente privato'],
     ['Lingua del sito', request.locale.toUpperCase()],
     ['Ricevuta il', dateTime(request.createdAt)],
   ];
@@ -199,12 +204,14 @@ export default async function RequestDetailPage({ params }: { params: Promise<{ 
               Rimuove definitivamente i dati personali di questa richiesta. Usalo per le richieste di cancellazione
               GDPR.
             </p>
-            <form action={deleteRequestAction}>
-              <input type="hidden" name="id" value={request.id} />
-              <SubmitButton variant="danger" pendingLabel="Eliminazione…" className="w-full">
-                Elimina definitivamente
-              </SubmitButton>
-            </form>
+            <ConfirmSubmit
+              action={deleteRequestAction}
+              hidden={{ id: String(request.id) }}
+              question="Eliminare i dati di questo cliente?"
+              confirmLabel="Sì, elimina"
+              triggerLabel="Elimina definitivamente"
+              className="inline-flex min-h-11 items-center rounded-lg border border-red-300 px-3 text-sm font-medium text-red-700 hover:bg-red-50"
+            />
           </section>
         </aside>
       </div>

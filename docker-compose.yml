@@ -43,6 +43,9 @@ services:
       NODE_ENV: production
       PORT: '3000'
       UPLOAD_DIR: /app/public/uploads
+      # Container images run in UTC; without this the logs disagree with every
+      # date the panel shows.
+      TZ: ${SITE_TIME_ZONE:-Europe/Rome}
     volumes:
       # Uploaded images must outlive the container.
       - uploads:/app/public/uploads

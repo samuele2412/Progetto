@@ -2,7 +2,8 @@ import Link from 'next/link';
 import { getDashboardStats, statusLabels, statusStyles } from '@/lib/requests';
 import { getSettings } from '@/lib/settings';
 import { isPlaceholder } from '@/lib/utils';
-import { defaultSettings } from '@/content/settings';
+import { defaultPrivacyBody } from '@/content/legal';
+import { SITE_TIME_ZONE } from '@/lib/i18n';
 
 export const dynamic = 'force-dynamic';
 
@@ -15,7 +16,7 @@ function shortDate(value: string | Date | null) {
   const date = typeof value === 'string' ? new Date(`${value}T00:00:00`) : value;
   return Number.isNaN(date.getTime())
     ? '—'
-    : new Intl.DateTimeFormat('it-IT', { day: '2-digit', month: 'short', year: '2-digit' }).format(date);
+    : new Intl.DateTimeFormat('it-IT', { timeZone: SITE_TIME_ZONE, day: '2-digit', month: 'short', year: '2-digit' }).format(date);
 }
 
 /** Lists the settings still holding their shipped placeholder value. */
@@ -29,6 +30,11 @@ function findPlaceholders(settings: Awaited<ReturnType<typeof getSettings>>) {
     ['Ragione sociale', settings.brand.legalName],
     ['Partita IVA', settings.brand.vatNumber],
     ['Nome del titolare (sezione “Chi siamo”)', settings.about.signature],
+    // These feed the privacy and cookie pages; leaving them unset is exactly
+    // what keeps the "bozza" banner on the legal pages.
+    ['Titolare del trattamento (privacy)', settings.legal.dataController],
+    ['Indirizzo del titolare (privacy)', settings.legal.controllerAddress],
+    ['Email per richieste privacy', settings.legal.privacyEmail],
   ];
   return checks.filter(([, value]) => isPlaceholder(value)).map(([label]) => label);
 }
@@ -36,8 +42,17 @@ function findPlaceholders(settings: Awaited<ReturnType<typeof getSettings>>) {
 export default async function DashboardPage() {
   const [stats, settings] = await Promise.all([getDashboardStats(), getSettings()]);
   const pending = findPlaceholders(settings);
-  const legalIncomplete =
-    !settings.legal.privacyBody.it || /\[\[/.test(settings.legal.privacyBody.it || defaultSettings.legal.privacyBody.it);
+  // The shipped text still contains [[…]] markers that are *not* backed by a
+  // setting (retention period, processors), so the warning has to look at the
+  // text as it will actually render rather than at the raw default.
+  const legalText = settings.legal.privacyBody.it || defaultPrivacyBody.it;
+  const legalIncomplete = /\[\[/.test(
+    legalText
+      .replace(/\[\[RAGIONE SOCIALE\]\]|\[\[LEGAL NAME\]\]/g, isPlaceholder(settings.legal.dataController) ? 'X' : '')
+      .replace(/\[\[INDIRIZZO\]\]|\[\[ADDRESS\]\]/g, isPlaceholder(settings.legal.controllerAddress) ? 'X' : '')
+      .replace(/\[\[EMAIL\]\]/g, isPlaceholder(settings.legal.privacyEmail) ? 'X' : '')
+      .replace(/\[\[PARTITA IVA\]\]|\[\[VAT NUMBER\]\]/g, isPlaceholder(settings.brand.vatNumber) ? 'X' : ''),
+  );
 
   const cards = [
     { label: 'Nuove da leggere', value: stats.counts.new, href: '/admin/richieste?status=new', accent: true },
@@ -67,8 +82,8 @@ export default async function DashboardPage() {
             ))}
             {legalIncomplete && (
               <li>
-                • L’informativa privacy contiene ancora dei segnaposto <code>[[…]]</code> e va fatta verificare da un
-                professionista.
+                • L’informativa privacy contiene ancora dei segnaposto <code>[[…]]</code> (periodo di
+                conservazione, fornitori) e va fatta verificare da un professionista.
               </li>
             )}
           </ul>

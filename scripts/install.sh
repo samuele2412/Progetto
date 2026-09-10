@@ -11,6 +11,8 @@ set -euo pipefail
 
 cd "$(dirname "$0")/.."
 ROOT="$(pwd)"
+# shellcheck source=scripts/lib/env.sh
+. ./scripts/lib/env.sh
 
 say()  { printf '\n\033[1m%s\033[0m\n' "$*"; }
 ok()   { printf '  \033[32m✓\033[0m %s\n' "$*"; }
@@ -53,15 +55,36 @@ else
   read -r -p "  Press Enter once you have finished editing .env… " _
 fi
 
-# shellcheck disable=SC1091
-set -a; . ./.env; set +a
+# Values are read, never executed: see scripts/lib/env.sh.
+ADMIN_EMAIL="$(env_get ADMIN_EMAIL)"
+ADMIN_PASSWORD="$(env_get ADMIN_PASSWORD)"
+SESSION_SECRET="$(env_get SESSION_SECRET)"
+SITE_URL="$(env_get SITE_URL)"
+NOTIFY_EMAIL="$(env_get NOTIFY_EMAIL)"
 
-[ -n "${ADMIN_EMAIL:-}" ]    || die "ADMIN_EMAIL is not set in .env"
-[ -n "${ADMIN_PASSWORD:-}" ] || die "ADMIN_PASSWORD is not set in .env"
+# Every one of these ships with a plausible-looking example value, and the
+# example password is long enough to pass a naive length check — so pressing
+# Enter without editing .env created an administrator whose password is
+# published in this repository.
+[ -n "$ADMIN_EMAIL" ]    || die "ADMIN_EMAIL is not set in .env"
+[ -n "$ADMIN_PASSWORD" ] || die "ADMIN_PASSWORD is not set in .env"
 [ "${#ADMIN_PASSWORD}" -ge 12 ] || die "ADMIN_PASSWORD must be at least 12 characters"
-case "${SESSION_SECRET:-}" in
-  *change-me*|"") die "SESSION_SECRET still holds its placeholder value" ;;
+
+reject_placeholder() {
+  case "$2" in
+    ""|*change-me*|*your-domain.example*|*choose-a-long-password*)
+      die "$1 still holds its placeholder value - edit .env before continuing." ;;
+  esac
+}
+reject_placeholder "SESSION_SECRET" "$SESSION_SECRET"
+reject_placeholder "SITE_URL"       "$SITE_URL"
+reject_placeholder "ADMIN_EMAIL"    "$ADMIN_EMAIL"
+reject_placeholder "ADMIN_PASSWORD" "$ADMIN_PASSWORD"
+case "$SITE_URL" in
+  http://*|https://*) ;;
+  *) die "SITE_URL must start with http:// or https://" ;;
 esac
+[ -n "$NOTIFY_EMAIL" ] || warn "NOTIFY_EMAIL is empty: new requests will only appear in the panel"
 ok "Configuration looks complete"
 
 say "3/5 — Building the images"
@@ -74,8 +97,8 @@ ok "Containers started"
 
 say "5/5 — Waiting for the application"
 for attempt in $(seq 1 40); do
-  if curl -fsS "http://${APP_BIND:-127.0.0.1}:${APP_PORT:-3000}/api/health" >/dev/null 2>&1; then
-    ok "The application is answering on ${APP_BIND:-127.0.0.1}:${APP_PORT:-3000}"
+  if curl -fsS "$(app_health_url)/api/health" >/dev/null 2>&1; then
+    ok "The application is answering on $(app_health_url)"
     break
   fi
   [ "$attempt" -eq 40 ] && die "The app did not come up. Check: docker compose logs -f app"
@@ -86,8 +109,8 @@ cat <<EOF
 
   Done.
 
-    Site           http://${APP_BIND:-127.0.0.1}:${APP_PORT:-3000}
-    Admin panel    http://${APP_BIND:-127.0.0.1}:${APP_PORT:-3000}/admin
+    Site           $(app_health_url)
+    Admin panel    $(app_health_url)/admin
     Sign in as     ${ADMIN_EMAIL}
 
   Next steps

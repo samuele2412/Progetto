@@ -1,11 +1,15 @@
 'use client';
 
 import { useEffect } from 'react';
+import { usePathname } from 'next/navigation';
 import { d } from '@/lib/dictionary';
-import { defaultLocale } from '@/lib/i18n';
+import { defaultLocale, isLocale } from '@/lib/i18n';
 
 export default function ErrorBoundary({ error, reset }: { error: Error & { digest?: string }; reset: () => void }) {
-  const copy = d(defaultLocale);
+  // The error boundary has no params either; the path carries the language.
+  const pathname = usePathname() ?? '';
+  const first = pathname.split('/').filter(Boolean)[0];
+  const copy = d(isLocale(first) ? first : defaultLocale);
 
   useEffect(() => {
     // The digest is what shows up in the server logs; nothing sensitive is

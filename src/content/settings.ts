@@ -29,6 +29,8 @@ export type SiteSettings = {
     email: string;
     serviceArea: L;
     availability: L;
+    /** Prefix applied to national numbers before opening a WhatsApp chat. */
+    defaultCountryCode: string;
   };
   social: { instagram: string; tiktok: string; facebook: string };
   hero: {
@@ -138,6 +140,7 @@ export const defaultSettings: SiteSettings = {
       it: 'Rispondiamo tutti i giorni, 10:00–20:00',
       en: 'We reply every day, 10:00–20:00',
     },
+    defaultCountryCode: '39',
   },
 
   social: {

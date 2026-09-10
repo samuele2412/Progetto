@@ -1,0 +1,1 @@
+ALTER TABLE "event_requests" ADD COLUMN "is_partner" boolean DEFAULT false NOT NULL;

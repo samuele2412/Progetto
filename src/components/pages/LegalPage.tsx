@@ -17,11 +17,20 @@ export async function LegalPage({ locale, kind }: { locale: Locale; kind: 'priva
   const fallback = kind === 'privacy' ? defaultPrivacyBody : defaultCookieBody;
   const raw = t(custom, locale) || fallback[locale];
 
-  const filled = raw
-    .replace(/\[\[RAGIONE SOCIALE\]\]|\[\[LEGAL NAME\]\]/g, isPlaceholder(settings.legal.dataController) ? '[[RAGIONE SOCIALE]]' : settings.legal.dataController)
-    .replace(/\[\[INDIRIZZO\]\]|\[\[ADDRESS\]\]/g, isPlaceholder(settings.legal.controllerAddress) ? '[[INDIRIZZO]]' : settings.legal.controllerAddress)
-    .replace(/\[\[EMAIL\]\]/g, isPlaceholder(settings.legal.privacyEmail) ? '[[EMAIL]]' : settings.legal.privacyEmail)
-    .replace(/\[\[PARTITA IVA\]\]|\[\[VAT NUMBER\]\]/g, isPlaceholder(settings.brand.vatNumber) ? '[[PARTITA IVA]]' : settings.brand.vatNumber);
+  /**
+   * Substitutes the markers that map to a setting. An unfilled one keeps the
+   * marker *of the language being read* — the English page used to show
+   * "[[RAGIONE SOCIALE]]" in the middle of an English sentence.
+   */
+  const marker = (it: string, en: string) => (locale === 'en' ? `[[${en}]]` : `[[${it}]]`);
+  const fill = (text: string, pattern: RegExp, value: string, it: string, en: string) =>
+    text.replace(pattern, isPlaceholder(value) ? marker(it, en) : value);
+
+  let filled = raw;
+  filled = fill(filled, /\[\[RAGIONE SOCIALE\]\]|\[\[LEGAL NAME\]\]/g, settings.legal.dataController, 'RAGIONE SOCIALE', 'LEGAL NAME');
+  filled = fill(filled, /\[\[INDIRIZZO\]\]|\[\[ADDRESS\]\]/g, settings.legal.controllerAddress, 'INDIRIZZO', 'ADDRESS');
+  filled = fill(filled, /\[\[EMAIL\]\]/g, settings.legal.privacyEmail, 'EMAIL', 'EMAIL');
+  filled = fill(filled, /\[\[PARTITA IVA\]\]|\[\[VAT NUMBER\]\]/g, settings.brand.vatNumber, 'PARTITA IVA', 'VAT NUMBER');
 
   const stillDraft = /\[\[/.test(filled);
 

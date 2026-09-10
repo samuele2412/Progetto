@@ -46,13 +46,20 @@ async function resolve(locale: Locale, slug: string[] | undefined): Promise<Reso
     if (key && key !== 'home') return { kind: 'route', key };
 
     const landing = await getLandingBySlug(segments[0]);
-    if (landing) return { kind: 'landing', slugIt: landing.slugIt, slugEn: landing.slugEn, id: landing.id };
+    // Only the slug belonging to this locale resolves. Accepting the other
+    // language's slug too meant every page had two working URLs per language,
+    // which is duplicate content Google has to sort out on its own.
+    if (landing && (locale === 'en' ? landing.slugEn : landing.slugIt) === segments[0]) {
+      return { kind: 'landing', slugIt: landing.slugIt, slugEn: landing.slugEn, id: landing.id };
+    }
     return null;
   }
 
   if (segments.length === 2 && segments[0] === routeSlugs.journal[locale]) {
     const post = await getPostBySlug(segments[1]);
-    if (post) return { kind: 'post', slugIt: post.slugIt, slugEn: post.slugEn, id: post.id };
+    if (post && (locale === 'en' ? post.slugEn : post.slugIt) === segments[1]) {
+      return { kind: 'post', slugIt: post.slugIt, slugEn: post.slugEn, id: post.id };
+    }
   }
 
   return null;
@@ -167,6 +174,19 @@ export async function generateMetadata({
   };
 
   const meta = titles[key];
+  // The home title already contains the brand; the template would make it
+  // "Cordiale — … | Cordiale Roma", about 85 characters. `absolute` opts out.
+  if (key === 'home') {
+    const built = buildMetadata({
+      title: meta.title,
+      description: meta.description,
+      locale,
+      pathsByLocale,
+      settings,
+    });
+    return { ...built, title: { absolute: meta.title } };
+  }
+
   return buildMetadata({
     title: meta.title,
     description: meta.description,
@@ -228,6 +248,7 @@ export default async function Page({
           locale={locale}
           initialEventType={first(query.evento) ?? first(query.event)}
           initialPackage={first(query.pacchetto) ?? first(query.package)}
+          isPartner={first(query.partner) === '1'}
         />
       );
     case 'thanks':

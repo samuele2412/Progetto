@@ -13,10 +13,12 @@ export async function RequestPage({
   locale,
   initialEventType,
   initialPackage,
+  isPartner = false,
 }: {
   locale: Locale;
   initialEventType?: string;
   initialPackage?: string;
+  isPartner?: boolean;
 }) {
   const [settings, eventTypes, packages] = await Promise.all([getSettings(), getEventTypes(), getPackages()]);
   const copy = d(locale);
@@ -56,6 +58,7 @@ export async function RequestPage({
               turnstileSiteKey={turnstileEnabled ? env.TURNSTILE_SITE_KEY : undefined}
               initialEventType={initialEventType}
               initialPackage={initialPackage}
+              isPartner={isPartner}
             />
           </div>
 
@@ -68,9 +71,11 @@ export async function RequestPage({
                   : 'Scrivici direttamente. Legge la stessa persona che riceve il modulo.'}
               </p>
               <div className="mt-5 space-y-2.5">
-                <a href={whatsappHref} target="_blank" rel="noopener noreferrer" className="btn btn-whatsapp w-full">
-                  {copy.cta.whatsappLong}
-                </a>
+                {whatsappHref && (
+                  <a href={whatsappHref} target="_blank" rel="noopener noreferrer" className="btn btn-whatsapp w-full">
+                    {copy.cta.whatsappLong}
+                  </a>
+                )}
                 {!isPlaceholder(settings.contact.phone) && (
                   <a href={telLink(settings.contact.phone)} className="btn btn-ghost w-full">
                     {copy.cta.call}

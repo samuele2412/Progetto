@@ -23,6 +23,23 @@ function sweep(now: number) {
 
 export type RateLimitResult = { allowed: boolean; remaining: number; retryAfterSeconds: number };
 
+function describe(bucket: Bucket | undefined, limit: number, now: number): RateLimitResult {
+  const count = bucket && bucket.resetAt > now ? bucket.count : 0;
+  const allowed = count < limit;
+  return {
+    allowed,
+    remaining: Math.max(0, limit - count),
+    retryAfterSeconds: allowed || !bucket ? 0 : Math.ceil((bucket.resetAt - now) / 1000),
+  };
+}
+
+/** Reads the budget without spending any of it. */
+export function peekLimit(key: string, limit: number): RateLimitResult {
+  const now = Date.now();
+  return describe(buckets.get(key), limit, now);
+}
+
+/** Spends one unit of the budget and reports what is left. */
 export function rateLimit(key: string, limit: number, windowSeconds: number): RateLimitResult {
   const now = Date.now();
   sweep(now);
@@ -42,9 +59,30 @@ export function rateLimit(key: string, limit: number, windowSeconds: number): Ra
   };
 }
 
-/** Requests from the public form: N per IP per hour. */
-export function limitEventRequest(ipHash: string): RateLimitResult {
+/**
+ * The public form's budget, split in two.
+ *
+ * `checkEventRequest` only looks: a submission rejected by validation — a typo
+ * in an email, a date in the past, an autofilled honeypot — should not eat into
+ * an hourly allowance of five. `consumeEventRequest` is called once the request
+ * has actually been accepted.
+ */
+export function checkEventRequest(ipHash: string): RateLimitResult {
+  return peekLimit(`req:${ipHash}`, env.RATE_LIMIT_PER_HOUR);
+}
+
+export function consumeEventRequest(ipHash: string): RateLimitResult {
   return rateLimit(`req:${ipHash}`, env.RATE_LIMIT_PER_HOUR, 3600);
+}
+
+/**
+ * The acknowledgement email goes to an address the sender chose, so the form is
+ * a way to make our server mail a stranger. The content carries no attacker
+ * text beyond a sanitised first name, and this caps how often any one address
+ * can be mailed regardless of which IP asked for it.
+ */
+export function limitAcknowledgement(emailHash: string): RateLimitResult {
+  return rateLimit(`ack:${emailHash}`, 3, 86_400);
 }
 
 /** Admin login: slow enough to make guessing pointless, fast enough to not annoy. */
@@ -80,8 +118,17 @@ export function clientIp(headers: Headers): string {
   const value = headers.get(header);
   if (!value) return 'unknown';
 
-  // X-Forwarded-For is a chain: the client-most entry is the first one, and it
-  // is only meaningful because the trusted proxy is the one appending to it.
-  const first = value.split(',')[0]?.trim();
-  return first && first.length <= 45 ? first : 'unknown';
+  /**
+   * X-Forwarded-For is a chain and the client writes the left-hand end of it:
+   * anything a request arrives with was, by definition, supplied by the caller.
+   * The only entry we can stand behind is the one *our* proxy appended, which
+   * is the rightmost. Taking the first meant a made-up header handed out a
+   * fresh counter on every request and the throttle did nothing.
+   *
+   * Single-value headers (cf-connecting-ip, x-real-ip) have one entry, so the
+   * same rule reads them correctly too.
+   */
+  const parts = value.split(',');
+  const last = parts[parts.length - 1]?.trim();
+  return last && last.length <= 45 ? last : 'unknown';
 }

@@ -24,13 +24,35 @@ export function makeReference(): string {
 }
 
 /**
- * Builds a wa.me link. `number` is digits only with country code (39…);
- * the placeholder value is passed through so the UI can spot it and warn.
+ * Normalises a phone number to the digits-with-country-code form wa.me needs.
+ *
+ * Visitors type "333 1234567" far more often than "+39 333 1234567", and the
+ * bare number reads as country code 33 — France. Anything already carrying a
+ * country code (a leading + or 00) is left alone; a national number is given
+ * the configured default prefix.
  */
-export function whatsappLink(number: string, message: string): string {
-  const digits = number.replace(/\D/g, '');
-  const text = encodeURIComponent(message);
-  return `https://wa.me/${digits}?text=${text}`;
+export function toWhatsappNumber(input: string, defaultCountryCode = '39'): string {
+  const trimmed = input.trim();
+  if (trimmed.startsWith('+')) return trimmed.replace(/\D/g, '');
+
+  const digits = trimmed.replace(/\D/g, '');
+  if (!digits) return '';
+  if (digits.startsWith('00')) return digits.slice(2);
+  // Already prefixed (e.g. "39333…") — leave it be.
+  if (digits.startsWith(defaultCountryCode) && digits.length > 10) return digits;
+  return `${defaultCountryCode}${digits.replace(/^0+/, '')}`;
+}
+
+/**
+ * Builds a wa.me link, or an empty string when there is no usable number —
+ * a bare `wa.me/?text=…` opens WhatsApp with no recipient, which looks broken.
+ * Callers check for '' and hide the button.
+ */
+export function whatsappLink(number: string, message: string, defaultCountryCode = '39'): string {
+  if (isPlaceholder(number)) return '';
+  const digits = toWhatsappNumber(number, defaultCountryCode);
+  if (digits.length < 8) return '';
+  return `https://wa.me/${digits}?text=${encodeURIComponent(message)}`;
 }
 
 export function telLink(phone: string): string {

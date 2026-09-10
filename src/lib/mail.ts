@@ -140,6 +140,18 @@ export function buildOwnerNotification(input: {
 }
 
 /** Acknowledgement sent to the client. Sets expectations, promises nothing. */
+/**
+ * The greeting is the only place the sender's own words reach this email, so it
+ * is reduced to something that can only ever read as a name.
+ */
+function safeGreetingName(name: string): string {
+  const cleaned = name
+    .replace(/[^\p{L}\p{M}'’ -]/gu, '')
+    .trim()
+    .slice(0, 40);
+  return cleaned || 'ciao';
+}
+
 export function buildClientAcknowledgement(input: {
   to: string;
   name: string;
@@ -148,16 +160,19 @@ export function buildClientAcknowledgement(input: {
   locale: 'it' | 'en';
   whatsappUrl: string;
 }): MailMessage {
+  const greeting = safeGreetingName(input.name);
   const it = {
     subject: `Abbiamo ricevuto la tua richiesta — ${input.reference}`,
     body: [
-      `Ciao ${input.name},`,
+      `Ciao ${greeting},`,
       '',
       `abbiamo ricevuto la tua richiesta (riferimento ${input.reference}).`,
       '',
       'Ti risponderemo personalmente, di solito entro 24 ore, con la formula consigliata e un prezzo chiuso. La disponibilità della data viene verificata a mano: nessun evento è confermato finché non ne parliamo.',
       '',
-      `Se nel frattempo vuoi aggiungere qualcosa, rispondi a questa email o scrivici su WhatsApp: ${input.whatsappUrl}`,
+      input.whatsappUrl
+        ? `Se nel frattempo vuoi aggiungere qualcosa, rispondi a questa email o scrivici su WhatsApp: ${input.whatsappUrl}`
+        : 'Se nel frattempo vuoi aggiungere qualcosa, rispondi pure a questa email.',
       '',
       `A presto,`,
       input.brandName,
@@ -167,13 +182,15 @@ export function buildClientAcknowledgement(input: {
   const en = {
     subject: `We received your request — ${input.reference}`,
     body: [
-      `Hi ${input.name},`,
+      `Hi ${greeting},`,
       '',
       `we have received your request (reference ${input.reference}).`,
       '',
       'We will reply personally, usually within 24 hours, with a recommended format and a fixed price. Availability is checked by hand: nothing is confirmed until we have spoken.',
       '',
-      `If you want to add anything in the meantime, reply to this email or message us on WhatsApp: ${input.whatsappUrl}`,
+      input.whatsappUrl
+        ? `If you want to add anything in the meantime, reply to this email or message us on WhatsApp: ${input.whatsappUrl}`
+        : 'If you want to add anything in the meantime, just reply to this email.',
       '',
       'Speak soon,',
       input.brandName,

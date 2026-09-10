@@ -10,6 +10,8 @@
 set -euo pipefail
 
 cd "$(dirname "$0")/.."
+# shellcheck source=scripts/lib/env.sh
+. ./scripts/lib/env.sh
 
 say() { printf '\n\033[1m%s\033[0m\n' "$*"; }
 ok()  { printf '  \033[32m✓\033[0m %s\n' "$*"; }
@@ -36,7 +38,9 @@ ok "Images rebuilt"
 say "4/4 — Restarting"
 docker compose up -d
 for attempt in $(seq 1 40); do
-  if curl -fsS "http://${APP_BIND:-127.0.0.1}:${APP_PORT:-3000}/api/health" >/dev/null 2>&1; then
+  # APP_BIND/APP_PORT come from .env: the probe used to hit 127.0.0.1:3000
+  # unconditionally and reported a failure on any other configuration.
+  if curl -fsS "$(app_health_url)/api/health" >/dev/null 2>&1; then
     ok "The application is back up"
     break
   fi

@@ -22,6 +22,8 @@ const priorities: Partial<Record<RouteKey, number>> = {
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const [landings, posts] = await Promise.all([getLandingPages(), getPosts()]);
   const now = new Date();
+  // Static pages change when the site is redeployed, not on every request.
+  const buildDate = new Date(process.env.BUILD_DATE ?? now.toISOString());
   const entries: MetadataRoute.Sitemap = [];
 
   for (const key of Object.keys(routeSlugs) as RouteKey[]) {
@@ -29,7 +31,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     for (const locale of locales) {
       entries.push({
         url: absoluteUrl(path(key, locale)),
-        lastModified: now,
+        lastModified: buildDate,
         changeFrequency: key === 'home' ? 'weekly' : 'monthly',
         priority: priorities[key] ?? 0.5,
         alternates: {
@@ -43,7 +45,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     for (const locale of locales) {
       entries.push({
         url: absoluteUrl(`/${locale}/${locale === 'en' ? landing.slugEn : landing.slugIt}`),
-        lastModified: now,
+        // Landing pages carry no timestamp of their own, so the build date is
+        // the most honest thing available — better than "changed just now",
+        // which teaches crawlers to ignore the field entirely.
+        lastModified: buildDate,
         changeFrequency: 'monthly',
         priority: 0.85,
         alternates: {

@@ -2,6 +2,7 @@ import 'server-only';
 import { and, count, desc, eq, gte, isNotNull, sql } from 'drizzle-orm';
 import { db } from '@/db';
 import { eventRequests, type RequestStatus, type StatusChange } from '@/db/schema';
+import { todayInSiteZone } from './i18n';
 
 export const requestStatuses: RequestStatus[] = [
   'new',
@@ -38,6 +39,19 @@ export type RequestFilters = {
   perPage?: number;
 };
 
+/** Anything that is not a known status is treated as no filter at all. */
+export function parseStatusFilter(value: string | undefined): RequestStatus | 'all' {
+  return value && (requestStatuses as string[]).includes(value) ? (value as RequestStatus) : 'all';
+}
+
+/**
+ * Escapes the wildcards of SQL LIKE. Without this, searching for "_" matched
+ * every single character and returned the whole table, and "%" the same.
+ */
+function escapeLike(term: string): string {
+  return term.replace(/[\\%_]/g, (char) => `\\${char}`);
+}
+
 export async function listRequests(filters: RequestFilters = {}) {
   const perPage = filters.perPage ?? 25;
   const page = Math.max(1, filters.page ?? 1);
@@ -47,9 +61,12 @@ export async function listRequests(filters: RequestFilters = {}) {
     conditions.push(eq(eventRequests.status, filters.status));
   }
   if (filters.search?.trim()) {
-    const term = `%${filters.search.trim().toLowerCase()}%`;
+    const term = `%${escapeLike(filters.search.trim().toLowerCase())}%`;
     conditions.push(
-      sql`(lower(${eventRequests.name}) like ${term} or lower(${eventRequests.email}) like ${term} or lower(${eventRequests.reference}) like ${term} or ${eventRequests.phone} like ${term})`,
+      sql`(lower(${eventRequests.name}) like ${term} escape '\\'
+        or lower(${eventRequests.email}) like ${term} escape '\\'
+        or lower(${eventRequests.reference}) like ${term} escape '\\'
+        or ${eventRequests.phone} like ${term} escape '\\')`,
     );
   }
   const where = conditions.length ? and(...conditions) : undefined;
@@ -69,6 +86,8 @@ export async function listRequests(filters: RequestFilters = {}) {
 }
 
 export async function getRequest(id: number) {
+  // /admin/richieste/abc used to reach the database as NaN and 500.
+  if (!Number.isInteger(id)) return null;
   const [row] = await db.select().from(eventRequests).where(eq(eventRequests.id, id)).limit(1);
   return row ?? null;
 }
@@ -112,7 +131,9 @@ export async function getDashboardStats() {
   today.setHours(0, 0, 0, 0);
   const thirtyDaysAgo = new Date(today);
   thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
-  const todayIso = today.toISOString().slice(0, 10);
+  // The container runs in UTC, so `toISOString()` on a local midnight lands on
+  // the wrong calendar day for part of the evening in Italy.
+  const todayIso = todayInSiteZone();
 
   const [byStatus, recent, upcoming, pipeline, conversion] = await Promise.all([
     db

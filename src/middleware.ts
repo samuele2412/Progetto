@@ -1,6 +1,7 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import { buildCsp, generateNonce } from '@/lib/csp';
-import { defaultLocale, isLocale } from '@/lib/i18n';
+import { defaultLocale, isLocale, type Locale } from '@/lib/i18n';
+import { routeSlugs } from '@/lib/routes';
 import { SESSION_COOKIE_NAMES, usesSecureCookies } from '@/lib/session-cookie';
 
 /**
@@ -34,12 +35,29 @@ function isPassThrough(pathname: string): boolean {
  * only the last resort.
  */
 function redirectTo(request: NextRequest, path: string, status: 307 | 308 = 307) {
-  const host = request.headers.get('x-forwarded-host') ?? request.headers.get('host') ?? request.nextUrl.host;
+  // `Host` first: cloudflared and every sane proxy already set it to the public
+  // hostname. X-Forwarded-Host is only consulted when the deployment has said
+  // there *is* a proxy in front — otherwise any client could name the host it
+  // wants to be redirected to.
+  const behindProxy = (process.env.TRUSTED_IP_HEADER ?? 'cf-connecting-ip') !== 'none';
+  const host =
+    request.headers.get('host') ??
+    (behindProxy ? request.headers.get('x-forwarded-host') : null) ??
+    request.nextUrl.host;
   const proto =
     request.headers.get('x-forwarded-proto')?.split(',')[0].trim() ??
     request.nextUrl.protocol.replace(':', '') ??
     'http';
   return NextResponse.redirect(new URL(path, `${proto}://${host}`), status);
+}
+
+/** The locale a known static slug belongs to, if any. */
+function localeOwningSlug(slug: string): Locale | undefined {
+  for (const entry of Object.values(routeSlugs)) {
+    if (entry.it && entry.it === slug) return 'it';
+    if (entry.en && entry.en === slug) return 'en';
+  }
+  return undefined;
 }
 
 function preferredLocale(request: NextRequest) {
@@ -67,12 +85,16 @@ export function middleware(request: NextRequest) {
   const csp = buildCsp(nonce, {
     // Only when the public origin really is https — see buildCsp.
     upgradeInsecureRequests: usesSecureCookies(),
+    allowEval: process.env.NODE_ENV === 'development',
     analyticsOrigin: analyticsUrl ? safeOrigin(analyticsUrl) : undefined,
   });
 
   const requestHeaders = new Headers(request.headers);
   requestHeaders.set('x-nonce', nonce);
   requestHeaders.set('content-security-policy', csp);
+  // not-found.tsx and error.tsx get no route params, so the path is the only
+  // way for them to know which language the visitor was reading.
+  requestHeaders.set('x-pathname', pathname);
 
   const withCsp = (response: NextResponse) => {
     response.headers.set('content-security-policy', csp);
@@ -95,7 +117,12 @@ export function middleware(request: NextRequest) {
 
   // 307 rather than 308: the language choice is a negotiation, not a permanent
   // address change, and we may want to revisit it without poisoning caches.
-  const target = `/${preferredLocale(request)}${pathname === '/' ? '' : pathname}${search}`;
+  // If the path is a known slug, the language it belongs to wins over the
+  // browser's preference: /pacchetti sent an English-configured browser to
+  // /en/pacchetti, which does not exist.
+  const slug = pathname.split('/').filter(Boolean)[0];
+  const locale = (slug && localeOwningSlug(slug)) || preferredLocale(request);
+  const target = `/${locale}${pathname === '/' ? '' : pathname}${search}`;
   return withCsp(redirectTo(request, target));
 }
 

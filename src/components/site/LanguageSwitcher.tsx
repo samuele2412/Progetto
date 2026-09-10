@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useSearchParams } from 'next/navigation';
 import { locales, localeShort, type Locale } from '@/lib/i18n';
 import { routeSlugs } from '@/lib/routes';
 import { cn } from '@/lib/utils';
@@ -25,30 +25,35 @@ export function LanguageSwitcher({
   className?: string;
 }) {
   const pathname = usePathname() ?? `/${locale}`;
+  const searchParams = useSearchParams();
+  // Keeping the query string matters on the thank-you page, where dropping it
+  // loses the ?ref= code the visitor was just given.
+  const query = searchParams?.toString();
+  const withQuery = (path: string) => (query ? `${path}?${query}` : path);
 
   function translate(target: Locale): string {
-    if (target === locale) return pathname;
+    if (target === locale) return withQuery(pathname);
 
     const segments = pathname.split('/').filter(Boolean);
     // segments[0] is the current locale.
     const rest = segments.slice(1);
-    if (rest.length === 0) return `/${target}`;
+    if (rest.length === 0) return withQuery(`/${target}`);
 
     // A journal post: /<locale>/journal/<slug>
     if (rest.length === 2 && rest[0] === routeSlugs.journal[locale]) {
       const pair = slugPairs.find((p) => p[locale] === rest[1]);
       const slug = pair ? pair[target] : rest[1];
-      return `/${target}/${routeSlugs.journal[target]}/${slug}`;
+      return withQuery(`/${target}/${routeSlugs.journal[target]}/${slug}`);
     }
 
     if (rest.length === 1) {
       // A known static page?
       for (const value of Object.values(routeSlugs)) {
-        if (value[locale] === rest[0]) return `/${target}/${value[target]}`.replace(/\/$/, '');
+        if (value[locale] === rest[0]) return withQuery(`/${target}/${value[target]}`.replace(/\/$/, ''));
       }
       // A landing page?
       const pair = slugPairs.find((p) => p[locale] === rest[0]);
-      if (pair) return `/${target}/${pair[target]}`;
+      if (pair) return withQuery(`/${target}/${pair[target]}`);
     }
 
     return `/${target}`;

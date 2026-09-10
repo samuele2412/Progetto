@@ -54,9 +54,11 @@ export async function PartnersPage({ locale }: { locale: Locale }) {
               >
                 {copy.cta.quoteLong}
               </Link>
-              <a href={whatsappHref} target="_blank" rel="noopener noreferrer" className="btn btn-ghost w-full">
-                {copy.cta.whatsappLong}
-              </a>
+              {whatsappHref && (
+                <a href={whatsappHref} target="_blank" rel="noopener noreferrer" className="btn btn-ghost w-full">
+                  {copy.cta.whatsappLong}
+                </a>
+              )}
               {!isPlaceholder(settings.contact.phone) && (
                 <a href={telLink(settings.contact.phone)} className="btn btn-ghost w-full">
                   {copy.cta.call}

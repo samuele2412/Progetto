@@ -68,6 +68,14 @@ export default async function LocaleLayout({
         <link rel="preload" href="/fonts/inter-latin.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
       </head>
       <body className="flex min-h-screen flex-col antialiased">
+        {/* The scroll-reveal animation is an enhancement, never a gate: without
+            JavaScript the blocks would stay at opacity 0 and the page would
+            look empty. A <noscript> stylesheet needs no inline script and so
+            does not have to be reconciled with the CSP. */}
+        <noscript>
+          <style>{`.reveal{opacity:1 !important;transform:none !important}
+.fade-in-up{animation:none !important;opacity:1 !important;transform:none !important}`}</style>
+        </noscript>
         <SiteShell locale={locale}>{children}</SiteShell>
         <JsonLd data={localBusinessJsonLd(settings, locale)} />
         <JsonLd data={webSiteJsonLd(settings)} />

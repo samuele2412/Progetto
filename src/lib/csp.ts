@@ -16,7 +16,7 @@ export function generateNonce(): string {
 
 export function buildCsp(
   nonce: string,
-  options: { upgradeInsecureRequests: boolean; analyticsOrigin?: string },
+  options: { upgradeInsecureRequests: boolean; analyticsOrigin?: string; allowEval?: boolean },
 ): string {
   const turnstile = 'https://challenges.cloudflare.com';
 
@@ -24,7 +24,17 @@ export function buildCsp(
     'default-src': ["'self'"],
     // 'unsafe-inline' is ignored by browsers that honour the nonce; it is kept
     // only so older ones still load the app rather than showing a blank page.
-    'script-src': ["'self'", `'nonce-${nonce}'`, "'strict-dynamic'", "'unsafe-inline'", 'https:'],
+    'script-src': [
+      "'self'",
+      `'nonce-${nonce}'`,
+      "'strict-dynamic'",
+      "'unsafe-inline'",
+      'https:',
+      // `next dev` compiles with eval-based source maps, so without this the
+      // development server serves a page whose JavaScript never runs. Never
+      // enabled in a production build.
+      ...(options.allowEval ? ["'unsafe-eval'"] : []),
+    ],
     // React writes real inline style attributes (gradients, transforms), which
     // cannot carry a nonce. Style injection is not a meaningful escalation path.
     'style-src': ["'self'", "'unsafe-inline'"],

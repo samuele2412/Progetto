@@ -134,6 +134,7 @@ Poi `nano .env` e completare **almeno** queste voci:
 | `SESSION_SECRET` | Il valore generato sopra |
 | `TRUSTED_IP_HEADER` | `cf-connecting-ip` dietro Cloudflare; vedi `.env.example` |
 | `APP_BIND` | `127.0.0.1` (default). Solo per esporre il sito alla rete locale — vedi § 12 |
+| `SITE_TIME_ZONE` | `Europe/Rome`. I container girano in UTC: senza questo le date sono sfasate |
 | `IP_HASH_SALT` | Il valore generato sopra |
 | `ADMIN_EMAIL` / `ADMIN_PASSWORD` | Le credenziali del primo accesso (password: almeno 12 caratteri) |
 | `NOTIFY_EMAIL` | Dove ricevere le nuove richieste |
@@ -170,8 +171,18 @@ volta configurato) e accedere.
 
 ### 4.5 Mettere in sicurezza le credenziali
 
-Dopo il primo accesso riuscito, **rimuovere `ADMIN_PASSWORD` da `.env`**: non
-serve più. Resta valida quella con cui si è entrati.
+Dopo il primo accesso puoi **rimuovere `ADMIN_PASSWORD` da `.env`**. Non è più
+necessario: l'entrypoint *crea* l'account se manca, ma non tocca la password di
+uno esistente, quindi lasciarlo non sovrascrive più nulla.
+
+Se un giorno dimentichi la password, hai due strade:
+
+```bash
+# reset esplicito da riga di comando
+docker compose exec app node dist-scripts/create-admin.cjs tu@example.com "una nuova password lunga"
+
+# oppure, per un solo riavvio: ADMIN_RESET_PASSWORD=true in .env
+```
 
 ---
 
@@ -311,8 +322,11 @@ sezione. Le modifiche sono immediate, senza deploy.
 **Pacchetti · Extra · Cocktail · Tipi di evento · FAQ · Recensioni · Galleria ·
 Pagine SEO · Journal** — creazione, modifica ed eliminazione.
 
-**Immagini** — caricamento (max 6 MB, JPG/PNG/WebP/AVIF). Si copia il percorso
-mostrato e lo si incolla nel campo immagine della sezione desiderata.
+**Immagini** — caricamento (limite da `MAX_UPLOAD_MB`, JPG/PNG/WebP/AVIF). Si
+copia il percorso mostrato e lo si incolla nel campo immagine della sezione
+desiderata. Il formato viene riconosciuto dai byte del file, non dall'estensione
+o dal tipo dichiarato dal browser. Le foto sono servite direttamente dal volume,
+quindi si vedono **subito**, senza riavviare nulla.
 
 **Password** — il cambio password chiude tutte le sessioni aperte, su qualsiasi
 dispositivo.
@@ -404,7 +418,8 @@ docker compose logs -f app
 | Trimestrale | Provare un ripristino su una macchina di prova. Un backup mai ripristinato è un'ipotesi, non un backup |
 
 **Pulizia GDPR** — elimina le richieste non convertite più vecchie di
-`RETENTION_MONTHS` e azzera gli hash IP oltre i 12 mesi:
+`RETENTION_MONTHS`, quelle convertite oltre `RETENTION_MONTHS_COMPLETED`
+(dieci anni, il termine civilistico) e azzera gli hash IP oltre i 12 mesi:
 
 ```bash
 docker compose exec app node dist-scripts/retention.cjs
@@ -556,6 +571,20 @@ docker compose logs app | grep '\[mail\]'
 Nessuna riga `[mail]` significa che l'SMTP non è configurato (`SMTP_HOST` o
 `NOTIFY_EMAIL` mancanti). Se compare un errore, è il fornitore a rifiutare:
 controllare porta, credenziali e SPF/DKIM.
+
+### I contenuti di esempio non tornano più dopo un riavvio
+
+È voluto. Il seed pianta i contenuti iniziali **una volta sola** e lascia una
+riga marcatore nel database: dal secondo avvio non fa nulla. Prima girava a ogni
+start, e tutto ciò che avevi eliminato dal pannello ricompariva.
+
+Per reinserire ciò che manca dopo un aggiornamento che porta contenuti nuovi:
+
+```bash
+docker compose exec app node dist-scripts/seed.cjs --force
+```
+
+Non sovrascrive mai nulla: inserisce solo le righe assenti.
 
 ### Le modifiche del pannello non compaiono
 

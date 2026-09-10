@@ -3,6 +3,7 @@
 import { useActionState, useState } from 'react';
 import type { FieldDef } from '@/lib/admin/collections';
 import { deleteCollectionItem, saveCollectionItem, type ActionState } from '@/app/admin/actions';
+import { ConfirmSubmit } from './ConfirmSubmit';
 import { Field } from './Fields';
 import { SubmitButton } from './SubmitButton';
 
@@ -106,37 +107,23 @@ function RecordForm({
 
         <div className="mt-5 flex flex-wrap items-center gap-3">
           <SubmitButton>Salva</SubmitButton>
-          {row && <DeleteButton collection={slug} id={Number(row.id)} />}
         </div>
       </form>
+
+      {/* Outside the record form on purpose: a <form> inside a <form> is
+          invalid HTML, React warns about it, and which action a click reaches
+          becomes a matter of luck. */}
+      {row && (
+        <div className="border-t border-stone-200 px-5 py-3">
+          <ConfirmSubmit
+            action={deleteCollectionItem}
+            hidden={{ __collection: slug, __id: String(row.id) }}
+            question="Eliminare definitivamente?"
+            confirmLabel="Sì, elimina"
+            triggerLabel="Elimina"
+          />
+        </div>
+      )}
     </details>
-  );
-}
-
-function DeleteButton({ collection, id }: { collection: string; id: number }) {
-  const [confirming, setConfirming] = useState(false);
-
-  if (!confirming) {
-    return (
-      <button type="button" onClick={() => setConfirming(true)} className="inline-flex min-h-11 items-center px-1 text-sm text-red-700 hover:underline">
-        Elimina
-      </button>
-    );
-  }
-
-  return (
-    <span className="flex items-center gap-2 rounded-lg border border-red-200 bg-red-50 px-3 py-1.5">
-      <span className="text-sm text-red-800">Eliminare definitivamente?</span>
-      <form action={deleteCollectionItem}>
-        <input type="hidden" name="__collection" value={collection} />
-        <input type="hidden" name="__id" value={String(id)} />
-        <SubmitButton variant="danger" pendingLabel="…" className="!min-h-0 !px-2.5 !py-1 !text-xs">
-          Sì, elimina
-        </SubmitButton>
-      </form>
-      <button type="button" onClick={() => setConfirming(false)} className="text-xs text-stone-600 hover:underline">
-        Annulla
-      </button>
-    </span>
   );
 }

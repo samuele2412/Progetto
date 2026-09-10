@@ -1,12 +1,18 @@
 /**
- * Creates (or resets) an administrator.
+ * Creates an administrator, and resets one only when that is clearly intended.
  *
  * Usage:
  *   npm run admin:create -- you@example.com "a long password" "Your name"
  *
- * With no arguments it falls back to ADMIN_EMAIL / ADMIN_PASSWORD from the
- * environment, which is what the first-run installer uses. Existing accounts
- * have their password reset and every open session invalidated.
+ * Passing arguments is the "I forgot my password" path: it always resets the
+ * account and invalidates every session.
+ *
+ * With no arguments it reads ADMIN_EMAIL / ADMIN_PASSWORD from the environment,
+ * which is how the container entrypoint runs it on every boot — and there it
+ * only *creates* a missing account. It used to reset the password too, so as
+ * long as ADMIN_PASSWORD stayed in .env every restart silently undid a password
+ * changed from the panel and logged the owner out. Set ADMIN_RESET_PASSWORD=true
+ * to force a reset from the environment as well.
  */
 import 'dotenv/config';
 import bcrypt from 'bcryptjs';
@@ -34,6 +40,12 @@ async function main() {
   const [existing] = await db.select().from(admins).where(eq(admins.email, email)).limit(1);
 
   if (existing) {
+    const explicitReset = passwordArg !== undefined || process.env.ADMIN_RESET_PASSWORD === 'true';
+    if (!explicitReset) {
+      console.log(`[admin] ${email} already exists — password left untouched`);
+      await pool.end();
+      return;
+    }
     await db
       .update(admins)
       .set({ passwordHash, name: name || existing.name, sessionVersion: existing.sessionVersion + 1 })

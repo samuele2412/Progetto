@@ -297,6 +297,11 @@ export const eventRequests = pgTable(
     serviceMode: serviceModeEnum('service_mode').notNull().default('full_service'),
     /** Selected cocktail styles, e.g. ["classics","fresh"]. */
     preferences: jsonb('preferences').$type<string[]>().notNull().default([]),
+    /**
+     * Set by the "Collaboriamo" page. A venue or a planner is a different kind
+     * of lead from a private client and is worth answering differently.
+     */
+    isPartner: boolean('is_partner').notNull().default(false),
     message: text('message').notNull().default(''),
 
     // Consent & provenance

@@ -7,10 +7,17 @@ import { env } from '@/lib/env';
 import { t } from '@/lib/i18n';
 import { areaLabels, cocktailPreferenceLabels, guestRangeLabels, serviceModeLabels } from '@/lib/form-options';
 import { buildClientAcknowledgement, buildOwnerNotification, sendMail } from '@/lib/mail';
-import { clientIp, hashIp, limitEventRequest } from '@/lib/rate-limit';
+import {
+  checkEventRequest,
+  clientIp,
+  consumeEventRequest,
+  hashIp,
+  limitAcknowledgement,
+} from '@/lib/rate-limit';
 import { getSettings } from '@/lib/settings';
 import { verifyTurnstile } from '@/lib/turnstile';
 import { eventRequestSchema, minimumFillMs } from '@/lib/validation';
+import { describeDbError, isUniqueViolation } from '@/lib/db-errors';
 import { makeReference, whatsappLink } from '@/lib/utils';
 
 export const runtime = 'nodejs';
@@ -29,8 +36,10 @@ export async function POST(request: Request) {
   const ip = clientIp(headerList);
   const ipHash = hashIp(ip);
 
-  // 1. Throttle before doing any work.
-  const limit = limitEventRequest(ipHash);
+  // 1. Throttle before doing any work — but only *read* the budget here. It is
+  //    spent further down, once the submission has been accepted, so a typo in
+  //    an email address does not cost the visitor one of five hourly attempts.
+  const limit = checkEventRequest(ipHash);
   if (!limit.allowed) {
     return NextResponse.json(
       { ok: false, error: 'rate_limited' },
@@ -58,7 +67,7 @@ export async function POST(request: Request) {
   const data = parsed.data;
 
   // 3. Cheap bot signals: the honeypot is already covered by the schema
-  //    (company must be empty); this catches scripted instant submissions.
+  //    (cordialeHp must be empty); this catches scripted instant submissions.
   if (typeof data.elapsedMs === 'number' && data.elapsedMs < minimumFillMs) {
     return NextResponse.json({ ok: false, error: 'too_fast' }, { status: 422 });
   }
@@ -69,44 +78,60 @@ export async function POST(request: Request) {
     return NextResponse.json({ ok: false, error: 'turnstile_failed' }, { status: 422 });
   }
 
-  // 5. Persist.
-  const reference = makeReference();
+  // 5. Persist. The reference is random and unique, so on the rare collision the
+  //    honest answer is to draw another one — not to hand the visitor a 500.
   const now = new Date();
+  let saved: typeof eventRequests.$inferSelect | undefined;
+  let reference = '';
 
-  let saved;
-  try {
-    [saved] = await db
-      .insert(eventRequests)
-      .values({
-        reference,
-        name: data.name,
-        email: data.email,
-        phone: data.phone,
-        prefersWhatsapp: data.prefersWhatsapp,
-        eventDate: data.eventDate ? data.eventDate : null,
-        dateFlexible: data.dateFlexible,
-        eventTypeSlug: data.eventTypeSlug,
-        area: data.area,
-        venueNote: data.venueNote,
-        guestsRange: data.guestsRange,
-        packageSlug: data.packageSlug,
-        serviceMode: data.serviceMode,
-        preferences: data.preferences,
-        message: data.message,
-        locale: data.locale,
-        consentPrivacy: data.consentPrivacy,
-        consentPrivacyAt: now,
-        source: data.source,
-        ipHash,
-        statusHistory: [{ status: 'new', at: now.toISOString(), by: 'website' }],
-      })
-      .returning();
-  } catch (error) {
-    console.error('[requests] insert failed:', error);
+  for (let attempt = 0; attempt < 5 && !saved; attempt += 1) {
+    reference = makeReference();
+    try {
+      [saved] = await db
+        .insert(eventRequests)
+        .values({
+          reference,
+          name: data.name,
+          email: data.email,
+          phone: data.phone,
+          prefersWhatsapp: data.prefersWhatsapp,
+          eventDate: data.eventDate ? data.eventDate : null,
+          dateFlexible: data.dateFlexible,
+          eventTypeSlug: data.eventTypeSlug,
+          area: data.area,
+          venueNote: data.venueNote,
+          guestsRange: data.guestsRange,
+          packageSlug: data.packageSlug,
+          serviceMode: data.serviceMode,
+          isPartner: data.isPartner,
+          preferences: data.preferences,
+          message: data.message,
+          locale: data.locale,
+          consentPrivacy: data.consentPrivacy,
+          consentPrivacyAt: now,
+          source: data.source,
+          ipHash,
+          statusHistory: [{ status: 'new', at: now.toISOString(), by: 'website' }],
+        })
+        .returning();
+    } catch (error) {
+      if (isUniqueViolation(error)) continue;
+      // Never the raw error: it carries the statement and its parameters, which
+      // here means the visitor's name, email and phone number.
+      console.error('[requests] insert failed:', describeDbError(error));
+      return NextResponse.json({ ok: false, error: 'server' }, { status: 500 });
+    }
+  }
+
+  if (!saved) {
+    console.error('[requests] could not allocate a unique reference');
     return NextResponse.json({ ok: false, error: 'server' }, { status: 500 });
   }
 
-  // 6. Notify. Failures are logged and swallowed on purpose.
+  // 6. Now that the request is stored, charge it against the hourly budget.
+  consumeEventRequest(ipHash);
+
+  // 7. Notify. Failures are logged and swallowed on purpose.
   void notify(saved.id, reference, data).catch((error) => console.error('[requests] notify failed:', error));
 
   return NextResponse.json({ ok: true, reference }, { status: 201 });
@@ -151,6 +176,10 @@ async function notify(id: number, reference: string, data: Parsed) {
       adminUrl: `${env.SITE_URL}/admin/richieste/${id}`,
     }),
   );
+
+  // Capped per recipient: the form must not become a way of mailing a stranger
+  // repeatedly just by rotating IP addresses.
+  if (!limitAcknowledgement(hashIp(`ack:${data.email}`)).allowed) return;
 
   await sendMail(
     buildClientAcknowledgement({

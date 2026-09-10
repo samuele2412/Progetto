@@ -27,6 +27,7 @@ export type HeaderProps = {
 
 export function Header(props: HeaderProps) {
   const [open, setOpen] = useState(false);
+  const [eventsOpen, setEventsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const pathname = usePathname();
 
@@ -38,7 +39,10 @@ export function Header(props: HeaderProps) {
   }, []);
 
   // Close the drawer on navigation and lock the body while it is open.
-  useEffect(() => setOpen(false), [pathname]);
+  useEffect(() => {
+    setOpen(false);
+    setEventsOpen(false);
+  }, [pathname]);
   useEffect(() => {
     document.body.style.overflow = open ? 'hidden' : '';
     return () => {
@@ -48,7 +52,10 @@ export function Header(props: HeaderProps) {
 
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') setOpen(false);
+      if (event.key === 'Escape') {
+        setOpen(false);
+        setEventsOpen(false);
+      }
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
@@ -92,24 +99,45 @@ export function Header(props: HeaderProps) {
           ))}
 
           {props.eventLinks.length > 0 && (
-            <div className="group relative">
+            /* Hover opens it on a mouse; a click toggles it. Hover alone left
+               the menu unreachable on a tablet in landscape, which is wide
+               enough to get the desktop navigation but has no pointer. */
+            <div
+              className="group relative"
+              onMouseEnter={() => setEventsOpen(true)}
+              onMouseLeave={() => setEventsOpen(false)}
+            >
               <button
                 type="button"
-                className="flex items-center gap-1 text-sm text-bone-400 transition-colors hover:text-bone-50"
+                className="flex min-h-11 items-center gap-1 text-sm text-bone-400 transition-colors hover:text-bone-50"
                 aria-haspopup="true"
+                aria-expanded={eventsOpen}
+                onClick={() => setEventsOpen((open) => !open)}
               >
                 {props.eventsLabel}
-                <svg viewBox="0 0 12 12" className="h-3 w-3" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden>
+                <svg
+                  viewBox="0 0 12 12"
+                  className={cn('h-3 w-3 transition-transform', eventsOpen && 'rotate-180')}
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                  aria-hidden
+                >
                   <path d="M2.5 4.5 6 8l3.5-3.5" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
               </button>
-              <div className="invisible absolute left-1/2 top-full w-72 -translate-x-1/2 pt-4 opacity-0 transition-all duration-200 group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100">
+              <div
+                className={cn(
+                  'absolute left-1/2 top-full w-72 -translate-x-1/2 pt-4 transition-all duration-200 group-focus-within:visible group-focus-within:opacity-100',
+                  eventsOpen ? 'visible opacity-100' : 'invisible opacity-0',
+                )}
+              >
                 <ul className="card overflow-hidden p-1.5 shadow-[var(--shadow-lift)]">
                   {props.eventLinks.map((link) => (
                     <li key={link.href}>
                       <Link
                         href={link.href}
-                        className="block rounded-lg px-3 py-2.5 text-sm text-bone-200 transition-colors hover:bg-ink-800 hover:text-brass-300"
+                        className="flex min-h-11 items-center rounded-lg px-3 text-sm text-bone-200 transition-colors hover:bg-ink-800 hover:text-brass-300"
                       >
                         {link.label}
                       </Link>

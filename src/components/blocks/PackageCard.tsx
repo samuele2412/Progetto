@@ -72,8 +72,8 @@ export function PackageCard({
       <p className="mt-5 text-sm leading-relaxed text-bone-400">{t(pkg.description, locale)}</p>
 
       <ul className="mt-6 space-y-2.5 text-sm text-bone-200">
-        {(compact ? includes.slice(0, 5) : includes).map((item) => (
-          <li key={item} className="flex gap-2.5">
+        {(compact ? includes.slice(0, 5) : includes).map((item, index) => (
+          <li key={`${index}-${item}`} className="flex gap-2.5">
             <svg viewBox="0 0 16 16" className="mt-1 h-3.5 w-3.5 shrink-0 text-brass-500" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden>
               <path d="M3 8.5l3.2 3.2L13 5" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
@@ -89,8 +89,8 @@ export function PackageCard({
         <>
           <p className="mt-6 text-xs uppercase tracking-wider text-bone-500">{copy.packages.notIncluded}</p>
           <ul className="mt-2.5 space-y-1.5 text-sm text-bone-500">
-            {excludes.map((item) => (
-              <li key={item} className="flex gap-2.5">
+            {excludes.map((item, index) => (
+              <li key={`${index}-${item}`} className="flex gap-2.5">
                 <span aria-hidden className="mt-2 h-px w-3 shrink-0 bg-bone-500/60" />
                 <span>{item}</span>
               </li>

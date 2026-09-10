@@ -18,14 +18,25 @@ const securityHeaders = [
 ];
 
 /**
- * HSTS is sent by the app as well as by Cloudflare: the app is the only thing
- * that knows the response was served, and a header emitted over plain HTTP is
- * ignored by browsers anyway, so there is no way for this to strand a local
- * install on https. Kept out of development so localhost never gets pinned.
+ * HSTS is sent by the app as well as by Cloudflare: a header emitted over plain
+ * HTTP is ignored by browsers anyway, so there is no way for this to strand a
+ * local install on https. Kept out of development so localhost never gets
+ * pinned, and `includeSubDomains`/`preload` are opt-in (see lib/env.ts): they
+ * are near-irreversible and would drag unrelated subdomains along.
  */
-const productionHeaders = [
-  { key: 'Strict-Transport-Security', value: 'max-age=63072000; includeSubDomains; preload' },
-];
+function hstsValue(): string {
+  const maxAge = Number(process.env.HSTS_MAX_AGE ?? 31_536_000);
+  const isOn = (value: string | undefined) => /^(1|true|yes|on)$/i.test(value ?? '');
+  return [
+    `max-age=${maxAge}`,
+    isOn(process.env.HSTS_INCLUDE_SUBDOMAINS) ? 'includeSubDomains' : '',
+    isOn(process.env.HSTS_PRELOAD) ? 'preload' : '',
+  ]
+    .filter(Boolean)
+    .join('; ');
+}
+
+const productionHeaders = [{ key: 'Strict-Transport-Security', value: hstsValue() }];
 
 /** A year, immutable: these files are replaced by name, never edited in place. */
 const immutableCache = [{ key: 'Cache-Control', value: 'public, max-age=31536000, immutable' }];
@@ -52,7 +63,6 @@ const nextConfig: NextConfig = {
       // explicit rule Next serves /public with `max-age=0`, which costs a round
       // trip per file per page for something that never changes.
       { source: '/fonts/:path*', headers: immutableCache },
-      { source: '/uploads/:path*', headers: immutableCache },
       {
         source: '/images/:path*',
         headers: [{ key: 'Cache-Control', value: 'public, max-age=86400, stale-while-revalidate=604800' }],

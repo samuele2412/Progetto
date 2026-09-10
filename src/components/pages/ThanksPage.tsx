@@ -32,9 +32,11 @@ export async function ThanksPage({ locale, reference }: { locale: Locale; refere
           )}
 
           <div className="mt-10 flex flex-col gap-3 sm:flex-row">
-            <a href={whatsappHref} target="_blank" rel="noopener noreferrer" className="btn btn-whatsapp flex-1">
-              {copy.cta.whatsappLong}
-            </a>
+            {whatsappHref && (
+              <a href={whatsappHref} target="_blank" rel="noopener noreferrer" className="btn btn-whatsapp flex-1">
+                {copy.cta.whatsappLong}
+              </a>
+            )}
             {!isPlaceholder(settings.contact.phone) && (
               <a href={telLink(settings.contact.phone)} className="btn btn-ghost flex-1">
                 {copy.cta.call}

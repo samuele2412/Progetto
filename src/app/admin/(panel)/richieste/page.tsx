@@ -1,6 +1,7 @@
 import Link from 'next/link';
-import { listRequests, requestStatuses, statusLabels, statusStyles } from '@/lib/requests';
+import { listRequests, parseStatusFilter, requestStatuses, statusLabels, statusStyles } from '@/lib/requests';
 import type { RequestStatus } from '@/db/schema';
+import { SITE_TIME_ZONE } from '@/lib/i18n';
 
 export const dynamic = 'force-dynamic';
 
@@ -9,7 +10,7 @@ function shortDate(value: string | Date | null) {
   const date = typeof value === 'string' ? new Date(`${value}T00:00:00`) : value;
   return Number.isNaN(date.getTime())
     ? '—'
-    : new Intl.DateTimeFormat('it-IT', { day: '2-digit', month: '2-digit', year: '2-digit' }).format(date);
+    : new Intl.DateTimeFormat('it-IT', { timeZone: SITE_TIME_ZONE, day: '2-digit', month: '2-digit', year: '2-digit' }).format(date);
 }
 
 export default async function RequestsPage({
@@ -18,9 +19,10 @@ export default async function RequestsPage({
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
   const query = await searchParams;
-  const status = (typeof query.status === 'string' ? query.status : 'all') as RequestStatus | 'all';
-  const search = typeof query.q === 'string' ? query.q : '';
-  const page = Number(typeof query.page === 'string' ? query.page : 1) || 1;
+  const status = parseStatusFilter(typeof query.status === 'string' ? query.status : undefined);
+  const search = typeof query.q === 'string' ? query.q.slice(0, 120) : '';
+  const rawPage = Number(typeof query.page === 'string' ? query.page : 1);
+  const page = Number.isFinite(rawPage) ? Math.min(Math.max(1, Math.trunc(rawPage)), 10_000) : 1;
 
   const { rows, total, pages } = await listRequests({ status, search, page });
 

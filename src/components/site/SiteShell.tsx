@@ -2,7 +2,7 @@ import type { ReactNode } from 'react';
 import { Reveal } from '@/components/Reveal';
 import { d } from '@/lib/dictionary';
 import { t, type Locale } from '@/lib/i18n';
-import { getNavigationLandings, getPosts } from '@/lib/queries';
+import { getLandingPages, getNavigationLandings, getPosts } from '@/lib/queries';
 import { landingPath, path } from '@/lib/routes';
 import { getSettings } from '@/lib/settings';
 import { telLink, whatsappLink } from '@/lib/utils';
@@ -17,15 +17,23 @@ import type { SlugPair } from './LanguageSwitcher';
  * layout) keeps all the settings and navigation reads in one place.
  */
 export async function SiteShell({ locale, children }: { locale: Locale; children: ReactNode }) {
-  const [settings, landings, posts] = await Promise.all([getSettings(), getNavigationLandings(), getPosts()]);
+  // Two different lists on purpose: the menu shows only the landings marked for
+  // navigation, but the language switcher needs the slug pair of *every* page,
+  // otherwise switching language on a PPC-only landing dropped you on the home.
+  const [settings, allLandings, navLandings, posts] = await Promise.all([
+    getSettings(),
+    getLandingPages(),
+    getNavigationLandings(),
+    getPosts(),
+  ]);
   const copy = d(locale);
 
   const slugPairs: SlugPair[] = [
-    ...landings.map((l) => ({ it: l.slugIt, en: l.slugEn })),
+    ...allLandings.map((l) => ({ it: l.slugIt, en: l.slugEn })),
     ...posts.map((p) => ({ it: p.slugIt, en: p.slugEn })),
   ];
 
-  const eventLinks = landings.map((landing) => ({
+  const eventLinks = navLandings.map((landing) => ({
     label: t(landing.heroTitle, locale).replace(/ — .*$/, ''),
     href: landingPath(locale === 'en' ? landing.slugEn : landing.slugIt, locale),
   }));

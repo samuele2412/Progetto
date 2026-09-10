@@ -1,11 +1,11 @@
 'use client';
 
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Script from 'next/script';
 import type { Dictionary } from '@/lib/dictionary';
 import { errorMessage } from '@/lib/dictionary';
-import type { Locale } from '@/lib/i18n';
+import { todayInSiteZone, type Locale } from '@/lib/i18n';
 import {
   areaLabels,
   areaOptions,
@@ -27,6 +27,20 @@ import { captureSource } from './source';
 
 export type RequestFormOption = { slug: string; label: string; hint?: string };
 
+type TurnstileApi = {
+  render: (
+    container: HTMLElement,
+    options: {
+      sitekey: string;
+      theme?: string;
+      callback?: (token: string) => void;
+      'expired-callback'?: () => void;
+      'error-callback'?: () => void;
+    },
+  ) => string;
+  reset: (widgetId: string) => void;
+};
+
 type Props = {
   locale: Locale;
   copy: Dictionary;
@@ -39,6 +53,8 @@ type Props = {
   turnstileSiteKey?: string;
   initialEventType?: string;
   initialPackage?: string;
+  /** Set when the visitor arrived from the "Collaboriamo" page. */
+  isPartner?: boolean;
 };
 
 type Values = {
@@ -105,13 +121,48 @@ export function RequestForm(props: Props) {
   const headingRef = useRef<HTMLHeadingElement>(null);
   const honeypot = useRef<HTMLInputElement>(null);
   const [turnstileToken, setTurnstileToken] = useState('');
+  const turnstileRef = useRef<HTMLDivElement>(null);
+  const turnstileWidget = useRef<string | null>(null);
 
-  const today = useMemo(() => new Date().toISOString().slice(0, 10), []);
-  const maxDate = useMemo(() => {
-    const date = new Date();
-    date.setFullYear(date.getFullYear() + 2);
-    return date.toISOString().slice(0, 10);
+  /**
+   * Turnstile is rendered explicitly rather than by auto-scanning the DOM.
+   * The automatic mode only runs once per page load, so going back to step 2
+   * and returning left an empty box, and a token consumed by a failed submit
+   * was never replaced — leaving the visitor stuck on "verification failed"
+   * with no way forward.
+   */
+  const renderTurnstile = useCallback(() => {
+    const api = (window as unknown as { turnstile?: TurnstileApi }).turnstile;
+    if (!api || !turnstileRef.current || turnstileWidget.current !== null) return;
+    turnstileWidget.current = api.render(turnstileRef.current, {
+      sitekey: props.turnstileSiteKey!,
+      theme: 'dark',
+      callback: (token: string) => setTurnstileToken(token),
+      'expired-callback': () => setTurnstileToken(''),
+      'error-callback': () => setTurnstileToken(''),
+    });
+  }, [props.turnstileSiteKey]);
+
+  const resetTurnstile = useCallback(() => {
+    const api = (window as unknown as { turnstile?: TurnstileApi }).turnstile;
+    setTurnstileToken('');
+    if (api && turnstileWidget.current !== null) api.reset(turnstileWidget.current);
   }, []);
+
+  // Re-render when the contact step comes back into view.
+  useEffect(() => {
+    if (step !== 2 || !props.turnstileSiteKey) return;
+    renderTurnstile();
+  }, [step, props.turnstileSiteKey, renderTurnstile]);
+
+  // In the site's timezone, not the browser's UTC offset: near midnight in Italy
+  // `toISOString()` still reports yesterday, and the picker offered a date the
+  // server then refused.
+  const today = useMemo(() => todayInSiteZone(), []);
+  const maxDate = useMemo(() => {
+    const [year, month, day] = today.split('-').map(Number);
+    return `${year + 2}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+  }, [today]);
 
   useEffect(() => {
     captureSource();
@@ -190,7 +241,8 @@ export function RequestForm(props: Props) {
           guestsRange: values.guestsRange || undefined,
           eventDate: values.dateFlexible ? '' : values.eventDate,
           locale: props.locale,
-          company: honeypot.current?.value ?? '',
+          isPartner: props.isPartner ?? false,
+          cordialeHp: honeypot.current?.value ?? '',
           elapsedMs: Date.now() - startedAt.current,
           turnstileToken: turnstileToken || undefined,
           source: captureSource(),
@@ -219,6 +271,8 @@ export function RequestForm(props: Props) {
           else if (bad.some((field) => contactFields.includes(field))) setStep(2);
         }
         setFormError(errorMessage(result.error ?? 'server', props.locale));
+        // The token is single-use: without a reset the next attempt fails too.
+        resetTurnstile();
         setSubmitting(false);
         return;
       }
@@ -226,11 +280,16 @@ export function RequestForm(props: Props) {
       router.push(`${props.thanksHref}?ref=${encodeURIComponent(result.reference ?? '')}`);
     } catch {
       setFormError(errorMessage('network', props.locale));
+      resetTurnstile();
       setSubmitting(false);
     }
   }
 
   const stepTitles = [props.copy.form.stepEvent, props.copy.form.stepDetails, props.copy.form.stepContact];
+
+  const linkIndex = props.copy.form.consent.indexOf(props.copy.form.consentLink);
+  const consentBefore = linkIndex >= 0 ? props.copy.form.consent.slice(0, linkIndex) : props.copy.form.consent + ' ';
+  const consentAfter = linkIndex >= 0 ? props.copy.form.consent.slice(linkIndex + props.copy.form.consentLink.length) : '';
 
   return (
     <form onSubmit={handleSubmit} noValidate className="card p-6 md:p-9">
@@ -259,10 +318,24 @@ export function RequestForm(props: Props) {
         {stepTitles[step]}
       </h2>
 
-      {/* Honeypot: hidden from people, irresistible to naive bots. */}
+      {/* Honeypot: hidden from people, irresistible to naive bots.
+
+          Deliberately NOT called "company", "organization" or anything else on
+          a browser's autofill list: a password manager filling it in silently
+          got the visitor's request rejected as spam, with no field to point at
+          and nothing they could do about it. */}
       <div aria-hidden className="absolute h-0 w-0 overflow-hidden opacity-0">
-        <label htmlFor="company">Company</label>
-        <input ref={honeypot} id="company" name="company" type="text" tabIndex={-1} autoComplete="off" />
+        <label htmlFor="cordiale-hp">Non compilare</label>
+        <input
+          ref={honeypot}
+          id="cordiale-hp"
+          name="cordialeHp"
+          type="text"
+          tabIndex={-1}
+          autoComplete="off"
+          data-lpignore="true"
+          data-1p-ignore="true"
+        />
       </div>
 
       {/* ---------------- STEP 1 ---------------- */}
@@ -571,7 +644,10 @@ export function RequestForm(props: Props) {
               className="checkbox mt-0.5"
             />
             <span>
-              {props.copy.form.consent.replace(props.copy.form.consentLink, '')}
+              {/* The link sits inside the sentence, so it is split around the
+                  linked phrase rather than stripped out and appended — which
+                  produced "Ho letto l' e acconsento …informativa privacy". */}
+              {consentBefore}
               <a
                 href={props.privacyHref}
                 target="_blank"
@@ -580,24 +656,19 @@ export function RequestForm(props: Props) {
               >
                 {props.copy.form.consentLink}
               </a>
+              {consentAfter}
             </span>
           </label>
           {errors.consentPrivacy && <p className="field-error">{errors.consentPrivacy}</p>}
 
           {props.turnstileSiteKey && (
             <>
-              <Script src="https://challenges.cloudflare.com/turnstile/v0/api.js" strategy="lazyOnload" />
-              <div
-                className="cf-turnstile"
-                data-sitekey={props.turnstileSiteKey}
-                data-theme="dark"
-                data-callback="onTurnstileSuccess"
-                ref={(node) => {
-                  if (!node) return;
-                  (window as unknown as Record<string, unknown>).onTurnstileSuccess = (token: string) =>
-                    setTurnstileToken(token);
-                }}
+              <Script
+                src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit"
+                strategy="lazyOnload"
+                onReady={renderTurnstile}
               />
+              <div ref={turnstileRef} />
             </>
           )}
 

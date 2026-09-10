@@ -2,7 +2,7 @@ import 'server-only';
 import { cookies } from 'next/headers';
 import { SignJWT, jwtVerify } from 'jose';
 import bcrypt from 'bcryptjs';
-import { eq } from 'drizzle-orm';
+import { eq, sql } from 'drizzle-orm';
 import { db } from '@/db';
 import { admins } from '@/db/schema';
 import { env } from './env';
@@ -47,7 +47,32 @@ export async function createSession(admin: { id: number; email: string; name: st
 
 export async function destroySession() {
   const store = await cookies();
-  store.delete(sessionCookieName());
+  const name = sessionCookieName();
+  // A `__Host-` cookie is only overwritten by a Set-Cookie carrying the same
+  // attributes; `delete()` omits Secure, so on https the browser ignored it and
+  // the session stayed alive — signing out did nothing at all.
+  store.set(name, '', {
+    httpOnly: true,
+    sameSite: 'lax',
+    secure: usesSecureCookies(),
+    path: '/',
+    maxAge: 0,
+  });
+}
+
+/**
+ * Invalidates every token issued to an administrator.
+ *
+ * The session is a signed JWT, so the only way to revoke one before it expires
+ * is to move the generation counter it was signed against. For a panel with one
+ * or two users, signing out everywhere is the behaviour you want from a button
+ * labelled "Esci" — especially on a shared or lost device.
+ */
+export async function revokeSessions(adminId: number) {
+  await db
+    .update(admins)
+    .set({ sessionVersion: sql`${admins.sessionVersion} + 1` })
+    .where(eq(admins.id, adminId));
 }
 
 /** Reads and verifies the session cookie. Returns null when absent or stale. */

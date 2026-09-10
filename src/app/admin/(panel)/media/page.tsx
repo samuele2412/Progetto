@@ -2,6 +2,7 @@ import { desc } from 'drizzle-orm';
 import { db } from '@/db';
 import { mediaAssets } from '@/db/schema';
 import { MediaUploader } from '@/components/admin/MediaUploader';
+import { env } from '@/lib/env';
 
 export const dynamic = 'force-dynamic';
 
@@ -19,7 +20,7 @@ export default async function MediaPage() {
         </p>
       </header>
 
-      <MediaUploader />
+      <MediaUploader maxMb={env.MAX_UPLOAD_MB} />
 
       <section>
         <h2 className="mb-3 text-lg">Caricate di recente</h2>

@@ -36,6 +36,27 @@ async function main() {
     )
     .returning({ reference: eventRequests.reference });
 
+  /**
+   * Confirmed and completed events are kept far longer — there is a contract
+   * and there are tax documents behind them — but "far longer" is not "for
+   * ever". After RETENTION_MONTHS_COMPLETED (ten years by default, the Italian
+   * bookkeeping term) they go too, otherwise the personal data of every client
+   * accumulates with no end date at all.
+   */
+  const completedMonths = Number(process.env.RETENTION_MONTHS_COMPLETED ?? 120);
+  const completedCutoff = new Date();
+  completedCutoff.setMonth(completedCutoff.getMonth() - completedMonths);
+
+  const deletedCompleted = await db
+    .delete(eventRequests)
+    .where(
+      and(
+        lt(eventRequests.updatedAt, completedCutoff),
+        sql`${eventRequests.status} in ('confirmed','completed')`,
+      ),
+    )
+    .returning({ reference: eventRequests.reference });
+
   const ipCutoff = new Date();
   ipCutoff.setFullYear(ipCutoff.getFullYear() - 1);
   const cleared = await db
@@ -44,7 +65,10 @@ async function main() {
     .where(and(lt(eventRequests.createdAt, ipCutoff), sql`${eventRequests.ipHash} <> ''`))
     .returning({ reference: eventRequests.reference });
 
-  console.log(`[retention] deleted ${deleted.length} request(s) older than ${months} months`);
+  console.log(`[retention] deleted ${deleted.length} unconverted request(s) older than ${months} months`);
+  console.log(
+    `[retention] deleted ${deletedCompleted.length} converted request(s) older than ${completedMonths} months`,
+  );
   console.log(`[retention] cleared the IP hash on ${cleared.length} older request(s)`);
 
   await pool.end();

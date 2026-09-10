@@ -27,6 +27,7 @@ export const settingsFieldLabels: Record<string, string> = {
   email: 'Email',
   serviceArea: 'Zona servita',
   availability: 'Orari di risposta',
+  defaultCountryCode: 'Prefisso internazionale predefinito (senza +, es. 39)',
   instagram: 'URL Instagram',
   tiktok: 'URL TikTok',
   facebook: 'URL Facebook',

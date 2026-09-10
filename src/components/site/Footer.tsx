@@ -67,16 +67,18 @@ export function Footer(props: FooterProps) {
                   </a>
                 </li>
               )}
-              <li>
-                <a
-                  href={props.whatsappHref}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="tap-target text-bone-400 transition-colors hover:text-bone-50"
-                >
-                  WhatsApp
-                </a>
-              </li>
+              {props.whatsappHref && (
+                <li>
+                  <a
+                    href={props.whatsappHref}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="tap-target text-bone-400 transition-colors hover:text-bone-50"
+                  >
+                    WhatsApp
+                  </a>
+                </li>
+              )}
               {!isPlaceholder(props.email) && (
                 <li>
                   <a href={`mailto:${props.email}`} className="tap-target break-all text-bone-400 transition-colors hover:text-bone-50">

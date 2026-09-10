@@ -11,14 +11,17 @@ import { parseFormData, validateRecord } from '@/lib/admin/form';
 import {
   createSession,
   destroySession,
+  getSession,
   hashPassword,
   isSameOrigin,
   requireSession,
+  revokeSessions,
   verifyPassword,
 } from '@/lib/auth';
 import { clientIp, hashIp, limitLogin } from '@/lib/rate-limit';
-import { deleteRequest, updateRequestNotes, updateRequestStatus } from '@/lib/requests';
+import { deleteRequest, requestStatuses, updateRequestNotes, updateRequestStatus } from '@/lib/requests';
 import { defaultSettings } from '@/content/settings';
+import { describeDbError, isUniqueViolation } from '@/lib/db-errors';
 import type { RequestStatus } from '@/db/schema';
 import { loginSchema } from '@/lib/validation';
 
@@ -85,6 +88,10 @@ export async function loginAction(_prev: ActionState, formData: FormData): Promi
 }
 
 export async function logoutAction() {
+  const session = await getSession();
+  // Revoke before clearing the cookie: if the browser ignores the clearing
+  // Set-Cookie for any reason, the token it still holds is already dead.
+  if (session) await revokeSessions(Number(session.sub));
   await destroySession();
   redirect('/admin/login');
 }
@@ -143,9 +150,8 @@ export async function saveCollectionItem(_prev: ActionState, formData: FormData)
       await db.insert(table).values(record as never);
     }
   } catch (error) {
-    const message = error instanceof Error ? error.message : String(error);
-    if (/duplicate key/i.test(message)) return { error: 'Esiste già un elemento con questo slug o chiave.' };
-    console.error('[admin] save failed:', message);
+    if (isUniqueViolation(error)) return { error: 'Esiste già un elemento con questo slug o chiave.' };
+    console.error('[admin] save failed:', describeDbError(error));
     return { error: 'Salvataggio non riuscito. Controlla i campi e riprova.' };
   }
 
@@ -270,10 +276,11 @@ function parsePairs(value: string): { title: string; body: string }[] {
 export async function setRequestStatusAction(formData: FormData) {
   const session = await guard();
   const id = Number(formData.get('id'));
-  const status = String(formData.get('status')) as RequestStatus;
-  if (!Number.isInteger(id)) return;
+  const raw = String(formData.get('status'));
+  // An unknown value used to reach the enum column and blow up with a 500.
+  if (!Number.isInteger(id) || !(requestStatuses as string[]).includes(raw)) return;
 
-  await updateRequestStatus(id, status, session.email);
+  await updateRequestStatus(id, raw as RequestStatus, session.email);
   revalidatePath('/admin', 'layout');
 }
 
@@ -283,7 +290,11 @@ export async function saveRequestNotesAction(_prev: ActionState, formData: FormD
   if (!Number.isInteger(id)) return { error: 'Richiesta non trovata.' };
 
   const rawValue = String(formData.get('estimatedValue') ?? '').trim();
-  const estimated = rawValue === '' ? null : Math.max(0, Math.trunc(Number(rawValue) || 0));
+  // Clamped to what an int4 column can hold: a stray extra digit used to abort
+  // the save with a database error instead of saving a sane number.
+  const parsed = rawValue === '' ? null : Number(rawValue);
+  const estimated =
+    parsed === null || !Number.isFinite(parsed) ? null : Math.min(Math.max(0, Math.trunc(parsed)), 2_000_000_000);
 
   await updateRequestNotes(id, String(formData.get('adminNotes') ?? '').slice(0, 4000), estimated);
   revalidatePath('/admin', 'layout');
