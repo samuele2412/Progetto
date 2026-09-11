@@ -316,17 +316,34 @@ provenienza, note interne, valore stimato (alimenta la pipeline), pulsanti per
 rispondere via WhatsApp con messaggio già pronto, telefono ed email, ed
 eliminazione definitiva per le richieste di cancellazione GDPR.
 
+**Pagine** — il Page Builder. Crei una pagina nuova, la componi trascinando
+sezioni predefinite (Hero, Immagine + testo, Galleria, Pacchetti, FAQ…), la
+guardi in anteprima e la pubblichi. Finché non premi *Pubblica* il sito non
+cambia, e ogni pubblicazione salva una versione da cui puoi tornare indietro.
+Le pagine che esistono già nel codice compaiono nell'elenco e puoi modificarne
+la SEO subito; per ricostruirle col builder serve un passaggio esplicito, che è
+sempre reversibile. Guida completa: [`docs/12-page-builder.md`](docs/12-page-builder.md).
+
+**Sezioni salvate** — sezioni riutilizzabili su più pagine. L'inserimento
+normale crea una copia indipendente; una sezione marcata *globale* cambia invece
+tutte le pagine che la usano, insieme.
+
+**SEO** — tutte le pagine su una schermata sola, con quali titoli e descrizioni
+mancano o sono troppo lunghi.
+
 **Testi e contatti** — ogni testo del sito, in italiano e inglese, diviso per
 sezione. Le modifiche sono immediate, senza deploy.
 
 **Pacchetti · Extra · Cocktail · Tipi di evento · FAQ · Recensioni · Galleria ·
 Pagine SEO · Journal** — creazione, modifica ed eliminazione.
 
-**Immagini** — caricamento (limite da `MAX_UPLOAD_MB`, JPG/PNG/WebP/AVIF). Si
-copia il percorso mostrato e lo si incolla nel campo immagine della sezione
-desiderata. Il formato viene riconosciuto dai byte del file, non dall'estensione
-o dal tipo dichiarato dal browser. Le foto sono servite direttamente dal volume,
-quindi si vedono **subito**, senza riavviare nulla.
+**Media** — la libreria immagini: caricamento (limite da `MAX_UPLOAD_MB`,
+JPG/PNG/WebP/AVIF/GIF), ricerca, testo alternativo, eliminazione. Dentro il Page
+Builder non serve copiare percorsi a mano: ogni campo immagine ha *Scegli dalla
+libreria* e *Carica una nuova immagine*. Il formato viene riconosciuto dai byte
+del file, non dall'estensione o dal tipo dichiarato dal browser. Le foto sono
+servite direttamente dal volume, quindi si vedono **subito**, senza riavviare
+nulla, e vengono convertite in AVIF/WebP su richiesta.
 
 **Password** — il cambio password chiude tutte le sessioni aperte, su qualsiasi
 dispositivo.
@@ -335,8 +352,8 @@ dispositivo.
 
 Due strade, entrambe valide:
 
-1. **Dal pannello** → Immagini → carica → copia il percorso `/uploads/...` →
-   incollalo dove serve.
+1. **Dal pannello** → Media → carica. Dentro il Page Builder si scelgono
+   direttamente dal campo immagine, senza copiare percorsi.
 2. **Da file**: mettere i file in `public/images/` seguendo i nomi indicati in
    [`public/images/README.md`](public/images/README.md) e ricostruire
    (`./scripts/update.sh`).
@@ -639,6 +656,7 @@ Le decisioni di prodotto e di mercato sono documentate, non improvvisate:
 | [`docs/09-gdpr.md`](docs/09-gdpr.md) | Dati trattati, basi giuridiche, retention, perché non c'è il banner cookie |
 | [`docs/10-analytics.md`](docs/10-analytics.md) | Analytics privacy-first, perché non GA4 |
 | [`docs/11-roadmap.md`](docs/11-roadmap.md) | Cosa fare dopo, e cosa non fare |
+| [`docs/12-page-builder.md`](docs/12-page-builder.md) | Come si usa il Page Builder: pagine, sezioni, bozze, pubblicazione |
 
 ---
 

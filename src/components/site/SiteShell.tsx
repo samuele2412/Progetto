@@ -2,6 +2,7 @@ import type { ReactNode } from 'react';
 import { Reveal } from '@/components/Reveal';
 import { d } from '@/lib/dictionary';
 import { t, type Locale } from '@/lib/i18n';
+import { getPublishedPages } from '@/lib/cms';
 import { getLandingPages, getNavigationLandings, getPosts } from '@/lib/queries';
 import { landingPath, path } from '@/lib/routes';
 import { getSettings } from '@/lib/settings';
@@ -20,23 +21,35 @@ export async function SiteShell({ locale, children }: { locale: Locale; children
   // Two different lists on purpose: the menu shows only the landings marked for
   // navigation, but the language switcher needs the slug pair of *every* page,
   // otherwise switching language on a PPC-only landing dropped you on the home.
-  const [settings, allLandings, navLandings, posts] = await Promise.all([
+  const [settings, allLandings, navLandings, posts, cmsPages] = await Promise.all([
     getSettings(),
     getLandingPages(),
     getNavigationLandings(),
     getPosts(),
+    getPublishedPages(),
   ]);
   const copy = d(locale);
 
   const slugPairs: SlugPair[] = [
     ...allLandings.map((l) => ({ it: l.slugIt, en: l.slugEn })),
     ...posts.map((p) => ({ it: p.slugIt, en: p.slugEn })),
+    // Without these, switching language on a page built in the panel dropped
+    // the visitor on the home page instead of the same page in Italian.
+    ...cmsPages.map((page) => ({ it: page.slugIt, en: page.slugEn })),
   ];
 
-  const eventLinks = navLandings.map((landing) => ({
-    label: t(landing.heroTitle, locale).replace(/ — .*$/, ''),
-    href: landingPath(locale === 'en' ? landing.slugEn : landing.slugIt, locale),
-  }));
+  const eventLinks = [
+    ...navLandings.map((landing) => ({
+      label: t(landing.heroTitle, locale).replace(/ — .*$/, ''),
+      href: landingPath(locale === 'en' ? landing.slugEn : landing.slugIt, locale),
+    })),
+    ...cmsPages
+      .filter((page) => page.inNavigation)
+      .map((page) => ({
+        label: t(page.title, locale),
+        href: `/${locale}/${locale === 'en' ? page.slugEn : page.slugIt}`,
+      })),
+  ];
 
   const whatsappHref = whatsappLink(settings.contact.whatsapp, t(settings.contact.whatsappMessage, locale));
   const quoteHref = path('request', locale);

@@ -1,9 +1,11 @@
 import type { ReactNode } from 'react';
 import { createElement, Fragment } from 'react';
+import { isSafeHref } from '@/lib/blocks/common';
 
 /**
  * A deliberately tiny markdown subset — `## heading`, `### subheading`,
- * `- bullets`, `1. numbered`, paragraphs, `**bold**`, `*italic*`.
+ * `- bullets`, `1. numbered`, paragraphs, `**bold**`, `*italic*` and
+ * `[text](href)` links.
  *
  * Written by hand rather than pulled from npm because the input comes from the
  * admin panel only: no HTML passthrough means no sanitiser to get wrong, and
@@ -80,10 +82,17 @@ export function parseMarkdown(source: string): Block[] {
   return blocks;
 }
 
-/** Renders `**bold**` and `*italic*` inside a line of text. */
+/**
+ * Renders `**bold**`, `*italic*` and `[text](href)` inside a line.
+ *
+ * The link is the only construct here that can point anywhere, so the href is
+ * checked against the same allow-list the page builder uses. A rejected link
+ * degrades to its own text: the sentence still reads, and there is no way to
+ * smuggle `javascript:` in through a body of copy.
+ */
 function inline(text: string, keyPrefix: string): ReactNode[] {
   const nodes: ReactNode[] = [];
-  const pattern = /(\*\*[^*]+\*\*|\*[^*]+\*)/g;
+  const pattern = /(\[[^\]]+\]\([^)\s]+\)|\*\*[^*]+\*\*|\*[^*]+\*)/g;
   let last = 0;
   let match: RegExpExecArray | null;
   let i = 0;
@@ -91,7 +100,29 @@ function inline(text: string, keyPrefix: string): ReactNode[] {
   while ((match = pattern.exec(text)) !== null) {
     if (match.index > last) nodes.push(text.slice(last, match.index));
     const token = match[0];
-    if (token.startsWith('**')) {
+
+    if (token.startsWith('[')) {
+      const split = token.indexOf('](');
+      const label = token.slice(1, split);
+      const href = token.slice(split + 2, -1);
+      if (isSafeHref(href) && href) {
+        const external = /^https?:/i.test(href);
+        nodes.push(
+          createElement(
+            'a',
+            {
+              key: `${keyPrefix}-a${i}`,
+              href,
+              className: 'underline underline-offset-4 transition-colors hover:text-brass-300',
+              ...(external ? { target: '_blank', rel: 'noreferrer noopener' } : {}),
+            },
+            label,
+          ),
+        );
+      } else {
+        nodes.push(label);
+      }
+    } else if (token.startsWith('**')) {
       nodes.push(createElement('strong', { key: `${keyPrefix}-b${i}` }, token.slice(2, -2)));
     } else {
       nodes.push(createElement('em', { key: `${keyPrefix}-i${i}` }, token.slice(1, -1)));
@@ -135,6 +166,7 @@ export function markdownToPlainText(source: string, maxLength = 300): string {
     .replace(/^#{1,6}\s+/gm, '')
     .replace(/^[-*]\s+/gm, '')
     .replace(/^\d+\.\s+/gm, '')
+    .replace(/\[([^\]]+)\]\([^)\s]+\)/g, '$1')
     .replace(/\*\*?/g, '')
     .replace(/\s+/g, ' ')
     .trim();

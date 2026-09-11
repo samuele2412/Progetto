@@ -113,7 +113,7 @@ export default async function RequestsPage({
                 </td>
                 <td className="px-4 py-3 text-stone-700">{request.eventTypeSlug || '—'}</td>
                 <td className="px-4 py-3 text-stone-700">
-                  {request.dateFlexible ? <span className="text-stone-500">flessibile</span> : shortDate(request.eventDate)}
+                  {request.dateFlexible ? <span className="text-stone-600">flessibile</span> : shortDate(request.eventDate)}
                 </td>
                 <td className="px-4 py-3 text-stone-700">{request.guestsRange || '—'}</td>
                 <td className="px-4 py-3 text-stone-700">{request.packageSlug || '—'}</td>
@@ -138,7 +138,7 @@ export default async function RequestsPage({
           ) : (
             <span />
           )}
-          <span className="text-stone-500">
+          <span className="text-stone-600">
             Pagina {page} di {pages}
           </span>
           {page < pages ? (

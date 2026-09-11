@@ -26,12 +26,72 @@ import {
   landingPages,
   packages,
   posts,
+  pages,
   settings,
 } from '../src/db/schema';
 import { addonSeeds, cocktailSeeds, eventTypeSeeds, packageSeeds } from '../src/content/catalog';
 import { faqSeeds, landingPageSeeds, postSeeds } from '../src/content/editorial';
 
 const SEED_MARKER = 'seed.initialContent';
+
+/**
+ * Rows describing the pages that also exist in code, so the panel can list them
+ * and edit their SEO.
+ *
+ * `managed: false` is the whole point: creating these changes nothing about how
+ * the site renders. Each URL keeps being served by its component until someone
+ * deliberately hands it to the page builder.
+ */
+const BUILT_IN_PAGES: { routeKey: string; slugIt: string; slugEn: string; it: string; en: string }[] = [
+  { routeKey: 'home', slugIt: '', slugEn: '', it: 'Home', en: 'Home' },
+  { routeKey: 'packages', slugIt: 'pacchetti', slugEn: 'packages', it: 'Pacchetti', en: 'Packages' },
+  { routeKey: 'cocktails', slugIt: 'cocktail', slugEn: 'cocktails', it: 'Cocktail', en: 'Cocktails' },
+  { routeKey: 'gallery', slugIt: 'galleria', slugEn: 'gallery', it: 'Galleria', en: 'Gallery' },
+  { routeKey: 'about', slugIt: 'chi-siamo', slugEn: 'about', it: 'Chi siamo', en: 'About' },
+  { routeKey: 'partners', slugIt: 'collaboriamo', slugEn: 'partners', it: 'Collaboriamo', en: 'Partners' },
+  { routeKey: 'faq', slugIt: 'domande-frequenti', slugEn: 'faq', it: 'Domande frequenti', en: 'FAQ' },
+  { routeKey: 'request', slugIt: 'richiedi-preventivo', slugEn: 'request-a-quote', it: 'Richiedi preventivo', en: 'Request a quote' },
+  { routeKey: 'journal', slugIt: 'journal', slugEn: 'journal', it: 'Journal', en: 'Journal' },
+];
+
+const EMPTY = { it: '', en: '' };
+
+/**
+ * Runs on every start, before the content marker is consulted: an install that
+ * was seeded before the page builder existed still needs these rows, and they
+ * are structure rather than content, so re-checking them is cheap and safe.
+ */
+async function ensureBuiltInPages(db: ReturnType<typeof drizzle>): Promise<number> {
+  let created = 0;
+  for (const entry of BUILT_IN_PAGES) {
+    const [existing] = await db
+      .select({ id: pages.id })
+      .from(pages)
+      .where(eq(pages.routeKey, entry.routeKey))
+      .limit(1);
+    if (existing) continue;
+    try {
+      await db.insert(pages).values({
+        routeKey: entry.routeKey,
+        managed: false,
+        slugIt: entry.slugIt,
+        slugEn: entry.slugEn,
+        title: { it: entry.it, en: entry.en },
+        status: 'published',
+        hasUnpublishedChanges: false,
+        seoTitle: EMPTY,
+        seoDescription: EMPTY,
+        ogTitle: EMPTY,
+        ogDescription: EMPTY,
+        updatedBy: 'seed',
+      });
+      created += 1;
+    } catch (error) {
+      console.warn(`[seed] built-in page ${entry.routeKey} skipped:`, error instanceof Error ? error.message : error);
+    }
+  }
+  return created;
+}
 
 async function main() {
   const connectionString = process.env.DATABASE_URL;
@@ -40,6 +100,9 @@ async function main() {
 
   const pool = new Pool({ connectionString, max: 1 });
   const db = drizzle(pool);
+
+  const builtIn = await ensureBuiltInPages(db);
+  if (builtIn) console.log(`[seed] registered ${builtIn} built-in page(s) in the panel`);
 
   const [marker] = await db.select().from(settings).where(eq(settings.key, SEED_MARKER)).limit(1);
   if (marker && !force) {

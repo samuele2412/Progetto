@@ -1,4 +1,5 @@
 import type { MetadataRoute } from 'next';
+import { getPublishedPages } from '@/lib/cms';
 import { locales } from '@/lib/i18n';
 import { getLandingPages, getPosts } from '@/lib/queries';
 import { path, routeSlugs, type RouteKey } from '@/lib/routes';
@@ -42,7 +43,7 @@ const deployedAt = (() => {
 })();
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const [landings, posts] = await Promise.all([getLandingPages(), getPosts()]);
+  const [landings, posts, cmsPages] = await Promise.all([getLandingPages(), getPosts(), getPublishedPages()]);
   const buildDate = deployedAt;
   const entries: MetadataRoute.Sitemap = [];
 
@@ -73,6 +74,23 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         priority: 0.85,
         alternates: {
           languages: { it: absoluteUrl(`/it/${landing.slugIt}`), en: absoluteUrl(`/en/${landing.slugEn}`) },
+        },
+      });
+    }
+  }
+
+  // Pages built in the panel. A page marked noindex is left out entirely rather
+  // than listed with a noindex tag, which is a contradictory signal.
+  for (const page of cmsPages) {
+    if (page.noIndex) continue;
+    for (const locale of locales) {
+      entries.push({
+        url: absoluteUrl(`/${locale}/${locale === 'en' ? page.slugEn : page.slugIt}`),
+        lastModified: page.publishedAt ?? deployedAt,
+        changeFrequency: 'monthly',
+        priority: 0.7,
+        alternates: {
+          languages: { it: absoluteUrl(`/it/${page.slugIt}`), en: absoluteUrl(`/en/${page.slugEn}`) },
         },
       });
     }

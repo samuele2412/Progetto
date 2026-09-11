@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { getContentStats, getRecentChanges } from '@/lib/admin/overview';
 import { getDashboardStats, statusLabels, statusStyles } from '@/lib/requests';
 import { getSettings } from '@/lib/settings';
 import { isPlaceholder } from '@/lib/utils';
@@ -40,7 +41,12 @@ function findPlaceholders(settings: Awaited<ReturnType<typeof getSettings>>) {
 }
 
 export default async function DashboardPage() {
-  const [stats, settings] = await Promise.all([getDashboardStats(), getSettings()]);
+  const [stats, settings, content, recent] = await Promise.all([
+    getDashboardStats(),
+    getSettings(),
+    getContentStats(),
+    getRecentChanges(),
+  ]);
   const pending = findPlaceholders(settings);
   // The shipped text still contains [[…]] markers that are *not* backed by a
   // setting (retention period, processors), so the warning has to look at the
@@ -90,7 +96,10 @@ export default async function DashboardPage() {
         </section>
       )}
 
-      <section className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+      <section aria-labelledby="dash-requests" className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        <h2 id="dash-requests" className="sr-only">
+          Richieste evento
+        </h2>
         {cards.map((card) => (
           <Link
             key={card.label}
@@ -104,6 +113,57 @@ export default async function DashboardPage() {
           </Link>
         ))}
       </section>
+
+      <section aria-labelledby="dash-content">
+        <div className="mb-3 flex flex-wrap items-end justify-between gap-2">
+          <h2 id="dash-content" className="text-sm font-semibold uppercase tracking-wider text-stone-500">
+            Contenuti del sito
+          </h2>
+          <Link href="/admin/pagine" className="text-sm underline">
+            Gestisci le pagine
+          </Link>
+        </div>
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
+          <Stat label="Pagine tue" value={content.pagesTotal} href="/admin/pagine" />
+          <Stat label="Pubblicate" value={content.pagesPublished} href="/admin/pagine" />
+          <Stat label="Bozze" value={content.pagesDraft} href="/admin/pagine" />
+          <Stat label="Immagini" value={content.media} href="/admin/media" />
+          <Stat label="Cocktail" value={content.cocktails} href="/admin/cocktail" />
+          <Stat label="Pacchetti" value={content.packages} href="/admin/pacchetti" />
+        </div>
+      </section>
+
+      {recent.length > 0 && (
+        <section aria-labelledby="dash-recent">
+          <h2 id="dash-recent" className="mb-3 text-sm font-semibold uppercase tracking-wider text-stone-500">
+            Modifiche recenti
+          </h2>
+          <ul className="admin-card divide-y divide-stone-100">
+            {recent.map((change) => (
+              <li key={change.id}>
+                <Link
+                  href={change.href}
+                  className="flex flex-wrap items-center gap-x-3 gap-y-1 px-4 py-3 transition-colors hover:bg-stone-50"
+                >
+                  <span className="min-w-0 flex-1">
+                    <span className="block truncate text-sm font-medium text-stone-900">{change.label}</span>
+                    <span className="block text-xs text-stone-500">{change.detail}</span>
+                  </span>
+                  <span className="text-xs text-stone-600">
+                    {new Intl.DateTimeFormat('it-IT', {
+                      timeZone: SITE_TIME_ZONE,
+                      day: '2-digit',
+                      month: 'short',
+                      hour: '2-digit',
+                      minute: '2-digit',
+                    }).format(new Date(change.at))}
+                  </span>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
 
       <section className="grid gap-3 sm:grid-cols-3">
         <div className="admin-card p-5">
@@ -181,5 +241,15 @@ export default async function DashboardPage() {
         </section>
       </div>
     </div>
+  );
+}
+
+/** A counter that links where you would go to change it. */
+function Stat({ label, value, href }: { label: string; value: number; href: string }) {
+  return (
+    <Link href={href} className="admin-card p-4 transition-colors hover:border-stone-400">
+      <p className="text-2xl font-semibold text-stone-900">{value}</p>
+      <p className="mt-0.5 text-xs text-stone-600">{label}</p>
+    </Link>
   );
 }

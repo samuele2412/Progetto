@@ -356,3 +356,197 @@ export type EventRequest = typeof eventRequests.$inferSelect;
 export type MediaAsset = typeof mediaAssets.$inferSelect;
 export type Admin = typeof admins.$inferSelect;
 export type RequestStatus = (typeof requestStatusEnum.enumValues)[number];
+
+/* -------------------------------------------------------------------------- */
+/* CMS / Page builder                                                         */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * Whether a page is visible to the public.
+ *
+ * `draft` is not "invisible work in progress" only: a published page also keeps
+ * an editable draft alongside it (see `publishedContent` below), so this flag
+ * answers "has this page ever been published", not "is the current edit live".
+ */
+export const pageStatusEnum = pgEnum('page_status', ['draft', 'published']);
+
+/**
+ * A page assembled in the admin panel.
+ *
+ * Two copies of the content exist on purpose:
+ *
+ *   page_sections      the working copy. Everything the builder does — reorder,
+ *                      duplicate, hide, edit — writes here, and writing here
+ *                      must never change what a visitor sees.
+ *   pages.published_content   the snapshot the public site actually renders.
+ *                      `Publish` copies the working copy into it.
+ *
+ * Keeping the draft as rows (not a second jsonb blob) is what makes the builder
+ * simple: one section is one row, so a drag or a toggle is one small update
+ * instead of a read-modify-write of the whole page. Keeping the published side
+ * as a snapshot is what makes the public render cheap and safe: one row, one
+ * query, and a half-finished edit cannot leak out.
+ */
+export const pages = pgTable(
+  'pages',
+  {
+    id: serial('id').primaryKey(),
+
+    /**
+     * Set only for the pages that also exist in code (`home`, `packages`, …).
+     * It lets the panel list them and edit their SEO while the route stays
+     * exactly as it is today; a page created from the panel has no key.
+     */
+    routeKey: varchar('route_key', { length: 40 }),
+
+    /**
+     * Whether the page builder owns the rendering. False on a built-in page
+     * means "the coded component still renders this URL" — the safe default, so
+     * installing this update changes nothing until the owner opts in.
+     */
+    managed: boolean('managed').notNull().default(true),
+
+    slugIt: varchar('slug_it', { length: 160 }).notNull(),
+    slugEn: varchar('slug_en', { length: 160 }).notNull(),
+    title: localized('title'),
+
+    status: pageStatusEnum('status').notNull().default('draft'),
+    /** Null until the first publish; the public renderer reads only this. */
+    publishedContent: jsonb('published_content').$type<PublishedPage | null>(),
+    publishedAt: timestamp('published_at', { withTimezone: true }),
+    /** True when the working copy has moved on since the last publish. */
+    hasUnpublishedChanges: boolean('has_unpublished_changes').notNull().default(true),
+
+    seoTitle: localized('seo_title'),
+    seoDescription: localized('seo_description'),
+    ogTitle: localized('og_title'),
+    ogDescription: localized('og_description'),
+    ogImagePath: varchar('og_image_path', { length: 300 }).notNull().default(''),
+    /** Overrides the generated canonical; empty means "use the page's own URL". */
+    canonicalUrl: varchar('canonical_url', { length: 400 }).notNull().default(''),
+    noIndex: boolean('no_index').notNull().default(false),
+
+    /** Shown in the site navigation, for pages that should appear in a menu. */
+    inNavigation: boolean('in_navigation').notNull().default(false),
+    position: integer('position').notNull().default(0),
+
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+    updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
+    updatedBy: varchar('updated_by', { length: 255 }).notNull().default(''),
+  },
+  (t) => [
+    uniqueIndex('pages_slug_it_idx').on(t.slugIt),
+    uniqueIndex('pages_slug_en_idx').on(t.slugEn),
+    uniqueIndex('pages_route_key_idx').on(t.routeKey),
+  ],
+);
+
+/**
+ * One block on a page — the editable working copy.
+ *
+ * `config` is jsonb because every block type has a different shape, and a
+ * column per field would mean a migration every time a block gains an option.
+ * It is never trusted on the way in: lib/blocks validates it against the type's
+ * own zod schema before it is stored, and again before it is rendered.
+ */
+export const pageSections = pgTable(
+  'page_sections',
+  {
+    id: serial('id').primaryKey(),
+    pageId: integer('page_id')
+      .notNull()
+      .references(() => pages.id, { onDelete: 'cascade' }),
+    /** A key of the block registry — validated, never rendered blindly. */
+    type: varchar('type', { length: 40 }).notNull(),
+    position: integer('position').notNull().default(0),
+    /** Hidden sections stay in the panel and disappear from the site. */
+    visible: boolean('visible').notNull().default(true),
+    config: jsonb('config').$type<Record<string, unknown>>().notNull(),
+
+    /**
+     * Set when this section follows a global template: the row then keeps only
+     * the link and the template's config wins at render time. A section
+     * inserted from the library *without* this is an independent copy, which is
+     * the default because it cannot surprise anyone later.
+     */
+    templateId: integer('template_id').references(() => sectionTemplates.id, {
+      onDelete: 'set null',
+    }),
+
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+    updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [index('page_sections_page_idx').on(t.pageId, t.position)],
+);
+
+/**
+ * A saved section the owner can drop onto any page.
+ *
+ * `isGlobal` is the difference that matters: a global template is edited once
+ * and every page following it changes, while a normal saved section is a
+ * stamp — inserting it copies the configuration and the copy goes its own way.
+ */
+export const sectionTemplates = pgTable('section_templates', {
+  id: serial('id').primaryKey(),
+  name: varchar('name', { length: 120 }).notNull(),
+  type: varchar('type', { length: 40 }).notNull(),
+  config: jsonb('config').$type<Record<string, unknown>>().notNull(),
+  isGlobal: boolean('is_global').notNull().default(false),
+  createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
+});
+
+/**
+ * A snapshot taken on every publish, so a bad edit is one click from undone.
+ *
+ * Deliberately not a full history of every keystroke: the panel keeps the last
+ * few publishes per page and prunes the rest, which is enough to recover from a
+ * mistake without turning the database into a version control system.
+ */
+export const pageVersions = pgTable(
+  'page_versions',
+  {
+    id: serial('id').primaryKey(),
+    pageId: integer('page_id')
+      .notNull()
+      .references(() => pages.id, { onDelete: 'cascade' }),
+    version: integer('version').notNull(),
+    label: varchar('label', { length: 160 }).notNull().default(''),
+    snapshot: jsonb('snapshot').$type<PublishedPage>().notNull(),
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+    createdBy: varchar('created_by', { length: 255 }).notNull().default(''),
+  },
+  (t) => [
+    index('page_versions_page_idx').on(t.pageId, t.version),
+    uniqueIndex('page_versions_unique_idx').on(t.pageId, t.version),
+  ],
+);
+
+/** One block as it appears in a published snapshot. */
+export type PublishedSection = {
+  id: number;
+  type: string;
+  config: Record<string, unknown>;
+};
+
+/**
+ * What the public site renders. The SEO fields are copied in as well, so a
+ * draft edit to a meta description cannot reach Google before publish either.
+ */
+export type PublishedPage = {
+  title: Localized;
+  seoTitle: Localized;
+  seoDescription: Localized;
+  ogTitle: Localized;
+  ogDescription: Localized;
+  ogImagePath: string;
+  canonicalUrl: string;
+  noIndex: boolean;
+  sections: PublishedSection[];
+};
+
+export type Page = typeof pages.$inferSelect;
+export type PageSection = typeof pageSections.$inferSelect;
+export type SectionTemplate = typeof sectionTemplates.$inferSelect;
+export type PageVersion = typeof pageVersions.$inferSelect;
+export type PageStatus = (typeof pageStatusEnum.enumValues)[number];

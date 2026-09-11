@@ -12,6 +12,8 @@ import { PackagesPage } from '@/components/pages/PackagesPage';
 import { PartnersPage } from '@/components/pages/PartnersPage';
 import { RequestPage } from '@/components/pages/RequestPage';
 import { ThanksPage } from '@/components/pages/ThanksPage';
+import { CmsPage } from '@/components/builder/CmsPage';
+import { getPublishedPageBySlug } from '@/lib/cms';
 import { d } from '@/lib/dictionary';
 import { isLocale, t, type Locale } from '@/lib/i18n';
 import { getLandingBySlug, getPostBySlug } from '@/lib/queries';
@@ -34,6 +36,7 @@ type Resolved =
   | { kind: 'route'; key: RouteKey }
   | { kind: 'landing'; slugIt: string; slugEn: string; id: number }
   | { kind: 'post'; slugIt: string; slugEn: string; id: number }
+  | { kind: 'cms'; slug: string }
   | null;
 
 async function resolve(locale: Locale, slug: string[] | undefined): Promise<Resolved> {
@@ -52,6 +55,13 @@ async function resolve(locale: Locale, slug: string[] | undefined): Promise<Reso
     if (landing && (locale === 'en' ? landing.slugEn : landing.slugIt) === segments[0]) {
       return { kind: 'landing', slugIt: landing.slugIt, slugEn: landing.slugEn, id: landing.id };
     }
+
+    // Pages built in the panel come last, so nothing that already has a URL can
+    // be shadowed by one: a page saved with the slug "pacchetti" simply never
+    // resolves, instead of quietly replacing the coded route.
+    const cms = await getPublishedPageBySlug(segments[0], locale);
+    if (cms) return { kind: 'cms', slug: segments[0] };
+
     return null;
   }
 
@@ -109,6 +119,26 @@ export async function generateMetadata({
       imagePath: post.coverImagePath,
       type: 'article',
       publishedTime: new Date(post.publishedAt).toISOString(),
+    });
+  }
+
+  if (resolved.kind === 'cms') {
+    const found = await getPublishedPageBySlug(resolved.slug, locale);
+    if (!found) return {};
+    const { page, content } = found;
+    // Read from the published snapshot, not the row: a draft edit to a meta
+    // description must not reach a crawler before the owner publishes it.
+    return buildMetadata({
+      title: t(content.seoTitle, locale) || t(content.title, locale),
+      description: t(content.seoDescription, locale),
+      locale,
+      pathsByLocale: { it: `/it/${page.slugIt}`, en: `/en/${page.slugEn}` },
+      settings,
+      imagePath: content.ogImagePath,
+      ogTitle: t(content.ogTitle, locale),
+      ogDescription: t(content.ogDescription, locale),
+      canonicalUrl: content.canonicalUrl,
+      noIndex: content.noIndex,
     });
   }
 
@@ -221,6 +251,12 @@ export default async function Page({
     const post = await getPostBySlug(locale === 'en' ? resolved.slugEn : resolved.slugIt);
     if (!post) notFound();
     return <JournalPostPage locale={locale} post={post} />;
+  }
+
+  if (resolved.kind === 'cms') {
+    const found = await getPublishedPageBySlug(resolved.slug, locale);
+    if (!found) notFound();
+    return <CmsPage locale={locale} page={found.content} />;
   }
 
   const query = await searchParams;

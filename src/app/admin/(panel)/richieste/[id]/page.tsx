@@ -151,7 +151,7 @@ export default async function RequestDetailPage({ params }: { params: Promise<{ 
                 {request.statusHistory.map((entry, index) => (
                   <li key={`${entry.at}-${index}`}>
                     {dateTime(new Date(entry.at))} — {statusLabels[entry.status as keyof typeof statusLabels] ?? entry.status}{' '}
-                    <span className="text-stone-400">({entry.by})</span>
+                    <span className="text-stone-600">({entry.by})</span>
                   </li>
                 ))}
               </ol>

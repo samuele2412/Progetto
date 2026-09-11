@@ -517,8 +517,12 @@
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  color: #78716c;
+  /* #78716c clears AA on white but not on the panel's own #f6f5f3, which is
+     what the drawer and the sidebar sit on. One value that works everywhere
+     beats remembering which background a label happens to be over. */
+  color: #57534e;
   margin-bottom: 0.35rem;
+  padding: 0;
 }
 .admin-shell .admin-btn {
   display: inline-flex;
@@ -547,3 +551,121 @@
 .admin-shell .admin-btn-danger:hover { background: #991b1b; }
 .admin-shell a { color: inherit; }
 .admin-shell :focus-visible { outline-color: #1c1917; }
+
+/* ==========================================================================
+   Page builder — additions to the admin design system above.
+
+   Same palette and the same tokens; these only add the shapes the builder
+   needs (sortable rows, a drawer, toasts, a device-framed preview) so the new
+   screens do not look like they came from a different product.
+   ========================================================================== */
+
+.admin-shell .admin-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  border-radius: 999px;
+  padding: 0.15rem 0.55rem;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  border: 1px solid #e7e5e4;
+  background: #fafaf9;
+  color: #57534e;
+  white-space: nowrap;
+}
+.admin-shell .admin-chip-live { background: #ecfdf5; border-color: #a7f3d0; color: #047857; }
+.admin-shell .admin-chip-draft { background: #fffbeb; border-color: #fde68a; color: #b45309; }
+/* #78716c is 4.4:1 on this chip's own background — just under AA at 11px. */
+.admin-shell .admin-chip-hidden { background: #f5f5f4; border-color: #d6d3d1; color: #57534e; }
+.admin-shell .admin-chip-global { background: #eef2ff; border-color: #c7d2fe; color: #4338ca; }
+
+/* A block row in the builder. `touch-action: none` on the handle only, so the
+   page still scrolls normally on a phone and only the grip starts a drag. */
+.admin-shell .builder-row {
+  background: #fff;
+  border: 1px solid #e7e5e4;
+  border-radius: 0.75rem;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+.admin-shell .builder-row:hover { border-color: #d6d3d1; }
+.admin-shell .builder-row[data-dragging='true'] {
+  box-shadow: 0 12px 28px rgba(28, 25, 23, 0.16);
+  border-color: #a8a29e;
+}
+.admin-shell .builder-row[data-hidden='true'] { background: #fafaf9; }
+/* Dimmed, but still readable: a hidden section is the one you most need to
+   find again. The muted background and the "nascosta" chip carry the state. */
+.admin-shell .builder-row[data-hidden='true'] .builder-row-title { color: #57534e; }
+.admin-shell .builder-handle {
+  touch-action: none;
+  cursor: grab;
+  color: #a8a29e;
+}
+.admin-shell .builder-handle:active { cursor: grabbing; }
+.admin-shell .builder-handle:hover { color: #57534e; }
+
+/* The editing drawer: a sheet from the bottom on a phone, a side panel on a
+   laptop. One component, because the difference is only where it is anchored. */
+.admin-shell .admin-drawer-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(28, 25, 23, 0.45);
+  z-index: 60;
+  animation: admin-fade 0.16s ease-out;
+}
+.admin-shell .admin-drawer {
+  position: fixed;
+  z-index: 61;
+  background: #f6f5f3;
+  display: flex;
+  flex-direction: column;
+  inset: auto 0 0 0;
+  max-height: 92vh;
+  border-radius: 1rem 1rem 0 0;
+  animation: admin-sheet 0.2s cubic-bezier(0.22, 1, 0.36, 1);
+  padding-bottom: env(safe-area-inset-bottom);
+}
+@media (min-width: 900px) {
+  .admin-shell .admin-drawer {
+    inset: 0 0 0 auto;
+    width: min(34rem, 100vw);
+    max-height: none;
+    border-radius: 0;
+    animation: admin-slide 0.2s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+}
+@keyframes admin-fade { from { opacity: 0; } to { opacity: 1; } }
+@keyframes admin-sheet { from { transform: translateY(14px); opacity: 0.6; } to { transform: none; opacity: 1; } }
+@keyframes admin-slide { from { transform: translateX(18px); opacity: 0.6; } to { transform: none; opacity: 1; } }
+
+@media (prefers-reduced-motion: reduce) {
+  .admin-shell .admin-drawer,
+  .admin-shell .admin-drawer-backdrop,
+  .admin-shell .admin-toast { animation: none; }
+}
+
+.admin-shell .admin-toast {
+  animation: admin-toast-in 0.18s ease-out;
+  border-radius: 0.625rem;
+  padding: 0.7rem 0.9rem;
+  font-size: 0.875rem;
+  box-shadow: 0 10px 24px rgba(28, 25, 23, 0.14);
+  border: 1px solid #e7e5e4;
+  background: #fff;
+  color: #1c1917;
+}
+.admin-shell .admin-toast-ok { border-color: #a7f3d0; background: #ecfdf5; color: #065f46; }
+.admin-shell .admin-toast-error { border-color: #fecaca; background: #fef2f2; color: #991b1b; }
+@keyframes admin-toast-in { from { transform: translateY(6px); opacity: 0; } to { transform: none; opacity: 1; } }
+
+/* Preview frame. The widths are the ones the responsive audit tests against. */
+.admin-shell .admin-preview-frame {
+  border: 1px solid #d6d3d1;
+  border-radius: 0.75rem;
+  overflow: hidden;
+  background: #0a0908;
+  margin-inline: auto;
+  transition: max-width 0.25s ease;
+}
+.admin-shell .admin-preview-frame iframe { display: block; width: 100%; border: 0; }

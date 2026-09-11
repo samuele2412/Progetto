@@ -29,29 +29,45 @@ export function buildMetadata(options: {
   type?: 'website' | 'article';
   publishedTime?: string;
   noIndex?: boolean;
+  /**
+   * What social cards say, when it should differ from the page title. A good
+   * <title> is written for a search result and a good OG title for a shared
+   * link; the page builder lets the owner separate them, and everything that
+   * does not pass them keeps the previous behaviour of reusing the title.
+   */
+  ogTitle?: string;
+  ogDescription?: string;
+  /** Overrides the generated canonical. Empty means "use this page's URL". */
+  canonicalUrl?: string;
 }): Metadata {
   const image = absoluteUrl(options.imagePath || options.settings.seo.ogImagePath);
   const canonicalPath = options.pathsByLocale[options.locale];
+  const social = {
+    title: options.ogTitle?.trim() || options.title,
+    description: options.ogDescription?.trim() || options.description,
+  };
+  const canonical = options.canonicalUrl?.trim();
+  const base = alternates(options.pathsByLocale, options.locale);
 
   return {
     title: options.title,
     description: options.description,
-    alternates: alternates(options.pathsByLocale, options.locale),
+    alternates: canonical ? { ...base, canonical } : base,
     robots: options.noIndex ? { index: false, follow: false } : undefined,
     openGraph: {
       type: options.type ?? 'website',
       siteName: options.settings.seo.siteName,
-      title: options.title,
-      description: options.description,
-      url: absoluteUrl(canonicalPath),
+      title: social.title,
+      description: social.description,
+      url: canonical || absoluteUrl(canonicalPath),
       locale: ogLocale[options.locale],
-      images: [{ url: image, width: 1200, height: 630, alt: options.title }],
+      images: [{ url: image, width: 1200, height: 630, alt: social.title }],
       ...(options.publishedTime ? { publishedTime: options.publishedTime } : {}),
     },
     twitter: {
       card: 'summary_large_image',
-      title: options.title,
-      description: options.description,
+      title: social.title,
+      description: social.description,
       images: [image],
     },
   };
