@@ -6,12 +6,12 @@ export function StepList({ steps }: { steps: Step[] }) {
       {steps.map((step, index) => (
         <li
           key={`${index}-${step.title}`}
-          className={`reveal reveal-delay-${Math.min(index + 1, 4)} flex flex-col bg-ink-900 p-6 md:p-7`}
+          className={`reveal reveal-delay-${Math.min(index + 1, 4)} flex flex-col bg-ink-900 p-5 sm:p-6 md:p-7`}
         >
           <span className="font-[family-name:var(--font-display)] text-3xl text-brass-500/70">
             {String(index + 1).padStart(2, '0')}
           </span>
-          <h3 className="mt-4 font-[family-name:var(--font-display)] text-lg text-bone-50">{step.title}</h3>
+          <h3 className="mt-3 font-[family-name:var(--font-display)] text-lg text-bone-50 sm:mt-4">{step.title}</h3>
           <p className="mt-2 text-sm leading-relaxed text-bone-400">{step.body}</p>
         </li>
       ))}

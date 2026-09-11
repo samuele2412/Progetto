@@ -72,7 +72,19 @@ export function Header(props: HeaderProps) {
           : 'border-b border-transparent',
       )}
     >
-      <div className="container-page flex h-16 items-center justify-between gap-4 md:h-20">
+      {/*
+        * The bar gives back 8px once you start reading. On a 640px phone the
+        * fixed header and the CTA bar together were 22% of the screen, and the
+        * full height is only earning its keep at the top of the page where the
+        * brand is the first thing you see. The transition is on the container
+        * rather than the header so the backdrop blur does not re-rasterise.
+        */}
+      <div
+        className={cn(
+          'container-page flex items-center justify-between gap-4 transition-[height] duration-300 md:h-20',
+          scrolled && !open ? 'h-14' : 'h-16',
+        )}
+      >
         <Link
           href={props.homeHref}
           className="group flex min-h-11 flex-col justify-center leading-none"
@@ -81,7 +93,12 @@ export function Header(props: HeaderProps) {
           <span className="font-[family-name:var(--font-display)] text-xl tracking-tight text-bone-50 transition-colors group-hover:text-brass-300 md:text-[1.4rem]">
             {props.brandName}
           </span>
-          <span className="mt-0.5 hidden text-[0.62rem] uppercase tracking-[0.2em] text-bone-500 sm:block">
+          <span
+            className={cn(
+              'mt-0.5 hidden overflow-hidden text-[0.7rem] uppercase tracking-[0.2em] text-bone-500 transition-opacity duration-200 sm:block',
+              scrolled && !open && 'sm:hidden',
+            )}
+          >
             {props.descriptor}
           </span>
         </Link>

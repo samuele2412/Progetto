@@ -36,7 +36,7 @@ export function PackageCard({
   return (
     <article
       className={cn(
-        'card card-hover relative flex flex-col p-6 md:p-7',
+        'card card-hover relative flex flex-col p-5 sm:p-6 md:p-7',
         pkg.highlighted && 'border-brass-500/50 bg-ink-850',
       )}
     >
@@ -51,7 +51,7 @@ export function PackageCard({
       <Heading className="display-3 mt-2 text-bone-50">{t(pkg.name, locale)}</Heading>
       <p className="mt-1 text-sm text-bone-500">{guestLabel}</p>
 
-      <div className="mt-6">
+      <div className="mt-5 sm:mt-6">
         {onRequest ? (
           <span className="font-[family-name:var(--font-display)] text-2xl text-bone-100">
             {copy.packages.onRequest}
@@ -77,9 +77,9 @@ export function PackageCard({
         </p>
       )}
 
-      <p className="mt-5 text-sm leading-relaxed text-bone-400">{t(pkg.description, locale)}</p>
+      <p className="mt-4 text-sm leading-relaxed text-bone-400 sm:mt-5">{t(pkg.description, locale)}</p>
 
-      <ul className="mt-6 space-y-2.5 text-sm text-bone-200">
+      <ul className="mt-5 space-y-2 text-sm text-bone-200 sm:mt-6 sm:space-y-2.5">
         {(compact ? includes.slice(0, 5) : includes).map((item, index) => (
           <li key={`${index}-${item}`} className="flex gap-2.5">
             <svg viewBox="0 0 16 16" className="mt-1 h-3.5 w-3.5 shrink-0 text-brass-500" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden>
@@ -107,11 +107,11 @@ export function PackageCard({
         </>
       )}
 
-      <p className="mt-6 text-xs leading-relaxed text-bone-500">{t(pkg.priceNote, locale)}</p>
+      <p className="mt-5 text-xs leading-relaxed text-bone-500 sm:mt-6">{t(pkg.priceNote, locale)}</p>
 
       <Link
         href={path('request', locale, { pacchetto: pkg.slug })}
-        className={cn('btn mt-6 w-full', pkg.highlighted ? 'btn-primary' : 'btn-ghost')}
+        className={cn('btn mt-5 w-full sm:mt-6', pkg.highlighted ? 'btn-primary' : 'btn-ghost')}
       >
         {copy.packages.choose}
       </Link>

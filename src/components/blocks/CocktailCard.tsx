@@ -18,10 +18,10 @@ export function CocktailCard({ cocktail, locale }: { cocktail: Cocktail; locale:
           className="pointer-events-none absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-ink-950 via-ink-950/40 to-transparent"
         />
       </div>
-      <div className="p-5">
+      <div className="p-4 sm:p-5">
         <h3 className="font-[family-name:var(--font-display)] text-lg text-bone-50">{cocktail.name}</h3>
         <p className="mt-1 text-xs uppercase tracking-wider text-brass-500">{t(cocktail.ingredients, locale)}</p>
-        <p className="mt-3 text-sm leading-relaxed text-bone-400">{t(cocktail.description, locale)}</p>
+        <p className="mt-2.5 text-sm leading-relaxed text-bone-400 sm:mt-3">{t(cocktail.description, locale)}</p>
       </div>
     </article>
   );

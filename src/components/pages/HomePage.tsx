@@ -22,7 +22,7 @@ import {
 import { landingPath, path } from '@/lib/routes';
 import { absoluteUrl, faqJsonLd, serviceJsonLd } from '@/lib/seo';
 import { getSettings } from '@/lib/settings';
-import { isPlaceholder, whatsappLink } from '@/lib/utils';
+import { cn, isPlaceholder, whatsappLink } from '@/lib/utils';
 
 export async function HomePage({ locale }: { locale: Locale }) {
   const [settings, packages, cocktails, eventTypes, faqs, testimonials, gallery, landings] = await Promise.all([
@@ -93,7 +93,7 @@ export async function HomePage({ locale }: { locale: Locale }) {
         <div className="hero-content container-page pb-16 pt-28 md:pb-24">
           <div className="max-w-3xl">
             <p className="eyebrow fade-in-up">{t(settings.hero.eyebrow, locale)}</p>
-            <h1 className="display-1 fade-in-up mt-5 text-bone-50 text-shadow-hero">
+            <h1 className="hero-title display-1 fade-in-up mt-5 text-bone-50 text-shadow-hero">
               {t(settings.hero.title, locale)}
             </h1>
             <p className="lede fade-in-up mt-6 max-w-xl text-bone-200">{t(settings.hero.subtitle, locale)}</p>
@@ -128,11 +128,11 @@ export async function HomePage({ locale }: { locale: Locale }) {
             title={t(settings.home.valuePropTitle, locale)}
             intro={t(settings.home.valuePropIntro, locale)}
           />
-          <div className="mt-12 grid gap-px overflow-hidden rounded-[var(--radius-card)] border border-[var(--hairline)] bg-[var(--hairline)] sm:grid-cols-2">
+          <div className="section-body grid gap-px overflow-hidden rounded-[var(--radius-card)] border border-[var(--hairline)] bg-[var(--hairline)] sm:grid-cols-2">
             {valueProps.map((prop, index) => (
               <div
                 key={`${index}-${prop.title}`}
-                className={`reveal reveal-delay-${Math.min(index + 1, 4)} bg-ink-950 p-7 md:p-9`}
+                className={`reveal reveal-delay-${Math.min(index + 1, 4)} bg-ink-950 p-6 sm:p-7 md:p-9`}
               >
                 <h3 className="font-[family-name:var(--font-display)] text-xl text-bone-50">{prop.title}</h3>
                 <p className="mt-3 text-[0.95rem] leading-relaxed text-bone-400">{prop.body}</p>
@@ -149,7 +149,7 @@ export async function HomePage({ locale }: { locale: Locale }) {
             title={t(settings.home.howTitle, locale)}
             intro={t(settings.home.howIntro, locale)}
           />
-          <div className="mt-12">
+          <div className="section-body">
             <StepList steps={steps} />
           </div>
         </div>
@@ -167,7 +167,7 @@ export async function HomePage({ locale }: { locale: Locale }) {
               {copy.cta.seePackages}
             </Link>
           </div>
-          <div className="mt-12 grid gap-5 md:grid-cols-2 xl:grid-cols-4">
+          <div className="section-body grid gap-5 md:grid-cols-2 xl:grid-cols-4">
             {packages.map((pkg) => (
               <div key={pkg.id} className="reveal">
                 <PackageCard pkg={pkg} locale={locale} copy={copy} compact />
@@ -189,9 +189,19 @@ export async function HomePage({ locale }: { locale: Locale }) {
               {copy.cta.seeCocktails}
             </Link>
           </div>
-          <div className="mt-12 grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
+          <div className="section-body grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
             {cocktails.slice(0, 8).map((cocktail, index) => (
-              <div key={cocktail.id} className={`reveal reveal-delay-${Math.min(index % 4 + 1, 4)}`}>
+              <div
+                key={cocktail.id}
+                className={cn(
+                  `reveal reveal-delay-${Math.min((index % 4) + 1, 4)}`,
+                  // Six on a phone: in two columns a seventh card sits alone on
+                  // a fourth row, which costs a whole row of scrolling to show
+                  // one more drink. The full list is one tap away in the link
+                  // above, and every larger layout still shows all of them.
+                  index >= 6 && 'hidden sm:block',
+                )}
+              >
                 <CocktailCard cocktail={cocktail} locale={locale} />
               </div>
             ))}
@@ -206,7 +216,11 @@ export async function HomePage({ locale }: { locale: Locale }) {
             title={t(settings.home.eventsTitle, locale)}
             intro={t(settings.home.eventsIntro, locale)}
           />
-          <ul className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          {/* Two columns from the smallest screen, matching the cocktail grid
+              above it. As a single column these eight cards were 3.200px on
+              a phone — a fifth of the whole page for one "which of these are
+              you?" question. */}
+          <ul className="section-body grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
             {eventTypes.map((eventType, index) => {
               const landingSlug = landingBySlug.get(eventType.slug);
               const href = landingSlug
@@ -228,11 +242,17 @@ export async function HomePage({ locale }: { locale: Locale }) {
                         className="pointer-events-none absolute inset-0 bg-gradient-to-t from-ink-950 via-ink-950/30 to-transparent"
                       />
                     </div>
-                    <div className="p-5">
-                      <h3 className="font-[family-name:var(--font-display)] text-lg text-bone-50 transition-colors group-hover:text-brass-300">
+                    <div className="p-4 sm:p-5">
+                      <h3 className="font-[family-name:var(--font-display)] text-base text-bone-50 transition-colors group-hover:text-brass-300 sm:text-lg">
                         {t(eventType.name, locale)}
                       </h3>
-                      <p className="mt-2 text-sm leading-relaxed text-bone-400">{t(eventType.blurb, locale)}</p>
+                      {/* Clamped on a phone only: in a 160px column the full
+                          blurb ran to five lines of 14px text, which reads as a
+                          wall rather than a caption. The card links to the page
+                          that carries the whole sentence. */}
+                      <p className="mt-1.5 line-clamp-3 text-[0.82rem] leading-relaxed text-bone-400 sm:mt-2 sm:line-clamp-none sm:text-sm">
+                        {t(eventType.blurb, locale)}
+                      </p>
                     </div>
                   </Link>
                 </li>
@@ -244,8 +264,11 @@ export async function HomePage({ locale }: { locale: Locale }) {
 
       {/* ================= THE PERSON ================= */}
       <section className="section border-t border-[var(--hairline)] bg-ink-900">
-        <div className="container-page grid items-center gap-12 lg:grid-cols-2 lg:gap-20">
-          <div className="reveal relative aspect-[4/5] overflow-hidden rounded-[var(--radius-panel)] lg:aspect-[4/5]">
+        <div className="container-page grid items-center gap-8 sm:gap-12 lg:grid-cols-2 lg:gap-20">
+          {/* 4/5 full-bleed meant a 487px portrait on a 390px phone — half a
+              screen of decoration before the text it belongs to. 4/3 keeps the
+              framing and gives back ~190px; the desktop ratio is untouched. */}
+          <div className="reveal relative aspect-[4/3] overflow-hidden rounded-[var(--radius-panel)] sm:aspect-[3/2] lg:aspect-[4/5]">
             <Media
               src={settings.about.imagePath}
               alt={t(settings.about.title, locale)}
@@ -290,7 +313,7 @@ export async function HomePage({ locale }: { locale: Locale }) {
               title={t(settings.home.galleryTitle, locale)}
               intro={t(settings.home.galleryIntro, locale)}
             />
-            <div className="mt-12 grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-4">
+            <div className="section-body grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-4">
               {gallery.slice(0, 8).map((item, index) => (
                 <figure
                   key={item.id}
@@ -321,7 +344,7 @@ export async function HomePage({ locale }: { locale: Locale }) {
             title={t(settings.home.testimonialsTitle, locale)}
             intro={t(settings.home.testimonialsIntro, locale)}
           />
-          <div className="mt-12">
+          <div className="section-body">
             <Testimonials testimonials={testimonials} locale={locale} copy={copy} />
           </div>
         </div>

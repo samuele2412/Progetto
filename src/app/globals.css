@@ -168,19 +168,49 @@
     }
   }
 
+  /*
+   * Section rhythm.
+   *
+   * The low end used to be 3.5rem, which meant 56px above *and* below every
+   * section on a phone: nine sections, a thousand pixels of nothing. 2.75rem
+   * still separates two sections clearly at 390px while giving that back.
+   *
+   * The 9vw middle term and the 7.5rem cap are unchanged on purpose — from
+   * about 500px upwards this computes exactly what it did before, so tablet
+   * and desktop spacing is untouched.
+   */
   .section {
-    padding-block: clamp(3.5rem, 9vw, 7.5rem);
+    padding-block: clamp(2.75rem, 9vw, 7.5rem);
   }
 
-  /* The hero fills the viewport so the photograph reads as a full frame. On a
-     phone held sideways that same rule buries the primary CTA below the fold,
-     so short viewports get a content-sized hero instead. */
+  /*
+   * The gap between a section's heading and the content under it. Was a flat
+   * mt-12 (48px) written inline nine times; as one class it can breathe on a
+   * laptop and stay tight on a phone.
+   */
+  .section-body { margin-top: 2rem; }
+  @media (min-width: 768px) { .section-body { margin-top: 3rem; } }
+
+  /*
+   * The hero fills the viewport so the photograph reads as a full frame. On a
+   * phone held sideways that same rule buries the primary CTA below the fold,
+   * so short viewports get a content-sized hero instead (see the landscape
+   * block further down).
+   *
+   * Upright, `100svh - 4rem` was the wrong instinct: the copy is anchored to
+   * the bottom, so on a tall phone the extra height became dead gradient above
+   * the first word — 340px of it on a Pixel 7, a third of the screen before the
+   * site says anything. Capping at 34rem lets the content decide the height on
+   * every phone, and what is left of the viewport shows the top of the next
+   * section, which is what invites the scroll.
+   */
   .hero-viewport {
-    min-height: calc(100svh - 4rem);
+    min-height: min(76svh, 34rem);
   }
   @media (min-width: 768px) {
     .hero-viewport { min-height: min(88svh, 52rem); }
   }
+
 
 
   .eyebrow {
@@ -413,6 +443,24 @@
    ========================================================================== */
 
 @layer utilities {
+  /* Hero copy spacing on an upright phone. One step tighter all round: the
+     proportions between eyebrow, title, lede and buttons are what make the
+     composition read as deliberate, so they shrink together instead of one
+     being singled out.
+
+     In @layer utilities for the same reason as the landscape block below — the
+     elements carry pt-28/mt-5/mt-9 utilities, and in Tailwind v4 layer order
+     beats specificity, so these rules would lose from @layer components. The
+     landscape block comes after this one so it still has the last word on a
+     phone held sideways. */
+  @media (max-width: 639px) {
+    .hero-viewport .hero-content { padding-top: 6rem; padding-bottom: 2.5rem; }
+    .hero-viewport .hero-title { margin-top: 1rem; }
+    .hero-viewport .lede { margin-top: 1rem; }
+    .hero-viewport .hero-actions { margin-top: 1.5rem; gap: 0.625rem; }
+    .hero-viewport .hero-badges { margin-top: 1.5rem; }
+  }
+
   /* A phone held sideways has ~390px of height. A full-size hero pushes the
      primary CTA off-screen, so in short landscape viewports the type steps down
      and the spacing tightens until the buttons sit above the fold. Nothing is
