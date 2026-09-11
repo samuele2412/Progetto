@@ -8,6 +8,7 @@ import { t } from '@/lib/i18n';
 import { areaLabels, cocktailPreferenceLabels, guestRangeLabels, serviceModeLabels } from '@/lib/form-options';
 import { buildClientAcknowledgement, buildOwnerNotification, sendMail } from '@/lib/mail';
 import {
+  chargeAttempt,
   checkEventRequest,
   clientIp,
   consumeEventRequest,
@@ -36,9 +37,19 @@ export async function POST(request: Request) {
   const ip = clientIp(headerList);
   const ipHash = hashIp(ip);
 
-  // 1. Throttle before doing any work — but only *read* the budget here. It is
-  //    spent further down, once the submission has been accepted, so a typo in
-  //    an email address does not cost the visitor one of five hourly attempts.
+  // 1a. Every call, valid or not, costs an attempt: this is what stops the
+  //     endpoint being hammered with malformed payloads for free.
+  const attempt = chargeAttempt(ipHash);
+  if (!attempt.allowed) {
+    return NextResponse.json(
+      { ok: false, error: 'rate_limited' },
+      { status: 429, headers: { 'Retry-After': String(attempt.retryAfterSeconds) } },
+    );
+  }
+
+  // 1b. The submission budget is only *read* here and spent once the request
+  //     has been stored, so a typo in an email address does not cost the
+  //     visitor one of five hourly requests.
   const limit = checkEventRequest(ipHash);
   if (!limit.allowed) {
     return NextResponse.json(

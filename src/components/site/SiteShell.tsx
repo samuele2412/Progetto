@@ -70,7 +70,10 @@ export async function SiteShell({ locale, children }: { locale: Locale; children
         closeLabel={copy.nav.close}
       />
 
-      <main id="main" className="flex min-h-screen flex-col pt-16 md:pt-20">
+      {/* tabIndex={-1} is what makes the skip link actually work: without it the
+          browser scrolls to the anchor but leaves focus on <body>, so the next
+          Tab goes back to the navigation the visitor just asked to skip. */}
+      <main id="main" tabIndex={-1} className="flex min-h-screen flex-col pt-16 outline-none md:pt-20">
         {children}
       </main>
 

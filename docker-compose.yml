@@ -34,6 +34,10 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+      args:
+        # Inlined into the browser bundle at build time, so changing
+        # SITE_TIME_ZONE needs `docker compose up -d --build`, not just a restart.
+        NEXT_PUBLIC_SITE_TIME_ZONE: ${SITE_TIME_ZONE:-Europe/Rome}
     restart: unless-stopped
     depends_on:
       db:

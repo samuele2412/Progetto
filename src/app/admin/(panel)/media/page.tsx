@@ -1,4 +1,5 @@
 import { desc } from 'drizzle-orm';
+import Image from 'next/image';
 import { db } from '@/db';
 import { mediaAssets } from '@/db/schema';
 import { MediaUploader } from '@/components/admin/MediaUploader';
@@ -30,8 +31,18 @@ export default async function MediaPage() {
           <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
             {assets.map((asset) => (
               <li key={asset.id} className="admin-card overflow-hidden">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={asset.path} alt={asset.alt.it} className="h-32 w-full object-cover" />
+                {/* A plain <img> here downloaded every original at full size:
+                    120 thumbnails of 2–5 MB photos each. next/image asks the
+                    optimiser for a thumbnail-sized AVIF instead. */}
+                <div className="relative h-32 w-full bg-stone-100">
+                  <Image
+                    src={asset.path}
+                    alt={asset.alt.it}
+                    fill
+                    sizes="(min-width: 1024px) 25vw, (min-width: 640px) 33vw, 50vw"
+                    className="object-cover"
+                  />
+                </div>
                 <div className="p-3">
                   <p className="truncate text-xs text-stone-500">{asset.originalName}</p>
                   <code className="mt-1 block break-all text-[0.7rem] text-stone-800">{asset.path}</code>

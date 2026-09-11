@@ -121,6 +121,26 @@ if (env.NODE_ENV === 'production' && env.SITE_URL.startsWith('http://')) {
   );
 }
 
+/**
+ * The timezone is needed on both sides: the server reads SITE_TIME_ZONE when it
+ * renders, the browser can only see the copy that was inlined at build time as
+ * NEXT_PUBLIC_SITE_TIME_ZONE (docker-compose passes SITE_TIME_ZONE as that build
+ * argument). If the two ever disagree, the date picker and the server disagree
+ * about what "today" is, which shows up as a date being refused for no visible
+ * reason. Cheap to detect here, very confusing to debug from the symptom.
+ */
+if (env.NODE_ENV === 'production') {
+  const server = process.env.SITE_TIME_ZONE;
+  const browser = process.env.NEXT_PUBLIC_SITE_TIME_ZONE;
+  if (server && server !== (browser ?? 'Europe/Rome')) {
+    console.warn(
+      `[config] SITE_TIME_ZONE is ${server} but the browser bundle was built with ` +
+        `${browser ?? 'the Europe/Rome default'}. Rebuild the image (docker compose up -d --build) ` +
+        'so the two agree — a restart alone cannot change a value compiled into the bundle.',
+    );
+  }
+}
+
 export const mailEnabled = Boolean(env.SMTP_HOST && env.NOTIFY_EMAIL);
 export const turnstileEnabled = Boolean(env.TURNSTILE_SITE_KEY && env.TURNSTILE_SECRET_KEY);
 export const analyticsEnabled = Boolean(env.ANALYTICS_SCRIPT_URL);

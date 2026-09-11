@@ -13,6 +13,35 @@ import { SESSION_COOKIE_NAMES, usesSecureCookies } from '@/lib/session-cookie';
  */
 const PUBLIC_FILE = /\.(?:png|jpe?g|gif|svg|webp|avif|ico|txt|xml|webmanifest|woff2?|mp4)$/i;
 
+/**
+ * Strict-Transport-Security, built per request.
+ *
+ * It used to live in next.config.ts, but `headers()` runs during `next build`:
+ * the image was baking in whatever HSTS_* the build machine had and ignoring
+ * the container's own configuration for good. Here the values are read when the
+ * request is served, which is what the .env file promises.
+ *
+ * Sent only when SITE_URL is https — the same signal that decides Secure
+ * cookies. Over plain http a browser ignores the header anyway, so this only
+ * avoids claiming a policy the install does not actually have. `max-age=0` is
+ * honoured and forwarded: it is how a host is un-pinned.
+ */
+function hstsHeader(): string | undefined {
+  if (!usesSecureCookies()) return undefined;
+  const isOn = (value: string | undefined) => /^(1|true|yes|on)$/i.test(value ?? '');
+  const parsed = Number(process.env.HSTS_MAX_AGE);
+  const maxAge = Number.isFinite(parsed) && parsed >= 0 ? Math.trunc(parsed) : 31_536_000;
+  return [
+    `max-age=${maxAge}`,
+    // Both are near-irreversible commitments for every subdomain, so they stay
+    // opt-in (see lib/env.ts).
+    isOn(process.env.HSTS_INCLUDE_SUBDOMAINS) ? 'includeSubDomains' : '',
+    isOn(process.env.HSTS_PRELOAD) ? 'preload' : '',
+  ]
+    .filter(Boolean)
+    .join('; ');
+}
+
 /** Paths served as-is: assets and JSON, none of which need a nonce. */
 function isPassThrough(pathname: string): boolean {
   return (
@@ -75,7 +104,15 @@ function preferredLocale(request: NextRequest) {
 export function middleware(request: NextRequest) {
   const { pathname, search } = request.nextUrl;
 
-  if (isPassThrough(pathname)) return NextResponse.next();
+  // Assets and JSON skip the nonce, but they still get HSTS: a policy that only
+  // covered HTML would leave the first asset request of a cold visit unpinned.
+  const hsts = hstsHeader();
+  const withHsts = (response: NextResponse) => {
+    if (hsts) response.headers.set('strict-transport-security', hsts);
+    return response;
+  };
+
+  if (isPassThrough(pathname)) return withHsts(NextResponse.next());
 
   // The nonce has to reach both the renderer and the browser: Next reads it
   // back out of the CSP on the *request* headers to stamp its own script tags,
@@ -98,7 +135,7 @@ export function middleware(request: NextRequest) {
 
   const withCsp = (response: NextResponse) => {
     response.headers.set('content-security-policy', csp);
-    return response;
+    return withHsts(response);
   };
 
   if (pathname === '/admin' || pathname.startsWith('/admin/')) {

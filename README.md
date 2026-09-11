@@ -134,7 +134,7 @@ Poi `nano .env` e completare **almeno** queste voci:
 | `SESSION_SECRET` | Il valore generato sopra |
 | `TRUSTED_IP_HEADER` | `cf-connecting-ip` dietro Cloudflare; vedi `.env.example` |
 | `APP_BIND` | `127.0.0.1` (default). Solo per esporre il sito alla rete locale — vedi § 12 |
-| `SITE_TIME_ZONE` | `Europe/Rome`. I container girano in UTC: senza questo le date sono sfasate |
+| `SITE_TIME_ZONE` | `Europe/Rome`. I container girano in UTC: senza questo le date sono sfasate. Se lo cambi serve `--build`, non basta riavviare |
 | `IP_HASH_SALT` | Il valore generato sopra |
 | `ADMIN_EMAIL` / `ADMIN_PASSWORD` | Le credenziali del primo accesso (password: almeno 12 caratteri) |
 | `NOTIFY_EMAIL` | Dove ricevere le nuove richieste |

@@ -28,6 +28,38 @@ export function tList(
   return list && list.length ? list : (value.it ?? []);
 }
 
+const DEFAULT_TIME_ZONE = 'Europe/Rome';
+
+/** True only for a zone Intl actually knows; an unknown one throws on use. */
+function isUsableZone(zone: string): boolean {
+  try {
+    new Intl.DateTimeFormat('en-CA', { timeZone: zone }).format(new Date());
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+function resolveTimeZone(): string {
+  // Two names on purpose, because this value is needed on both sides:
+  //  - SITE_TIME_ZONE is the documented one and is read from the container's
+  //    environment at request time, which covers every server render;
+  //  - NEXT_PUBLIC_SITE_TIME_ZONE is baked in at build time and is the only
+  //    thing the browser can see (the date picker computes "today" there).
+  // Changing the zone therefore needs a rebuild for the browser half — see
+  // .env.example. The previous code read only the NEXT_PUBLIC_ name, which the
+  // deployment never set, so the documented SITE_TIME_ZONE did nothing at all.
+  const configured = process.env.SITE_TIME_ZONE || process.env.NEXT_PUBLIC_SITE_TIME_ZONE;
+  if (!configured) return DEFAULT_TIME_ZONE;
+  if (!isUsableZone(configured)) {
+    // A typo here would otherwise throw a RangeError inside every date on the
+    // site, which is a blank page instead of a wrong hour.
+    console.warn(`[config] unknown time zone "${configured}", falling back to ${DEFAULT_TIME_ZONE}`);
+    return DEFAULT_TIME_ZONE;
+  }
+  return configured;
+}
+
 /**
  * The timezone every date on the site is read and written in.
  *
@@ -35,7 +67,7 @@ export function tList(
  * history were shown 1–2 hours off, and near midnight Italian time the date
  * picker offered the previous day as "today".
  */
-export const SITE_TIME_ZONE = process.env.NEXT_PUBLIC_SITE_TIME_ZONE || 'Europe/Rome';
+export const SITE_TIME_ZONE = resolveTimeZone();
 
 /** Today's date in the site's timezone, as YYYY-MM-DD. */
 export function todayInSiteZone(): string {

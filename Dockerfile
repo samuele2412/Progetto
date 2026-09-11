@@ -23,6 +23,13 @@ COPY . .
 # substitutes throwaway values, then validates strictly again at runtime.
 ENV NEXT_TELEMETRY_DISABLED=1
 
+# The only value that has to be known at build time: NEXT_PUBLIC_* is inlined
+# into the browser bundle, and the date picker computes "today" in this zone.
+# docker-compose passes SITE_TIME_ZONE here so one entry in .env drives both
+# halves; the server re-reads SITE_TIME_ZONE at runtime anyway.
+ARG NEXT_PUBLIC_SITE_TIME_ZONE=Europe/Rome
+ENV NEXT_PUBLIC_SITE_TIME_ZONE=$NEXT_PUBLIC_SITE_TIME_ZONE
+
 RUN npm run build
 
 # The maintenance scripts are bundled into plain CommonJS so the runtime image

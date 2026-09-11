@@ -301,7 +301,18 @@ export function RequestForm(props: Props) {
           </span>
           <span className="text-brass-400">{stepTitles[step]}</span>
         </div>
-        <div className="mt-3 flex gap-1.5" role="progressbar" aria-valuemin={1} aria-valuemax={STEPS} aria-valuenow={step + 1}>
+        {/* The bars are decorative; without a name a screen reader announces a
+            bare "progress bar, 1". The label reuses the visible caption above,
+            so it stays in whatever language the visitor is reading. */}
+        <div
+          className="mt-3 flex gap-1.5"
+          role="progressbar"
+          aria-label={`${props.copy.form.step} ${step + 1} ${props.copy.form.of} ${STEPS}`}
+          aria-valuemin={1}
+          aria-valuemax={STEPS}
+          aria-valuenow={step + 1}
+          aria-valuetext={`${props.copy.form.step} ${step + 1} ${props.copy.form.of} ${STEPS}`}
+        >
           {Array.from({ length: STEPS }, (_, index) => (
             <span
               key={index}

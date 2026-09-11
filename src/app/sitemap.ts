@@ -19,11 +19,31 @@ const priorities: Partial<Record<RouteKey, number>> = {
   partners: 0.4,
 };
 
+/**
+ * A stable "last changed" for pages that carry no timestamp of their own.
+ *
+ * This module is evaluated once per server process, so the value stays put for
+ * the whole life of a deployment and moves when the container is replaced —
+ * which is exactly when those pages can have changed. It used to be
+ * `new Date(process.env.BUILD_DATE ?? now)`, but BUILD_DATE was set nowhere in
+ * the project, so every request advertised "modified just now" and crawlers
+ * learn to ignore a lastmod that always says that. Setting BUILD_DATE (an
+ * ISO-8601 instant) still overrides it for deployments that know their real
+ * build time.
+ */
+const deployedAt = (() => {
+  const configured = process.env.BUILD_DATE;
+  if (configured) {
+    const parsed = new Date(configured);
+    if (!Number.isNaN(parsed.getTime())) return parsed;
+    console.warn(`[config] BUILD_DATE is not a valid date ("${configured}"), using process start time`);
+  }
+  return new Date();
+})();
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const [landings, posts] = await Promise.all([getLandingPages(), getPosts()]);
-  const now = new Date();
-  // Static pages change when the site is redeployed, not on every request.
-  const buildDate = new Date(process.env.BUILD_DATE ?? now.toISOString());
+  const buildDate = deployedAt;
   const entries: MetadataRoute.Sitemap = [];
 
   for (const key of Object.keys(routeSlugs) as RouteKey[]) {

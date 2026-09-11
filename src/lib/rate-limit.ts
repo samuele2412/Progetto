@@ -60,13 +60,22 @@ export function rateLimit(key: string, limit: number, windowSeconds: number): Ra
 }
 
 /**
- * The public form's budget, split in two.
+ * The public form has two budgets, because they protect different things.
  *
- * `checkEventRequest` only looks: a submission rejected by validation — a typo
- * in an email, a date in the past, an autofilled honeypot — should not eat into
- * an hourly allowance of five. `consumeEventRequest` is called once the request
- * has actually been accepted.
+ * The *attempt* budget is spent by every call, valid or not, and exists to keep
+ * the endpoint from being hammered. Charging only successful submissions — as
+ * this did briefly — left malformed traffic completely unthrottled.
+ *
+ * The *success* budget is spent only once a request has been stored, and is the
+ * one the visitor feels: a typo in an email address must not cost somebody one
+ * of five attempts in an hour.
  */
+const ATTEMPTS_PER_HOUR = 60;
+
+export function chargeAttempt(ipHash: string): RateLimitResult {
+  return rateLimit(`attempt:${ipHash}`, ATTEMPTS_PER_HOUR, 3600);
+}
+
 export function checkEventRequest(ipHash: string): RateLimitResult {
   return peekLimit(`req:${ipHash}`, env.RATE_LIMIT_PER_HOUR);
 }

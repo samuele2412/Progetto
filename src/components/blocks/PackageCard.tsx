@@ -10,16 +10,24 @@ export function PackageCard({
   locale,
   copy,
   compact = false,
+  headingLevel = 3,
 }: {
   pkg: Package;
   locale: Locale;
   copy: Dictionary;
   /** Home page variant: fewer bullets, no "not included" list. */
   compact?: boolean;
+  /**
+   * The card is an h3 under a section heading, but on /pacchetti the grid is
+   * the first thing after the page title and there is no h2 above it — which
+   * left a hole in the outline (h1 straight to h3).
+   */
+  headingLevel?: 2 | 3;
 }) {
   const includes = tList(pkg.includes, locale);
   const excludes = tList(pkg.excludes, locale);
   const onRequest = pkg.pricePerGuestFrom <= 0;
+  const Heading = headingLevel === 2 ? 'h2' : 'h3';
 
   const guestLabel = pkg.guestsMax
     ? `${pkg.guestsMin}–${pkg.guestsMax} ${copy.packages.guests}`
@@ -40,7 +48,7 @@ export function PackageCard({
 
       {/* Reserves two lines so the four cards stay aligned when one kicker wraps. */}
       <p className="eyebrow sm:min-h-[2.1em]">{t(pkg.kicker, locale)}</p>
-      <h3 className="display-3 mt-2 text-bone-50">{t(pkg.name, locale)}</h3>
+      <Heading className="display-3 mt-2 text-bone-50">{t(pkg.name, locale)}</Heading>
       <p className="mt-1 text-sm text-bone-500">{guestLabel}</p>
 
       <div className="mt-6">

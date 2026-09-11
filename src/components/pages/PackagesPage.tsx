@@ -35,7 +35,7 @@ export async function PackagesPage({ locale }: { locale: Locale }) {
           <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
             {packages.map((pkg) => (
               <div key={pkg.id} className="reveal">
-                <PackageCard pkg={pkg} locale={locale} copy={copy} />
+                <PackageCard pkg={pkg} locale={locale} copy={copy} headingLevel={2} />
               </div>
             ))}
           </div>

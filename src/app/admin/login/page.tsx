@@ -16,11 +16,14 @@ export default async function LoginPage({
   const changed = query.changed === '1';
 
   return (
-    <div className="flex min-h-screen items-center justify-center px-5 py-12">
+    <main className="flex min-h-screen items-center justify-center px-5 py-12">
       <div className="w-full max-w-sm">
         <div className="mb-8 text-center">
-          <p className="font-[family-name:var(--font-display)] text-2xl text-stone-900">Cordiale</p>
-          <p className="mt-1 text-[0.65rem] uppercase tracking-[0.2em] text-stone-500">Pannello</p>
+          {/* The brand is the page's only title, so it is the h1: the login
+              screen had no heading and no landmark at all. */}
+          <h1 className="font-[family-name:var(--font-display)] text-2xl font-normal text-stone-900">Cordiale</h1>
+          {/* stone-500 at this size is 4.4:1 on white — just under AA. */}
+          <p className="mt-1 text-[0.65rem] uppercase tracking-[0.2em] text-stone-600">Pannello</p>
         </div>
         {changed && (
           <p className="mb-4 rounded-lg border border-emerald-200 bg-emerald-50 p-3 text-sm text-emerald-800">
@@ -29,6 +32,6 @@ export default async function LoginPage({
         )}
         <LoginForm next={next} />
       </div>
-    </div>
+    </main>
   );
 }
