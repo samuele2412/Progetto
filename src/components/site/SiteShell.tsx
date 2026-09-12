@@ -130,6 +130,7 @@ export async function SiteShell({ locale, children }: { locale: Locale; children
         quoteLabel={copy.cta.quote}
         whatsappHref={whatsappHref}
         whatsappLabel={copy.cta.whatsapp}
+        regionLabel={copy.nav.quickActions}
         hideOnPaths={[path('request', locale), path('thanks', locale)]}
       />
 

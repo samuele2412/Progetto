@@ -1,6 +1,6 @@
 'use client';
 
-import Image from 'next/image';
+import { AssetImage } from './AssetImage';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Drawer } from './Drawer';
 import { useToast } from './Toasts';
@@ -170,10 +170,9 @@ export function MediaPicker({
                   className="group block w-full overflow-hidden rounded-lg border border-stone-200 bg-white text-left transition-colors hover:border-stone-900 focus-visible:border-stone-900"
                 >
                   <span className="relative block aspect-square bg-stone-100">
-                    <Image
+                    <AssetImage
                       src={item.path}
                       alt={item.alt.it || item.originalName}
-                      fill
                       sizes="120px"
                       className="object-cover"
                     />

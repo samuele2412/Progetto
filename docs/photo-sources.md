@@ -62,6 +62,30 @@ obbligo da riportare sul sito.
 | `galleria-versata.webp` | Galleria | [stocksnap](https://stocksnap.io/photo/pouring-wine-6JMD0WXXTG) | CC0-1.0 |
 | `hero-bancone.webp` | Hero della home | [rawpixel](https://www.rawpixel.com/image/3301385/free-photo-image-cocktail-bar-club) | CC0-1.0 |
 
+### L'immagine social
+
+`public/images/og/og-default.jpg` (1200×630) è l'anteprima che compare quando
+qualcuno incolla un link del sito su WhatsApp, Instagram, Facebook o LinkedIn.
+Non è una fotografia: è una composizione con il marchio, la frase del sito e —
+sullo sfondo, scurita — la stessa `hero-bancone.webp` di cui sopra. Vale quindi
+la stessa licenza CC0 e la stessa nota di temporaneità.
+
+Si rigenera con:
+
+```bash
+npm i -D playwright && npx playwright install chromium   # una tantum
+npm run dev                                              # serve i font, in un altro terminale
+node scripts/make-brand-images.mjs http://127.0.0.1:3000
+```
+
+Playwright non è fra le dipendenze del progetto apposta: serve solo a questo
+script, che si lancia una volta ogni tanto, e porterebbe con sé un browser da
+scaricare a ogni `npm install`.
+
+Lo script rifà anche `src/app/apple-icon.png`, l'icona da 180×180 che iOS usa
+quando il sito viene aggiunto alla schermata Home. Cambiando la foto dell'hero
+conviene rilanciarlo.
+
 ---
 
 ## Come sostituirle con le tue

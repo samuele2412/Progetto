@@ -346,8 +346,8 @@ export async function HomePage({ locale }: { locale: Locale }) {
       <section className="section border-t border-[var(--hairline)] bg-ink-900">
         <div className="container-page">
           <SectionHeader
-            title={t(settings.home.testimonialsTitle, locale)}
-            intro={t(settings.home.testimonialsIntro, locale)}
+            title={testimonials.length ? t(settings.home.testimonialsTitle, locale) : copy.misc.promisesTitle}
+            intro={testimonials.length ? t(settings.home.testimonialsIntro, locale) : copy.misc.promisesIntro}
           />
           <div className="section-body">
             <Testimonials testimonials={testimonials} locale={locale} copy={copy} />
@@ -363,7 +363,7 @@ export async function HomePage({ locale }: { locale: Locale }) {
               title={t(settings.home.faqTitle, locale)}
               intro={t(settings.home.faqIntro, locale)}
             />
-            <div className="reveal mt-12">
+            <div className="reveal section-body">
               <FaqList faqs={homeFaqs} locale={locale} />
             </div>
             <div className="mt-8">

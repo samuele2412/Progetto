@@ -79,6 +79,19 @@ function first(value: string | string[] | undefined): string | undefined {
   return Array.isArray(value) ? value[0] : value;
 }
 
+/**
+ * First `limit` characters of a body of prose, cut at a word and finished with
+ * an ellipsis. A plain slice() ended the "Chi siamo" meta description mid-word,
+ * which is what a search result then showed.
+ */
+function summarise(text: string, limit: number): string {
+  const flat = text.replace(/\s+/g, ' ').trim();
+  if (flat.length <= limit) return flat;
+  const cut = flat.slice(0, limit);
+  const lastSpace = cut.lastIndexOf(' ');
+  return `${(lastSpace > limit * 0.6 ? cut.slice(0, lastSpace) : cut).replace(/[,;:.\s]+$/, '')}…`;
+}
+
 export async function generateMetadata({
   params,
 }: {
@@ -165,7 +178,7 @@ export async function generateMetadata({
     },
     about: {
       title: t(settings.about.title, locale),
-      description: t(settings.about.body, locale).slice(0, 180),
+      description: summarise(t(settings.about.body, locale), 180),
     },
     partners: {
       title: t(settings.partners.title, locale),
@@ -256,7 +269,7 @@ export default async function Page({
   if (resolved.kind === 'cms') {
     const found = await getPublishedPageBySlug(resolved.slug, locale);
     if (!found) notFound();
-    return <CmsPage locale={locale} page={found.content} />;
+    return <CmsPage locale={locale} page={found.content} slug={resolved.slug} />;
   }
 
   const query = await searchParams;

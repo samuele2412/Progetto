@@ -362,6 +362,15 @@ Finché un'immagine non esiste, il sito mostra un segnaposto grafico coerente
 con il design, non un'icona rotta: si può andare online e sostituire le foto a
 mano a mano.
 
+Le fotografie attualmente in linea sono **temporanee** (CC0, elenco e licenze in
+[`docs/photo-sources.md`](docs/photo-sources.md)) e sono contrassegnate come tali
+dentro Media.
+
+**L'anteprima social** (quella che appare incollando un link su WhatsApp o
+Instagram) è `public/images/og/og-default.jpg`: non è una foto ma una
+composizione con marchio e frase del sito, e si rigenera con
+`scripts/make-brand-images.mjs` — vedi lo stesso documento.
+
 ---
 
 ## 8. Backup e ripristino

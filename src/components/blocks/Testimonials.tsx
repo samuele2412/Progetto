@@ -21,21 +21,66 @@ function Stars({ rating }: { rating: number }) {
 }
 
 /**
- * Renders nothing but an honest note until real reviews exist. Inventing
- * testimonials is the fastest way to lose a client who checks.
+ * Real reviews, or — until there are any — what we commit to instead.
+ *
+ * Inventing testimonials is the fastest way to lose a client who checks, so the
+ * empty state says plainly that there are none yet. It used to say only that,
+ * which left a titled section holding one grey sentence: the most important
+ * page on the site went quiet exactly where a visitor looks for reassurance.
+ * The promises beside it are restatements of commitments already made on this
+ * site (see dictionary.promises) — never a claim about a past we do not have.
  */
 export function Testimonials({
   testimonials,
   locale,
   copy,
+  headingLevel = 3,
 }: {
   testimonials: Testimonial[];
   locale: Locale;
   copy: Dictionary;
+  /**
+   * h3 by default: these sit under a section heading. A section built in the
+   * panel can have its title left empty, and then these become the first
+   * headings under the page h1 — a skipped level — so the renderer moves them
+   * up to h2. See BlockRenderer.
+   */
+  headingLevel?: 2 | 3;
 }) {
+  const Heading = headingLevel === 2 ? 'h2' : 'h3';
   if (!testimonials.length) {
+    const promises = [
+      copy.promises.fixedPrice,
+      copy.promises.noAutoBooking,
+      copy.promises.freeQuote,
+      copy.promises.onePerson,
+    ];
     return (
-      <p className="reveal max-w-xl text-sm leading-relaxed text-bone-500">{copy.misc.noReviewsYet}</p>
+      <div className="reveal card grid gap-8 p-6 sm:p-8 lg:grid-cols-[1fr_1.15fr] lg:gap-12 lg:p-10">
+        <div>
+          <Heading className="font-[family-name:var(--font-display)] text-xl text-bone-50 sm:text-2xl">
+            {copy.misc.noReviewsTitle}
+          </Heading>
+          <p className="mt-4 text-sm leading-relaxed text-bone-400">{copy.misc.noReviewsYet}</p>
+        </div>
+        <ul className="grid gap-x-8 gap-y-4 sm:grid-cols-2 lg:border-l lg:border-[var(--hairline)] lg:pl-12">
+          {promises.map((promise) => (
+            <li key={promise} className="flex gap-3 text-sm leading-relaxed text-bone-200">
+              <svg
+                viewBox="0 0 16 16"
+                className="mt-1 h-3.5 w-3.5 shrink-0 text-brass-500"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.8"
+                aria-hidden
+              >
+                <path d="M3 8.5l3.2 3.2L13 5" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+              <span>{promise}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
     );
   }
 

@@ -1,6 +1,6 @@
 import 'server-only';
 import { cache } from 'react';
-import { and, asc, eq, isNull, or } from 'drizzle-orm';
+import { and, asc, eq, or } from 'drizzle-orm';
 import { db } from '@/db';
 import { pageSections, pages, sectionTemplates, type Page, type PublishedPage } from '@/db/schema';
 import type { Locale } from './i18n';
@@ -54,11 +54,6 @@ export const getPublishedPages = cache(async (): Promise<Page[]> => {
 });
 
 /** Published pages that asked to appear in the site navigation. */
-export const getNavigationPages = cache(async (): Promise<Page[]> => {
-  const all = await getPublishedPages();
-  return all.filter((page) => page.inNavigation);
-});
-
 /* -------------------------------------------------------------------------- */
 /* Panel side                                                                 */
 /* -------------------------------------------------------------------------- */
@@ -164,6 +159,3 @@ export async function listSectionTemplates() {
 }
 
 /** Pages created in the panel, i.e. not one of the built-in routes. */
-export async function listCustomPages(): Promise<Page[]> {
-  return db.select().from(pages).where(isNull(pages.routeKey)).orderBy(asc(pages.position), asc(pages.id));
-}

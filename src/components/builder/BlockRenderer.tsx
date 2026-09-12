@@ -86,16 +86,32 @@ function Header({
   config,
   locale,
   align = 'left',
+  /**
+   * Only the hero block used to be able to produce an h1, so a page built in
+   * the panel that opened with any other block had none — no document outline
+   * for a screen reader, and nothing for a search engine to read as the page's
+   * subject. The first block on the page takes it now, whatever it is.
+   */
+  isFirst = false,
 }: {
   config: Record<string, unknown>;
   locale: Locale;
   align?: 'left' | 'center';
+  isFirst?: boolean;
 }) {
   const title = tx(config.title, locale);
   const eyebrow = tx(config.eyebrow, locale);
   const intro = tx(config.intro, locale);
   if (!title && !eyebrow && !intro) return null;
-  return <SectionHeader eyebrow={eyebrow || undefined} title={title} intro={intro || undefined} align={align} />;
+  return (
+    <SectionHeader
+      eyebrow={eyebrow || undefined}
+      title={title}
+      intro={intro || undefined}
+      align={align}
+      headingLevel={isFirst && title ? 1 : 2}
+    />
+  );
 }
 
 /** Markdown body, styled the way the hand-written pages style theirs. */
@@ -133,6 +149,14 @@ export function BlockSection({
   isFirst: boolean;
 }) {
   const c = block.config;
+  /**
+   * What heading level the cards inside this section should use.
+   *
+   * A section with a title renders it as an h2 (or the page h1, when it is the
+   * first), and the cards under it are h3. With the title left empty there is
+   * no section heading at all, so h3 cards would skip a level — they take h2.
+   */
+  const cardHeading: 2 | 3 = tx(c.title, locale) ? 3 : 2;
   const background = (c.background ?? 'default') as 'default' | 'alt' | 'contrast';
   const width = (c.width ?? 'boxed') as 'boxed' | 'narrow' | 'full';
   const columns = (c.columns ?? '3') as '2' | '3' | '4';
@@ -198,7 +222,7 @@ export function BlockSection({
         <section className={sectionClass(background)}>
           <div className={containerClass(width)}>
             <div className={alignClass(align)}>
-              <Header config={c} locale={locale} align={align} />
+              <Header config={c} locale={locale} isFirst={isFirst} align={align} />
               <Body source={tx(c.body, locale)} className={cn('mt-8 max-w-3xl', align === 'center' && 'mx-auto')} />
             </div>
             {imagePath && (
@@ -229,7 +253,12 @@ export function BlockSection({
       const textColumn = (
         <div className={cn('reveal', !imageFirst && 'lg:order-1')}>
           {tx(c.eyebrow, locale) && <p className="eyebrow">{tx(c.eyebrow, locale)}</p>}
-          {tx(c.title, locale) && <h2 className="display-2 mt-3 text-bone-50">{tx(c.title, locale)}</h2>}
+          {tx(c.title, locale) &&
+            (isFirst ? (
+              <h1 className="display-2 mt-3 text-bone-50">{tx(c.title, locale)}</h1>
+            ) : (
+              <h2 className="display-2 mt-3 text-bone-50">{tx(c.title, locale)}</h2>
+            ))}
           <Body source={tx(c.body, locale)} className="mt-5" />
           {(() => {
             const cta = <Cta link={c.cta} locale={locale} />;
@@ -262,7 +291,7 @@ export function BlockSection({
       return (
         <section className={sectionClass(background)}>
           <div className={containerClass(width)}>
-            <Header config={c} locale={locale} />
+            <Header config={c} locale={locale} isFirst={isFirst} />
             <div className={cn(imageGridClass(columns), 'mt-12')}>
               {items.map((item, index) => (
                 <figure
@@ -294,11 +323,11 @@ export function BlockSection({
       return (
         <section className={sectionClass(background)}>
           <div className={containerClass(width)}>
-            <Header config={c} locale={locale} />
+            <Header config={c} locale={locale} isFirst={isFirst} />
             <div className={cn(gridClass(columns), 'mt-12')}>
               {items.map((cocktail, index) => (
                 <div key={cocktail.id} className={cn('reveal', `reveal-delay-${Math.min((index % 4) + 1, 4)}`)}>
-                  <CocktailCard cocktail={cocktail} locale={locale} />
+                  <CocktailCard cocktail={cocktail} locale={locale} headingLevel={cardHeading} />
                 </div>
               ))}
             </div>
@@ -320,14 +349,14 @@ export function BlockSection({
       return (
         <section className={sectionClass(background)}>
           <div className={containerClass(width)}>
-            <Header config={c} locale={locale} />
+            <Header config={c} locale={locale} isFirst={isFirst} />
             <div className={cn(gridClass(columns), hasHeader ? 'mt-12' : '')}>
               {items.map((pkg, index) => (
                 <div key={pkg.id} className={cn('reveal', `reveal-delay-${Math.min((index % 4) + 1, 4)}`)}>
                   {/* Without a heading above the grid the cards are the page's
                       first subheading, so they move up a level to keep the
                       outline continuous. */}
-                  <PackageCard pkg={pkg} locale={locale} copy={copy} headingLevel={hasHeader ? 3 : 2} />
+                  <PackageCard pkg={pkg} locale={locale} copy={copy} headingLevel={cardHeading} />
                 </div>
               ))}
             </div>
@@ -365,9 +394,9 @@ export function BlockSection({
       return (
         <section className={sectionClass(background)}>
           <div className={containerClass(width)}>
-            <Header config={c} locale={locale} />
+            <Header config={c} locale={locale} isFirst={isFirst} />
             <div className="mt-12">
-              <Testimonials testimonials={items} locale={locale} copy={copy} />
+              <Testimonials testimonials={items} locale={locale} copy={copy} headingLevel={cardHeading} />
             </div>
           </div>
         </section>
@@ -395,9 +424,9 @@ export function BlockSection({
       return (
         <section className={sectionClass(background)}>
           <div className={containerClass(width)}>
-            <Header config={c} locale={locale} />
+            <Header config={c} locale={locale} isFirst={isFirst} />
             <div className="mt-10">
-              <FaqList faqs={items} locale={locale} />
+              <FaqList faqs={items} locale={locale} headingLevel={cardHeading} />
             </div>
           </div>
         </section>
@@ -413,9 +442,9 @@ export function BlockSection({
       return (
         <section className={sectionClass(background)}>
           <div className={containerClass(width)}>
-            <Header config={c} locale={locale} />
+            <Header config={c} locale={locale} isFirst={isFirst} />
             <div className="mt-12">
-              <StepList steps={items} />
+              <StepList steps={items} headingLevel={cardHeading} />
             </div>
           </div>
         </section>
@@ -434,7 +463,11 @@ export function BlockSection({
             style={{ background: 'radial-gradient(90% 70% at 50% 0%, rgba(201,164,106,0.12), transparent 60%)' }}
           />
           <div className="container-page relative text-center">
-            <h2 className="display-2 reveal mx-auto max-w-2xl text-bone-50">{title}</h2>
+            {isFirst ? (
+              <h1 className="display-2 reveal mx-auto max-w-2xl text-bone-50">{title}</h1>
+            ) : (
+              <h2 className="display-2 reveal mx-auto max-w-2xl text-bone-50">{title}</h2>
+            )}
             {tx(c.body, locale) && (
               <p className="reveal mx-auto mt-5 max-w-xl leading-relaxed text-bone-400">{tx(c.body, locale)}</p>
             )}
@@ -455,7 +488,12 @@ export function BlockSection({
         <section className={sectionClass(background)}>
           <div className={containerClass(width)}>
             <div className={alignClass(align)}>
-              {tx(c.title, locale) && <h2 className="display-2 reveal text-bone-50">{tx(c.title, locale)}</h2>}
+              {tx(c.title, locale) &&
+                (isFirst ? (
+                  <h1 className="display-2 reveal text-bone-50">{tx(c.title, locale)}</h1>
+                ) : (
+                  <h2 className="display-2 reveal text-bone-50">{tx(c.title, locale)}</h2>
+                ))}
               <Body source={body} className={cn('mt-6 max-w-3xl', align === 'center' && 'mx-auto')} />
             </div>
           </div>
@@ -470,7 +508,12 @@ export function BlockSection({
       return (
         <section className={sectionClass(background)}>
           <div className={containerClass(width)}>
-            {tx(c.title, locale) && <h2 className="display-2 reveal mb-6 text-bone-50">{tx(c.title, locale)}</h2>}
+            {tx(c.title, locale) &&
+              (isFirst ? (
+                <h1 className="display-2 reveal mb-6 text-bone-50">{tx(c.title, locale)}</h1>
+              ) : (
+                <h2 className="display-2 reveal mb-6 text-bone-50">{tx(c.title, locale)}</h2>
+              ))}
             {/* Parsed against an allow-list into React elements — see
                 lib/safe-html.ts. Nothing here is raw markup. */}
             <div className="reveal max-w-3xl">{renderSafeHtml(html)}</div>

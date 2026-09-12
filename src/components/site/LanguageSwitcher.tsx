@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname, useSearchParams } from 'next/navigation';
-import { locales, localeShort, type Locale } from '@/lib/i18n';
+import { locales, localeLabel, localeShort, type Locale } from '@/lib/i18n';
 import { routeSlugs } from '@/lib/routes';
 import { cn } from '@/lib/utils';
 
@@ -67,6 +67,11 @@ export function LanguageSwitcher({
           <Link
             href={translate(target)}
             hrefLang={target}
+            // "IT" and "EN" are clear on screen and meaningless read aloud, so
+            // the accessible name is the language's own name — and `lang` makes
+            // the screen reader pronounce it with that language's voice.
+            lang={target}
+            aria-label={localeLabel[target]}
             aria-current={target === locale ? 'true' : undefined}
             className={cn(
               'tap-target rounded px-2 py-2 tracking-wider transition-colors',

@@ -32,6 +32,37 @@ export const dynamic = 'force-dynamic';
  * owner still finds the request in the panel, which is the difference between
  * a slow reply and a lost booking.
  */
+/** Our own message keys: lower snake_case, nothing else. */
+const MESSAGE_KEY = /^[a-z][a-z0-9_]{2,39}$/;
+
+/**
+ * What to say when a field is missing altogether.
+ *
+ * The schema attaches a key to every *constraint*, but a field that is absent
+ * fails zod's type check first, and that carries zod's own English sentence
+ * ("Invalid input: expected string, received undefined"). It was going out over
+ * the wire as-is: an internal detail on a public endpoint, in the wrong
+ * language, and one the client cannot translate — so a missing name showed the
+ * generic "check the highlighted fields" instead of naming the problem.
+ */
+const FALLBACK_KEY: Record<string, string> = {
+  name: 'name_short',
+  email: 'email_invalid',
+  phone: 'phone_invalid',
+  eventDate: 'date_invalid',
+  eventTypeSlug: 'event_type_required',
+  area: 'area_required',
+  guestsRange: 'guests_required',
+  message: 'message_long',
+  consentPrivacy: 'consent_required',
+  cordialeHp: 'spam_detected',
+};
+
+function messageKeyFor(field: string, message: string): string {
+  if (MESSAGE_KEY.test(message)) return message;
+  return FALLBACK_KEY[field] ?? 'generic';
+}
+
 export async function POST(request: Request) {
   const headerList = await headers();
   const ip = clientIp(headerList);
@@ -71,7 +102,7 @@ export async function POST(request: Request) {
     const fields: Record<string, string> = {};
     for (const issue of parsed.error.issues) {
       const field = String(issue.path[0] ?? 'form');
-      if (!fields[field]) fields[field] = issue.message;
+      if (!fields[field]) fields[field] = messageKeyFor(field, issue.message);
     }
     return NextResponse.json({ ok: false, error: 'generic', fields }, { status: 422 });
   }

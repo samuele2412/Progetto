@@ -33,8 +33,3 @@ export const getSettings = cache(async (): Promise<SiteSettings> => {
   }
   return merged as unknown as SiteSettings;
 });
-
-export async function getSettingsGroup<K extends keyof SiteSettings>(key: K): Promise<SiteSettings[K]> {
-  const all = await getSettings();
-  return all[key];
-}

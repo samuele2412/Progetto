@@ -118,6 +118,7 @@ export function RequestForm(props: Props) {
   const [touchedPackage, setTouchedPackage] = useState(Boolean(props.initialPackage));
 
   const startedAt = useRef(Date.now());
+  const formRef = useRef<HTMLFormElement>(null);
   const headingRef = useRef<HTMLHeadingElement>(null);
   const honeypot = useRef<HTMLInputElement>(null);
   const [turnstileToken, setTurnstileToken] = useState('');
@@ -191,6 +192,45 @@ export function RequestForm(props: Props) {
     }
   }
 
+  /**
+   * Wires a control to its own error message.
+   *
+   * aria-invalid alone tells a screen reader that something is wrong and not
+   * what: the sentence under the field was on screen but not associated with
+   * it. `extra` keeps any hint the field already points at.
+   */
+  function describe(field: string, extra?: string) {
+    const ids = [extra, errors[field] ? `${field}-error` : null].filter(Boolean).join(' ');
+    return {
+      'aria-invalid': errors[field] ? true : undefined,
+      'aria-describedby': ids || undefined,
+    } as const;
+  }
+
+  /**
+   * Sends focus — and the viewport — to the first thing left to fix.
+   *
+   * Without it, tapping "Continua" with an error further up the step did
+   * nothing a phone user could see: the message was above the fold and the page
+   * never moved, so the button read as broken. Runs after paint, because the
+   * messages appear in the same state update that produced them.
+   */
+  function focusFirstInvalid(fields: string[]) {
+    requestAnimationFrame(() => {
+      const form = formRef.current;
+      if (!form) return;
+      const controls = form.querySelectorAll<HTMLElement>('input[name], select[name], textarea[name]');
+      for (const control of controls) {
+        if (!fields.includes(control.getAttribute('name') ?? '')) continue;
+        control.focus({ preventScroll: true });
+        // The message sits just under the field, so centring the field puts
+        // both on screen.
+        (control.closest('fieldset, div') ?? control).scrollIntoView({ block: 'center', behavior: 'smooth' });
+        return;
+      }
+    });
+  }
+
   function validateStep(index: number): boolean {
     const next: Record<string, string> = {};
 
@@ -214,7 +254,9 @@ export function RequestForm(props: Props) {
     }
 
     setErrors(next);
-    return Object.keys(next).length === 0;
+    const fields = Object.keys(next);
+    if (fields.length) focusFirstInvalid(fields);
+    return fields.length === 0;
   }
 
   function goNext() {
@@ -292,7 +334,7 @@ export function RequestForm(props: Props) {
   const consentAfter = linkIndex >= 0 ? props.copy.form.consent.slice(linkIndex + props.copy.form.consentLink.length) : '';
 
   return (
-    <form onSubmit={handleSubmit} noValidate className="card p-6 md:p-9">
+    <form ref={formRef} onSubmit={handleSubmit} noValidate className="card p-6 md:p-9">
       {/* Progress */}
       <div className="mb-8">
         <div className="flex items-center justify-between text-xs text-bone-500">
@@ -352,7 +394,9 @@ export function RequestForm(props: Props) {
       {/* ---------------- STEP 1 ---------------- */}
       {step === 0 && (
         <div className="space-y-7">
-          <fieldset>
+          {/* The message is described on the group, not on each radio: a
+              fieldset is what a screen reader announces when entering it. */}
+          <fieldset aria-describedby={errors.eventTypeSlug ? 'eventTypeSlug-error' : undefined}>
             <legend className="field-label">{props.copy.form.eventType}</legend>
             <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
               {props.eventTypes.map((option) => (
@@ -369,7 +413,11 @@ export function RequestForm(props: Props) {
                 </label>
               ))}
             </div>
-            {errors.eventTypeSlug && <p className="field-error">{errors.eventTypeSlug}</p>}
+            {errors.eventTypeSlug && (
+              <p id="eventTypeSlug-error" className="field-error">
+                {errors.eventTypeSlug}
+              </p>
+            )}
           </fieldset>
 
           <div>
@@ -385,8 +433,7 @@ export function RequestForm(props: Props) {
               min={today}
               max={maxDate}
               disabled={values.dateFlexible}
-              aria-invalid={Boolean(errors.eventDate)}
-              aria-describedby="date-note"
+              {...describe('eventDate', 'date-note')}
               onChange={(event) => set('eventDate', event.target.value)}
             />
             <label className="mt-2 flex min-h-11 cursor-pointer items-center gap-3 text-sm text-bone-400">
@@ -401,7 +448,11 @@ export function RequestForm(props: Props) {
               />
               {props.copy.form.dateFlexible}
             </label>
-            {errors.eventDate && <p className="field-error">{errors.eventDate}</p>}
+            {errors.eventDate && (
+              <p id="eventDate-error" className="field-error">
+                {errors.eventDate}
+              </p>
+            )}
             <p id="date-note" className="mt-2 text-xs text-bone-500">
               {props.copy.form.dateNote}
             </p>
@@ -416,7 +467,7 @@ export function RequestForm(props: Props) {
               name="area"
               className="field"
               value={values.area}
-              aria-invalid={Boolean(errors.area)}
+              {...describe('area')}
               onChange={(event) => set('area', event.target.value as AreaOption)}
             >
               <option value="">—</option>
@@ -426,10 +477,14 @@ export function RequestForm(props: Props) {
                 </option>
               ))}
             </select>
-            {errors.area && <p className="field-error">{errors.area}</p>}
+            {errors.area && (
+              <p id="area-error" className="field-error">
+                {errors.area}
+              </p>
+            )}
           </div>
 
-          <fieldset>
+          <fieldset aria-describedby={errors.guestsRange ? 'guestsRange-error' : undefined}>
             <legend className="field-label">{props.copy.form.guests}</legend>
             <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
               {guestRanges.map((range) => (
@@ -446,7 +501,11 @@ export function RequestForm(props: Props) {
                 </label>
               ))}
             </div>
-            {errors.guestsRange && <p className="field-error">{errors.guestsRange}</p>}
+            {errors.guestsRange && (
+              <p id="guestsRange-error" className="field-error">
+                {errors.guestsRange}
+              </p>
+            )}
           </fieldset>
         </div>
       )}
@@ -592,10 +651,14 @@ export function RequestForm(props: Props) {
               autoComplete="name"
               className="field"
               value={values.name}
-              aria-invalid={Boolean(errors.name)}
+              {...describe('name')}
               onChange={(event) => set('name', event.target.value)}
             />
-            {errors.name && <p className="field-error">{errors.name}</p>}
+            {errors.name && (
+              <p id="name-error" className="field-error">
+                {errors.name}
+              </p>
+            )}
           </div>
 
           <div className="grid gap-5 sm:grid-cols-2">
@@ -612,10 +675,14 @@ export function RequestForm(props: Props) {
                 className="field"
                 placeholder="+39 …"
                 value={values.phone}
-                aria-invalid={Boolean(errors.phone)}
+                {...describe('phone')}
                 onChange={(event) => set('phone', event.target.value)}
               />
-              {errors.phone && <p className="field-error">{errors.phone}</p>}
+              {errors.phone && (
+                <p id="phone-error" className="field-error">
+                  {errors.phone}
+                </p>
+              )}
             </div>
             <div>
               <label htmlFor="email" className="field-label">
@@ -629,10 +696,14 @@ export function RequestForm(props: Props) {
                 autoComplete="email"
                 className="field"
                 value={values.email}
-                aria-invalid={Boolean(errors.email)}
+                {...describe('email')}
                 onChange={(event) => set('email', event.target.value)}
               />
-              {errors.email && <p className="field-error">{errors.email}</p>}
+              {errors.email && (
+                <p id="email-error" className="field-error">
+                  {errors.email}
+                </p>
+              )}
             </div>
           </div>
 
@@ -649,9 +720,10 @@ export function RequestForm(props: Props) {
           <label className="flex min-h-11 cursor-pointer items-start gap-3 py-1 text-sm text-bone-300">
             <input
               type="checkbox"
+              name="consentPrivacy"
               checked={values.consentPrivacy}
               onChange={(event) => set('consentPrivacy', event.target.checked)}
-              aria-invalid={Boolean(errors.consentPrivacy)}
+              {...describe('consentPrivacy')}
               className="checkbox mt-0.5"
             />
             <span>
@@ -670,7 +742,11 @@ export function RequestForm(props: Props) {
               {consentAfter}
             </span>
           </label>
-          {errors.consentPrivacy && <p className="field-error">{errors.consentPrivacy}</p>}
+          {errors.consentPrivacy && (
+            <p id="consentPrivacy-error" className="field-error">
+              {errors.consentPrivacy}
+            </p>
+          )}
 
           {props.turnstileSiteKey && (
             <>

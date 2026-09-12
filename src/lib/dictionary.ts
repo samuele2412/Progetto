@@ -20,6 +20,7 @@ export const dictionary = {
     faq: { it: 'Domande frequenti', en: 'FAQ' },
     menu: { it: 'Apri il menu', en: 'Open menu' },
     close: { it: 'Chiudi il menu', en: 'Close menu' },
+    quickActions: { it: 'Azioni rapide', en: 'Quick actions' },
   },
   cta: {
     quote: { it: 'Richiedi il preventivo', en: 'Request a quote' },
@@ -180,6 +181,56 @@ export const dictionary = {
       it: 'Le prime recensioni arriveranno qui appena i clienti le lasceranno. Non pubblichiamo recensioni che non esistono.',
       en: 'The first reviews will appear here as soon as clients leave them. We do not publish reviews that do not exist.',
     },
+    noReviewsTitle: {
+      it: 'Non abbiamo ancora recensioni da mostrarti',
+      en: 'We have no reviews to show you yet',
+    },
+    /**
+     * Replace the section's own title and intro while the list is empty: with
+     * the owner's copy ("Cosa dicono — recensioni di chi ci ha avuto alla
+     * propria festa") the heading promised reviews that the card underneath
+     * then said do not exist.
+     */
+    promisesTitle: { it: 'Cosa possiamo prometterti', en: 'What we can promise you' },
+    promisesIntro: {
+      it: 'Queste sono le cose su cui puoi contare da subito.',
+      en: 'These are the things you can count on from the start.',
+    },
+  },
+  /**
+   * What we promise, before anyone has reviewed us.
+   *
+   * Every line here restates a commitment already made elsewhere on the site
+   * (the value props, the request page): it is what the service does, not a
+   * claim about a past it does not have yet. Nothing in this group may become
+   * a testimonial, a number or a credential.
+   */
+  promises: {
+    fixedPrice: {
+      it: 'Prezzo concordato prima dell’evento, non un conteggio a fine serata.',
+      en: 'A price agreed before the event, not a tally at the end of the night.',
+    },
+    noAutoBooking: {
+      it: 'Niente viene prenotato automaticamente: la data la verifichiamo noi.',
+      en: 'Nothing is booked automatically — we check the date ourselves.',
+    },
+    freeQuote: {
+      it: 'Chiedere un preventivo non costa nulla e non impegna.',
+      en: 'Asking for a quote costs nothing and commits you to nothing.',
+    },
+    onePerson: {
+      it: 'Ti risponde chi sta dietro al bancone, dalla prima domanda all’ultimo bicchiere.',
+      en: 'You talk to the person behind the counter, from the first question to the last glass.',
+    },
+    replyTime: {
+      it: 'Di solito rispondiamo entro 24 ore.',
+      en: 'We usually reply within 24 hours.',
+    },
+    inAHurry: { it: 'Hai fretta?', en: 'In a hurry?' },
+    inAHurryBody: {
+      it: 'Scrivici direttamente. Legge la stessa persona che riceve il modulo.',
+      en: 'Write to us directly. It is the same person who reads the form.',
+    },
   },
 } as const;
 
@@ -201,6 +252,7 @@ export function d(locale: Locale) {
     form: resolve(dictionary.form),
     errors: resolve(dictionary.errors),
     misc: resolve(dictionary.misc),
+    promises: resolve(dictionary.promises),
   };
 }
 

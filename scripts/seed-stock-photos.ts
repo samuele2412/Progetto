@@ -115,7 +115,9 @@ async function main() {
   const portrait = pathOf.get('ritratto-bartender')!;
   if (await patchGroup('hero', { imagePath: hero })) console.log('[stock] hero collegato');
   if (await patchGroup('about', { imagePath: portrait })) console.log('[stock] ritratto collegato');
-  if (await patchGroup('seo', { ogImagePath: hero })) console.log('[stock] immagine social collegata');
+  // The social card is not a photograph to be swapped in: it is a composed
+  // 1200x630 image (scripts/make-brand-images.mjs) that ships with the site, so
+  // nothing here touches seo.ogImagePath.
 
   /* ---- 3. cocktails ------------------------------------------------------ */
   const cocktailBySlug: Record<string, string> = {

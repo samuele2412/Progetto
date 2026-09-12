@@ -1,6 +1,6 @@
 'use client';
 
-import Image from 'next/image';
+import { AssetImage } from './AssetImage';
 import { useActionState, useMemo, useRef, useState, useTransition } from 'react';
 import { deleteMediaAction, updateMediaAction, type CmsState } from '@/app/admin/cms-actions';
 import { Drawer } from './Drawer';
@@ -156,10 +156,9 @@ export function MediaLibrary({ assets, maxMb }: { assets: Asset[]; maxMb: number
                 className="admin-card block w-full overflow-hidden text-left transition-colors hover:border-stone-400"
               >
                 <span className="relative block aspect-square bg-stone-100">
-                  <Image
+                  <AssetImage
                     src={asset.path}
                     alt={asset.alt.it || asset.originalName}
-                    fill
                     sizes="(min-width: 1280px) 20vw, (min-width: 1024px) 25vw, (min-width: 640px) 33vw, 50vw"
                     className="object-cover"
                   />
@@ -193,7 +192,7 @@ function AssetDrawer({ asset, onClose }: { asset: Asset; onClose: () => void }) 
   return (
     <Drawer open onClose={onClose} title={asset.originalName} description={`${formatSize(asset.sizeBytes)} · ${asset.mimeType}`}>
       <div className="relative mb-4 aspect-video overflow-hidden rounded-lg bg-stone-100">
-        <Image src={asset.path} alt={asset.alt.it || asset.originalName} fill sizes="480px" className="object-contain" />
+        <AssetImage src={asset.path} alt={asset.alt.it || asset.originalName} sizes="480px" className="object-contain" />
       </div>
 
       {asset.isTemporary && (

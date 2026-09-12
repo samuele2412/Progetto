@@ -24,8 +24,6 @@ export type LocalizedValue = z.infer<typeof localizedSchema>;
 
 export const emptyLocalized = (): LocalizedValue => ({ it: '', en: '' });
 
-export const localizedOf = (it: string, en: string): LocalizedValue => ({ it, en });
-
 /**
  * A link the owner can point anywhere on the site — or at a phone number, an
  * email or an external page.

@@ -44,7 +44,12 @@ export async function generateMetadata({
       template: t(settings.seo.titleTemplate, locale),
     },
     applicationName: settings.seo.siteName,
-    formatDetection: { telephone: true, address: false, email: true },
+    // Only `address`. Next writes "<key>=no" for every key *present* in this
+    // object, whatever its value (see next/dist/lib/metadata/generate/basic),
+    // so `{ telephone: true, email: true }` published "telephone=no, email=no"
+    // and told iOS to stop linking the very phone number and address this
+    // business wants tapped. Leaving them out is what enables them.
+    formatDetection: { address: false },
   };
 }
 

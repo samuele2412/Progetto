@@ -64,12 +64,8 @@ export async function RequestPage({
 
           <aside className="h-fit lg:sticky lg:top-28">
             <div className="card p-6">
-              <p className="eyebrow">{locale === 'en' ? 'In a hurry?' : 'Hai fretta?'}</p>
-              <p className="mt-3 text-sm leading-relaxed text-bone-400">
-                {locale === 'en'
-                  ? 'Write to us directly. It is the same person who reads the form.'
-                  : 'Scrivici direttamente. Legge la stessa persona che riceve il modulo.'}
-              </p>
+              <p className="eyebrow">{copy.promises.inAHurry}</p>
+              <p className="mt-3 text-sm leading-relaxed text-bone-400">{copy.promises.inAHurryBody}</p>
               <div className="mt-5 space-y-2.5">
                 {whatsappHref && (
                   <a href={whatsappHref} target="_blank" rel="noopener noreferrer" className="btn btn-whatsapp w-full">
@@ -86,17 +82,7 @@ export async function RequestPage({
             </div>
 
             <ul className="mt-6 space-y-4 text-sm text-bone-400">
-              {[
-                locale === 'en'
-                  ? 'Nothing is booked automatically — we check the date ourselves.'
-                  : 'Niente viene prenotato automaticamente: la data la verifichiamo noi.',
-                locale === 'en'
-                  ? 'No payment is required to ask for a quote.'
-                  : 'Non serve pagare nulla per chiedere un preventivo.',
-                locale === 'en'
-                  ? 'We usually reply within 24 hours.'
-                  : 'Di solito rispondiamo entro 24 ore.',
-              ].map((line) => (
+              {[copy.promises.noAutoBooking, copy.promises.freeQuote, copy.promises.replyTime].map((line) => (
                 <li key={line} className="flex gap-3">
                   <svg viewBox="0 0 16 16" className="mt-1 h-3.5 w-3.5 shrink-0 text-brass-500" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden>
                     <path d="M3 8.5l3.2 3.2L13 5" strokeLinecap="round" strokeLinejoin="round" />

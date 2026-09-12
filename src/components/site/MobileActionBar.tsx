@@ -18,12 +18,15 @@ export function MobileActionBar({
   quoteLabel,
   whatsappHref,
   whatsappLabel,
+  regionLabel,
   hideOnPaths,
 }: {
   quoteHref: string;
   quoteLabel: string;
   whatsappHref: string;
   whatsappLabel: string;
+  /** Names the landmark for screen readers, e.g. "Azioni rapide". */
+  regionLabel: string;
   hideOnPaths: string[];
 }) {
   const [visible, setVisible] = useState(false);
@@ -39,7 +42,12 @@ export function MobileActionBar({
   if (hideOnPaths.some((path) => pathname.startsWith(path))) return null;
 
   return (
-    <div
+    // A landmark rather than a bare <div>: this bar sits outside <main> and
+    // <footer>, so as a plain div its two links were content belonging to no
+    // region at all — a screen reader reached them with nothing to say about
+    // where they were.
+    <nav
+      aria-label={regionLabel}
       className="fixed inset-x-0 bottom-0 z-40 border-t border-[var(--hairline)] bg-ink-950/95 backdrop-blur-md transition-transform duration-300 lg:hidden"
       style={{
         transform: visible ? 'translateY(0)' : 'translateY(110%)',
@@ -68,6 +76,6 @@ export function MobileActionBar({
           {quoteLabel}
         </Link>
       </div>
-    </div>
+    </nav>
   );
 }

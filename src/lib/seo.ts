@@ -19,6 +19,20 @@ export function alternates(pathsByLocale: Record<Locale, string>, current: Local
   return { canonical: absoluteUrl(pathsByLocale[current]), languages };
 }
 
+/** Media type of an image URL, by extension. Undefined when it is not obvious. */
+function mimeForImage(url: string): string | undefined {
+  const extension = url.split('?')[0].split('.').pop()?.toLowerCase();
+  const types: Record<string, string> = {
+    jpg: 'image/jpeg',
+    jpeg: 'image/jpeg',
+    png: 'image/png',
+    webp: 'image/webp',
+    avif: 'image/avif',
+    gif: 'image/gif',
+  };
+  return extension ? types[extension] : undefined;
+}
+
 export function buildMetadata(options: {
   title: string;
   description: string;
@@ -61,7 +75,11 @@ export function buildMetadata(options: {
       description: social.description,
       url: canonical || absoluteUrl(canonicalPath),
       locale: ogLocale[options.locale],
-      images: [{ url: image, width: 1200, height: 630, alt: social.title }],
+      // The type is declared because several scrapers decide whether to fetch
+      // the image at all from this line. It is derived from the file rather
+      // than assumed: the default card is a JPEG, but a page can point at a
+      // photograph uploaded from the panel, which is usually WebP.
+      images: [{ url: image, width: 1200, height: 630, type: mimeForImage(image), alt: social.title }],
       ...(options.publishedTime ? { publishedTime: options.publishedTime } : {}),
     },
     twitter: {

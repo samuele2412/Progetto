@@ -2,7 +2,22 @@ import { Media } from '@/components/Media';
 import type { Cocktail } from '@/db/schema';
 import { t, type Locale } from '@/lib/i18n';
 
-export function CocktailCard({ cocktail, locale }: { cocktail: Cocktail; locale: Locale }) {
+export function CocktailCard({
+  cocktail,
+  locale,
+  headingLevel = 3,
+}: {
+  cocktail: Cocktail;
+  locale: Locale;
+  /**
+   * h3 by default: these cards sit under a section heading. A section built in
+   * the panel can have its title left empty, and then the cards are the first
+   * headings under the page h1 — a skipped level — so the renderer moves them
+   * up to h2. See BlockRenderer.
+   */
+  headingLevel?: 2 | 3;
+}) {
+  const Heading = headingLevel === 2 ? 'h2' : 'h3';
   return (
     <article className="card card-hover group overflow-hidden">
       <div className="relative aspect-[4/5] overflow-hidden">
@@ -19,7 +34,7 @@ export function CocktailCard({ cocktail, locale }: { cocktail: Cocktail; locale:
         />
       </div>
       <div className="p-4 sm:p-5">
-        <h3 className="font-[family-name:var(--font-display)] text-lg text-bone-50">{cocktail.name}</h3>
+        <Heading className="font-[family-name:var(--font-display)] text-lg text-bone-50">{cocktail.name}</Heading>
         <p className="mt-1 text-xs uppercase tracking-wider text-brass-500">{t(cocktail.ingredients, locale)}</p>
         <p className="mt-2.5 text-sm leading-relaxed text-bone-400 sm:mt-3">{t(cocktail.description, locale)}</p>
       </div>

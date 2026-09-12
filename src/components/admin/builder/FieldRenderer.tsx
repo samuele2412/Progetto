@@ -1,6 +1,6 @@
 'use client';
 
-import Image from 'next/image';
+import { AssetImage } from '../AssetImage';
 import { useId, useState } from 'react';
 import type { BlockField, CatalogueSource } from '@/lib/blocks';
 import { describeStrippedTags } from '@/lib/safe-html';
@@ -131,7 +131,7 @@ function ImageField({
       <div className="flex items-start gap-3">
         <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-lg border border-stone-200 bg-stone-100">
           {value.path ? (
-            <Image src={value.path} alt="" fill sizes="80px" className="object-cover" />
+            <AssetImage src={value.path} alt="" sizes="80px" className="object-cover" />
           ) : (
             <span className="flex h-full items-center justify-center text-[0.6rem] text-stone-600">vuota</span>
           )}
@@ -216,7 +216,7 @@ function ImageListField({
           {value.map((image, index) => (
             <li key={`${image.path}-${index}`} className="flex items-center gap-2.5 rounded-lg border border-stone-200 bg-white p-2">
               <span className="relative h-12 w-12 shrink-0 overflow-hidden rounded bg-stone-100">
-                {image.path && <Image src={image.path} alt="" fill sizes="48px" className="object-cover" />}
+                {image.path && <AssetImage src={image.path} alt="" sizes="48px" className="object-cover" />}
               </span>
               <span className="min-w-0 flex-1 truncate text-xs text-stone-600">{image.path}</span>
               <span className="flex shrink-0 gap-0.5">

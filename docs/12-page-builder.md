@@ -122,6 +122,18 @@ Nella scheda **SEO e indirizzo** di ogni pagina:
 `/admin/seo` mostra tutte le pagine insieme, con quali campi mancano e quali
 sono troppo lunghi.
 
+### I titoli delle sezioni
+
+Google e i lettori di schermo leggono la pagina come una scaletta, e vogliono un
+titolo principale solo. Il builder ci pensa da sé: il titolo della **prima**
+sezione diventa il titolo principale della pagina, quelli sotto restano
+sottotitoli. Se la prima sezione non ha titolo, al suo posto viene usato il nome
+della pagina — invisibile sullo schermo, presente per chi legge il codice.
+
+Non serve fare niente: vale la pena saperlo solo per non intestare la prima
+sezione con una frase di servizio tipo “Sezione introduttiva”, che finirebbe per
+essere il titolo che Google mostra.
+
 ---
 
 ## 7. Sezioni riutilizzabili
