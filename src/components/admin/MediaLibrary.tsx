@@ -23,6 +23,9 @@ type Asset = {
   alt: { it: string; en: string };
   sizeBytes: number;
   mimeType: string;
+  /** A stand-in to be replaced with the owner's own photograph before launch. */
+  isTemporary: boolean;
+  sourceNote: string;
   createdAt: string;
 };
 
@@ -38,6 +41,8 @@ export function MediaLibrary({ assets, maxMb }: { assets: Asset[]; maxMb: number
   const [uploading, setUploading] = useState(false);
   const fileInput = useRef<HTMLInputElement>(null);
   const toast = useToast();
+
+  const temporaryCount = useMemo(() => assets.filter((a) => a.isTemporary).length, [assets]);
 
   const filtered = useMemo(() => {
     const needle = query.trim().toLowerCase();
@@ -117,6 +122,19 @@ export function MediaLibrary({ assets, maxMb }: { assets: Asset[]; maxMb: number
         </div>
       </div>
 
+      {temporaryCount > 0 && (
+        <div className="admin-card border-amber-300 bg-amber-100/70 p-4">
+          <h2 className="text-sm font-semibold text-amber-900">
+            {temporaryCount} {temporaryCount === 1 ? 'immagine temporanea' : 'immagini temporanee'}
+          </h2>
+          <p className="mt-1 max-w-3xl text-sm leading-relaxed text-amber-900">
+            Sono fotografie di repertorio: servono solo a far vedere come viene il sito con delle foto vere. Prima di
+            andare online sostituiscile con le tue — carica la foto e poi selezionala dove serve. Le riconosci
+            dall’etichetta <strong className="font-semibold">temporanea</strong>.
+          </p>
+        </div>
+      )}
+
       {filtered.length === 0 ? (
         <div className="admin-card px-5 py-12 text-center">
           <p className="text-sm font-medium text-stone-700">
@@ -148,7 +166,10 @@ export function MediaLibrary({ assets, maxMb }: { assets: Asset[]; maxMb: number
                 </span>
                 <span className="block p-2.5">
                   <span className="block truncate text-xs font-medium text-stone-800">{asset.originalName}</span>
-                  <span className="block text-[0.68rem] text-stone-500">{formatSize(asset.sizeBytes)}</span>
+                  <span className="mt-0.5 flex flex-wrap items-center gap-1.5">
+                    <span className="text-[0.68rem] text-stone-600">{formatSize(asset.sizeBytes)}</span>
+                    {asset.isTemporary && <span className="admin-chip admin-chip-draft">temporanea</span>}
+                  </span>
                 </span>
               </button>
             </li>
@@ -174,6 +195,16 @@ function AssetDrawer({ asset, onClose }: { asset: Asset; onClose: () => void }) 
       <div className="relative mb-4 aspect-video overflow-hidden rounded-lg bg-stone-100">
         <Image src={asset.path} alt={asset.alt.it || asset.originalName} fill sizes="480px" className="object-contain" />
       </div>
+
+      {asset.isTemporary && (
+        <div className="mb-4 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2.5">
+          <p className="text-sm font-semibold text-amber-900">Immagine temporanea</p>
+          <p className="mt-0.5 text-xs leading-relaxed text-amber-900">
+            Da sostituire con una tua fotografia prima del lancio.
+            {asset.sourceNote ? ` Origine: ${asset.sourceNote}.` : ''}
+          </p>
+        </div>
+      )}
 
       <div className="mb-4">
         <span className="admin-label">Percorso</span>

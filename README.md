@@ -657,6 +657,7 @@ Le decisioni di prodotto e di mercato sono documentate, non improvvisate:
 | [`docs/10-analytics.md`](docs/10-analytics.md) | Analytics privacy-first, perché non GA4 |
 | [`docs/11-roadmap.md`](docs/11-roadmap.md) | Cosa fare dopo, e cosa non fare |
 | [`docs/12-page-builder.md`](docs/12-page-builder.md) | Come si usa il Page Builder: pagine, sezioni, bozze, pubblicazione |
+| [`docs/photo-sources.md`](docs/photo-sources.md) | Le fotografie temporanee: da dove vengono, con che licenza, come sostituirle |
 
 ---
 

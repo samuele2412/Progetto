@@ -30,6 +30,8 @@ export default async function MediaPage() {
           alt: asset.alt,
           sizeBytes: asset.sizeBytes,
           mimeType: asset.mimeType,
+          isTemporary: asset.isTemporary,
+          sourceNote: asset.sourceNote,
           createdAt: asset.createdAt.toISOString(),
         }))}
       />

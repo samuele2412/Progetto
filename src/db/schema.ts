@@ -340,6 +340,18 @@ export const mediaAssets = pgTable('media_assets', {
   mimeType: varchar('mime_type', { length: 80 }).notNull(),
   sizeBytes: integer('size_bytes').notNull().default(0),
   alt: localized('alt'),
+
+  /**
+   * True for a stand-in that exists only so the design can be judged with real
+   * photographs in it, and that must be swapped for the owner's own before
+   * launch. Without this the placeholders become indistinguishable from real
+   * assets after a few months, and finding them again means opening every
+   * picture one by one.
+   */
+  isTemporary: boolean('is_temporary').notNull().default(false),
+  /** Where a temporary image came from, e.g. "Openverse · rawpixel · CC0 1.0". */
+  sourceNote: varchar('source_note', { length: 300 }).notNull().default(''),
+
   createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
 });
 

@@ -1,0 +1,502 @@
+[
+  {
+    "name": "hero-bancone",
+    "slot": "hero",
+    "file": "/tmp/claude-0/-home-user-Progetto/b4f83179-0888-51b9-a79c-6fc23a254732/scratchpad/final/hero-bancone.webp",
+    "bytes": 117118,
+    "w": 2400,
+    "h": 1350,
+    "alt_it": "Cocktail su un bancone di legno con lucine calde sullo sfondo",
+    "alt_en": "Cocktail on a wooden counter with warm string lights behind",
+    "source": {
+      "provider": "rawpixel",
+      "title": "Cocktail counter",
+      "creator": "",
+      "creator_url": "",
+      "license": "cc0-1.0",
+      "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "landing": "https://www.rawpixel.com/image/3301385/free-photo-image-cocktail-bar-club",
+      "original": "https://images.rawpixel.com/editor_1024/czNmcy1wcml2YXRlL3Jhd3BpeGVsX2ltYWdlcy93ZWJzaXRlX2NvbnRlbnQvbHIvdXB3azYxODUzNzg2LXdpa2ltZWRpYS1pbWFnZS1rb3dwcmFjOC5qcGc.jpg"
+    }
+  },
+  {
+    "name": "ritratto-bartender",
+    "slot": "about",
+    "file": "/tmp/claude-0/-home-user-Progetto/b4f83179-0888-51b9-a79c-6fc23a254732/scratchpad/final/ritratto-bartender.webp",
+    "bytes": 142132,
+    "w": 1200,
+    "h": 1500,
+    "alt_it": "Mani che completano un cocktail con menta fresca e ghiaccio tritato",
+    "alt_en": "Hands finishing a cocktail with fresh mint and crushed ice",
+    "source": {
+      "provider": "wikimedia",
+      "title": "File:Bartender making a cocktail (Unsplash).jpg",
+      "creator": "Adam Jaime arobj",
+      "creator_url": "https://unsplash.com/@arobj",
+      "license": "cc0-1.0",
+      "license_url": "https://creativecommons.org/publicdomain/zero/1.0/deed.en",
+      "landing": "https://commons.wikimedia.org/w/index.php?curid=61361315",
+      "original": "https://upload.wikimedia.org/wikipedia/commons/6/65/Bartender_making_a_cocktail_%28Unsplash%29.jpg"
+    }
+  },
+  {
+    "name": "cocktail-negroni",
+    "slot": "cocktail",
+    "file": "/tmp/claude-0/-home-user-Progetto/b4f83179-0888-51b9-a79c-6fc23a254732/scratchpad/final/cocktail-negroni.webp",
+    "bytes": 39414,
+    "w": 900,
+    "h": 1125,
+    "alt_it": "Cocktail rosso con scorza d'arancia in un bicchiere basso",
+    "alt_en": "Red cocktail with an orange twist in a rocks glass",
+    "source": {
+      "provider": "stocksnap",
+      "title": "Cocktail Summer",
+      "creator": "Tim Sullivan",
+      "creator_url": "https://www.secretagencygroup.com",
+      "license": "cc0-1.0",
+      "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "landing": "https://stocksnap.io/photo/cocktail-summer-FGAO0GKVBK",
+      "original": "https://cdn.stocksnap.io/img-thumbs/960w/FGAO0GKVBK.jpg"
+    }
+  },
+  {
+    "name": "cocktail-espresso-martini",
+    "slot": "cocktail",
+    "file": "/tmp/claude-0/-home-user-Progetto/b4f83179-0888-51b9-a79c-6fc23a254732/scratchpad/final/cocktail-espresso-martini.webp",
+    "bytes": 25372,
+    "w": 900,
+    "h": 1125,
+    "alt_it": "Due espresso martini su un piano di legno scuro",
+    "alt_en": "Two espresso martinis on a dark wooden surface",
+    "source": {
+      "provider": "stocksnap",
+      "title": "Espresso Martini",
+      "creator": "Matt Bango",
+      "creator_url": "https://mattbango.photo",
+      "license": "cc0-1.0",
+      "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "landing": "https://stocksnap.io/photo/espresso-martini-P3CXM17Z0E",
+      "original": "https://cdn.stocksnap.io/img-thumbs/960w/P3CXM17Z0E.jpg"
+    }
+  },
+  {
+    "name": "cocktail-margarita",
+    "slot": "cocktail",
+    "file": "/tmp/claude-0/-home-user-Progetto/b4f83179-0888-51b9-a79c-6fc23a254732/scratchpad/final/cocktail-margarita.webp",
+    "bytes": 64212,
+    "w": 900,
+    "h": 1125,
+    "alt_it": "Cocktail agli agrumi con ghiaccio su un bancone scuro",
+    "alt_en": "Citrus cocktail with ice on a dark counter",
+    "source": {
+      "provider": "rawpixel",
+      "title": "Tequila lime mixed drinks cocktail",
+      "creator": "",
+      "creator_url": "",
+      "license": "cc0-1.0",
+      "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "landing": "https://www.rawpixel.com/image/5927860/photo-image-public-domain-celebration-ice",
+      "original": "https://images.rawpixel.com/editor_1024/czNmcy1wcml2YXRlL3Jhd3BpeGVsX2ltYWdlcy93ZWJzaXRlX2NvbnRlbnQvbHIvYnM4NjA5LWltYWdlLWt3dnlsOGIwLmpwZw.jpg"
+    }
+  },
+  {
+    "name": "cocktail-mojito",
+    "slot": "cocktail",
+    "file": "/tmp/claude-0/-home-user-Progetto/b4f83179-0888-51b9-a79c-6fc23a254732/scratchpad/final/cocktail-mojito.webp",
+    "bytes": 70568,
+    "w": 900,
+    "h": 1125,
+    "alt_it": "Mojito con menta fresca davanti alle luci calde di un bar",
+    "alt_en": "Mojito with fresh mint against the warm lights of a bar",
+    "source": {
+      "provider": "stocksnap",
+      "title": "Mojito Cocktail",
+      "creator": "Dave Meier",
+      "creator_url": "https://picography.co",
+      "license": "cc0-1.0",
+      "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "landing": "https://stocksnap.io/photo/mojito-cocktail-4178415E1A",
+      "original": "https://cdn.stocksnap.io/img-thumbs/960w/4178415E1A.jpg"
+    }
+  },
+  {
+    "name": "cocktail-gin-tonic",
+    "slot": "cocktail",
+    "file": "/tmp/claude-0/-home-user-Progetto/b4f83179-0888-51b9-a79c-6fc23a254732/scratchpad/final/cocktail-gin-tonic.webp",
+    "bytes": 57548,
+    "w": 900,
+    "h": 1125,
+    "alt_it": "Due gin tonic guarniti con rosmarino su un bancone di acciaio",
+    "alt_en": "Two gin and tonics garnished with rosemary on a steel counter",
+    "source": {
+      "provider": "rawpixel",
+      "title": "",
+      "creator": "",
+      "creator_url": "",
+      "license": "cc0-1.0",
+      "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "landing": "https://www.rawpixel.com/image/5940832/free-public-domain-cc0-photo",
+      "original": "https://images.rawpixel.com/editor_1024/czNmcy1wcml2YXRlL3Jhd3BpeGVsX2ltYWdlcy93ZWJzaXRlX2NvbnRlbnQvbHIvcHg5NTY1NDMtaW1hZ2Uta3d5bnhib28uanBn.jpg"
+    }
+  },
+  {
+    "name": "cocktail-ponentino",
+    "slot": "cocktail",
+    "file": "/tmp/claude-0/-home-user-Progetto/b4f83179-0888-51b9-a79c-6fc23a254732/scratchpad/final/cocktail-ponentino.webp",
+    "bytes": 51948,
+    "w": 900,
+    "h": 1125,
+    "alt_it": "Cocktail lungo con guarnizione floreale in un bicchiere lavorato",
+    "alt_en": "Tall cocktail with a floral garnish in a textured glass",
+    "source": {
+      "provider": "wordpress",
+      "title": "Iced cocktail in a textured glass on a wooden table, garnished with purple flowers and a l",
+      "creator": "Guste Cibulskyte",
+      "creator_url": "https://wordpress.org/photos/author/gusteci/",
+      "license": "cc0-1.0",
+      "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "landing": "https://wordpress.org/photos/photo/8516a216ef/",
+      "original": "https://pd.w.org/2026/06/8516a216ef23ef666.65244024-2048x1365.jpg"
+    }
+  },
+  {
+    "name": "cocktail-sette-colli",
+    "slot": "cocktail",
+    "file": "/tmp/claude-0/-home-user-Progetto/b4f83179-0888-51b9-a79c-6fc23a254732/scratchpad/final/cocktail-sette-colli.webp",
+    "bytes": 47408,
+    "w": 900,
+    "h": 1125,
+    "alt_it": "Cocktail ambrato in coppa davanti alle luci calde del bancone",
+    "alt_en": "Amber cocktail in a coupe against warm bar lights",
+    "source": {
+      "provider": "stocksnap",
+      "title": "Martini Bar",
+      "creator": "Tim Sullivan",
+      "creator_url": "https://www.secretagencygroup.com",
+      "license": "cc0-1.0",
+      "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "landing": "https://stocksnap.io/photo/martini-bar-SG4DS3UORW",
+      "original": "https://cdn.stocksnap.io/img-thumbs/960w/SG4DS3UORW.jpg"
+    }
+  },
+  {
+    "name": "galleria-bottiglie",
+    "slot": "gallery",
+    "file": "/tmp/claude-0/-home-user-Progetto/b4f83179-0888-51b9-a79c-6fc23a254732/scratchpad/final/galleria-bottiglie.webp",
+    "bytes": 104420,
+    "w": 1100,
+    "h": 1100,
+    "alt_it": "Scaffale di bottiglie illuminato dietro al bancone",
+    "alt_en": "Backlit bottle shelf behind the bar",
+    "source": {
+      "provider": "rawpixel",
+      "title": "Bar counter bottles",
+      "creator": "",
+      "creator_url": "",
+      "license": "cc0-1.0",
+      "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "landing": "https://www.rawpixel.com/image/6030731/photo-image-public-domain-free",
+      "original": "https://images.rawpixel.com/editor_1024/czNmcy1wcml2YXRlL3Jhd3BpeGVsX2ltYWdlcy93ZWJzaXRlX2NvbnRlbnQvbHIvZnJ0aGVfYm90dGxlX2FsY29ob2xfZXhoaWJpdGlvbi1pbWFnZS1reWJjaXpreS5qcGc.jpg"
+    }
+  },
+  {
+    "name": "galleria-ghiaccio-fiamma",
+    "slot": "gallery",
+    "file": "/tmp/claude-0/-home-user-Progetto/b4f83179-0888-51b9-a79c-6fc23a254732/scratchpad/final/galleria-ghiaccio-fiamma.webp",
+    "bytes": 100672,
+    "w": 1100,
+    "h": 1100,
+    "alt_it": "Bicchiere e ghiaccio illuminati da una fiamma su fondo nero",
+    "alt_en": "Glass and ice lit by a flame against a black background",
+    "source": {
+      "provider": "rawpixel",
+      "title": "",
+      "creator": "",
+      "creator_url": "",
+      "license": "cc0-1.0",
+      "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "landing": "https://www.rawpixel.com/image/5961278/free-public-domain-cc0-photo",
+      "original": "https://images.rawpixel.com/editor_1024/czNmcy1wcml2YXRlL3Jhd3BpeGVsX2ltYWdlcy93ZWJzaXRlX2NvbnRlbnQvbHIvcHgxMTYxODE4LWltYWdlLWt3eXIzaTBxLmpwZw.jpg"
+    }
+  },
+  {
+    "name": "galleria-versata",
+    "slot": "gallery",
+    "file": "/tmp/claude-0/-home-user-Progetto/b4f83179-0888-51b9-a79c-6fc23a254732/scratchpad/final/galleria-versata.webp",
+    "bytes": 105996,
+    "w": 1100,
+    "h": 1100,
+    "alt_it": "Versata in una fila di bicchieri preparati sul bancone",
+    "alt_en": "Pouring into a row of glasses set up on the counter",
+    "source": {
+      "provider": "stocksnap",
+      "title": "Pouring Wine",
+      "creator": "Burst",
+      "creator_url": "https://burst.shopify.com",
+      "license": "cc0-1.0",
+      "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "landing": "https://stocksnap.io/photo/pouring-wine-6JMD0WXXTG",
+      "original": "https://cdn.stocksnap.io/img-thumbs/960w/6JMD0WXXTG.jpg"
+    }
+  },
+  {
+    "name": "galleria-tavolo-sera",
+    "slot": "gallery",
+    "file": "/tmp/claude-0/-home-user-Progetto/b4f83179-0888-51b9-a79c-6fc23a254732/scratchpad/final/galleria-tavolo-sera.webp",
+    "bytes": 88004,
+    "w": 1100,
+    "h": 1100,
+    "alt_it": "Tavolo apparecchiato a lume di candela durante una cena",
+    "alt_en": "Table set by candlelight during a dinner",
+    "source": {
+      "provider": "rawpixel",
+      "title": "person sitting gourmet meal long",
+      "creator": "",
+      "creator_url": "",
+      "license": "cc0-1.0",
+      "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "landing": "https://www.rawpixel.com/image/3282419/free-photo-image-restaurant-table-lunch",
+      "original": "https://images.rawpixel.com/editor_1024/cHJpdmF0ZS9sci9pbWFnZXMvd2Vic2l0ZS8yMDIyLTA1L3Vwd2s2MTY2MTU3Ny13aWtpbWVkaWEtaW1hZ2Uta293YXBlZWouanBn.jpg"
+    }
+  },
+  {
+    "name": "galleria-agrumi",
+    "slot": "gallery",
+    "file": "/tmp/claude-0/-home-user-Progetto/b4f83179-0888-51b9-a79c-6fc23a254732/scratchpad/final/galleria-agrumi.webp",
+    "bytes": 68296,
+    "w": 1100,
+    "h": 1100,
+    "alt_it": "Fette di lime accanto a un bicchiere su ardesia scura",
+    "alt_en": "Lime slices beside a glass on dark slate",
+    "source": {
+      "provider": "wordpress",
+      "title": "A white plate holds three slices of green citrus fruit, with a glass of light-brown drink ",
+      "creator": "Mohammed Kateregga",
+      "creator_url": "http://xerusmediagroup.com",
+      "license": "cc0-1.0",
+      "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "landing": "https://wordpress.org/photos/photo/39869e5f77/",
+      "original": "https://pd.w.org/2026/04/39869e5f77ba02151.46872597-2048x1536.jpg"
+    }
+  },
+  {
+    "name": "galleria-coppa-rossa",
+    "slot": "gallery",
+    "file": "/tmp/claude-0/-home-user-Progetto/b4f83179-0888-51b9-a79c-6fc23a254732/scratchpad/final/galleria-coppa-rossa.webp",
+    "bytes": 83114,
+    "w": 1100,
+    "h": 1100,
+    "alt_it": "Cocktail rosso in coppa con lime disidratato",
+    "alt_en": "Red cocktail in a coupe with a dehydrated lime wheel",
+    "source": {
+      "provider": "wordpress",
+      "title": "A close-up of a red cocktail served in a martini glass, topped with a dried lime slice. Th",
+      "creator": "Bigul Malayi",
+      "creator_url": "https://wordpress.org/photos/author/mbigul/",
+      "license": "cc0-1.0",
+      "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "landing": "https://wordpress.org/photos/photo/86168d2758/",
+      "original": "https://pd.w.org/2025/09/86168d27588b06826.66535150-1536x2048.jpeg"
+    }
+  },
+  {
+    "name": "evento-compleanno",
+    "slot": "event",
+    "file": "/tmp/claude-0/-home-user-Progetto/b4f83179-0888-51b9-a79c-6fc23a254732/scratchpad/final/evento-compleanno.webp",
+    "bytes": 26312,
+    "w": 1000,
+    "h": 800,
+    "alt_it": "Cocktail rosso con scorza d'agrume durante una festa",
+    "alt_en": "Red cocktail with a citrus twist at a party",
+    "source": {
+      "provider": "stocksnap",
+      "title": "Cocktail Summer",
+      "creator": "Tim Sullivan",
+      "creator_url": "https://www.secretagencygroup.com",
+      "license": "cc0-1.0",
+      "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "landing": "https://stocksnap.io/photo/cocktail-summer-XOVMEYCL8K",
+      "original": "https://cdn.stocksnap.io/img-thumbs/960w/XOVMEYCL8K.jpg"
+    }
+  },
+  {
+    "name": "evento-festa-privata",
+    "slot": "event",
+    "file": "/tmp/claude-0/-home-user-Progetto/b4f83179-0888-51b9-a79c-6fc23a254732/scratchpad/final/evento-festa-privata.webp",
+    "bytes": 41330,
+    "w": 1000,
+    "h": 800,
+    "alt_it": "Cocktail con menta fresca su un tavolo scuro",
+    "alt_en": "Cocktail with fresh mint on a dark table",
+    "source": {
+      "provider": "wordpress",
+      "title": "Peach iced cocktail in a textured glass on a dark wooden table, garnished with f",
+      "creator": "Guste Cibulskyte",
+      "creator_url": "https://wordpress.org/photos/author/gusteci/",
+      "license": "cc0-1.0",
+      "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "landing": "https://wordpress.org/photos/photo/3106a2172d/",
+      "original": "https://pd.w.org/2026/06/3106a2172d46d0ed7.03917038-1365x2048.jpg"
+    }
+  },
+  {
+    "name": "evento-diciottesimo",
+    "slot": "event",
+    "file": "/tmp/claude-0/-home-user-Progetto/b4f83179-0888-51b9-a79c-6fc23a254732/scratchpad/final/evento-diciottesimo.webp",
+    "bytes": 90444,
+    "w": 1000,
+    "h": 800,
+    "alt_it": "Cocktail ambrato in un bicchiere lavorato davanti alle luci del bar",
+    "alt_en": "Amber cocktail in a textured glass against bar lights",
+    "source": {
+      "provider": "wordpress",
+      "title": "Whiskey Old Fashioned",
+      "creator": "Topher",
+      "creator_url": "https://topher.how",
+      "license": "cc0-1.0",
+      "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "landing": "https://wordpress.org/photos/photo/863634fffa/",
+      "original": "https://pd.w.org/2022/10/863634fffa2ae0534.63162354-1412x2048.jpg"
+    }
+  },
+  {
+    "name": "evento-laurea",
+    "slot": "event",
+    "file": "/tmp/claude-0/-home-user-Progetto/b4f83179-0888-51b9-a79c-6fc23a254732/scratchpad/final/evento-laurea.webp",
+    "bytes": 46360,
+    "w": 1000,
+    "h": 800,
+    "alt_it": "Scorza d'arancia appoggiata sul bordo di un cocktail",
+    "alt_en": "Orange peel resting on the rim of a cocktail",
+    "source": {
+      "provider": "wordpress",
+      "title": "Old fashioned",
+      "creator": "Topher",
+      "creator_url": "https://topher.how",
+      "license": "cc0-1.0",
+      "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "landing": "https://wordpress.org/photos/photo/8262499b4f/",
+      "original": "https://pd.w.org/2022/04/8262499b4fe9f6d7.00054856-1152x2048.jpeg"
+    }
+  },
+  {
+    "name": "evento-matrimonio",
+    "slot": "event",
+    "file": "/tmp/claude-0/-home-user-Progetto/b4f83179-0888-51b9-a79c-6fc23a254732/scratchpad/final/evento-matrimonio.webp",
+    "bytes": 68608,
+    "w": 1000,
+    "h": 800,
+    "alt_it": "Mojito appena preparato sul bancone di un bar",
+    "alt_en": "A freshly made mojito on a bar counter",
+    "source": {
+      "provider": "stocksnap",
+      "title": "Mojito Cocktail",
+      "creator": "Dave Meier",
+      "creator_url": "https://picography.co",
+      "license": "cc0-1.0",
+      "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "landing": "https://stocksnap.io/photo/mojito-cocktail-4178415E1A",
+      "original": "https://cdn.stocksnap.io/img-thumbs/960w/4178415E1A.jpg"
+    }
+  },
+  {
+    "name": "evento-aziendale",
+    "slot": "event",
+    "file": "/tmp/claude-0/-home-user-Progetto/b4f83179-0888-51b9-a79c-6fc23a254732/scratchpad/final/evento-aziendale.webp",
+    "bytes": 90670,
+    "w": 1000,
+    "h": 800,
+    "alt_it": "Parete di bottiglie illuminata dietro al bancone",
+    "alt_en": "Backlit wall of bottles behind the bar",
+    "source": {
+      "provider": "rawpixel",
+      "title": "Just portion legendary Bourbon Bar",
+      "creator": "Carol M Highsmith",
+      "creator_url": "",
+      "license": "cc0-1.0",
+      "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "landing": "https://www.rawpixel.com/image/8054207/photo-image-person-wood-public-domain",
+      "original": "https://images.rawpixel.com/editor_1024/cHJpdmF0ZS9sci9pbWFnZXMvd2Vic2l0ZS8yMDIyLTA5L2xvYzIwMjA3MjIyNjYtaW1hZ2UuanBn.jpg"
+    }
+  },
+  {
+    "name": "evento-villa-piscina",
+    "slot": "event",
+    "file": "/tmp/claude-0/-home-user-Progetto/b4f83179-0888-51b9-a79c-6fc23a254732/scratchpad/final/evento-villa-piscina.webp",
+    "bytes": 62264,
+    "w": 1000,
+    "h": 800,
+    "alt_it": "Versata di un distillato in un bicchiere in controluce",
+    "alt_en": "Pouring a spirit into a backlit glass",
+    "source": {
+      "provider": "stocksnap",
+      "title": "Man Pouring",
+      "creator": "Burst",
+      "creator_url": "https://burst.shopify.com",
+      "license": "cc0-1.0",
+      "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "landing": "https://stocksnap.io/photo/man-pouring-5SWSBEDLHI",
+      "original": "https://cdn.stocksnap.io/img-thumbs/960w/5SWSBEDLHI.jpg"
+    }
+  },
+  {
+    "name": "evento-altro",
+    "slot": "event",
+    "file": "/tmp/claude-0/-home-user-Progetto/b4f83179-0888-51b9-a79c-6fc23a254732/scratchpad/final/evento-altro.webp",
+    "bytes": 43602,
+    "w": 1000,
+    "h": 800,
+    "alt_it": "Tre bicchieri ambrati allineati su fondo nero",
+    "alt_en": "Three amber glasses lined up on a black background",
+    "source": {
+      "provider": "rawpixel",
+      "title": "",
+      "creator": "",
+      "creator_url": "",
+      "license": "cc0-1.0",
+      "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "landing": "https://www.rawpixel.com/image/5962243/free-public-domain-cc0-photo",
+      "original": "https://images.rawpixel.com/editor_1024/czNmcy1wcml2YXRlL3Jhd3BpeGVsX2ltYWdlcy93ZWJzaXRlX2NvbnRlbnQvcHgxMTA1NzA2LWltYWdlLWt3eXRhenR5LmpwZw.jpg"
+    }
+  },
+  {
+    "name": "galleria-bancone",
+    "slot": "gallery",
+    "file": "/tmp/claude-0/-home-user-Progetto/b4f83179-0888-51b9-a79c-6fc23a254732/scratchpad/final/galleria-bancone.webp",
+    "bytes": 100576,
+    "w": 1100,
+    "h": 1100,
+    "alt_it": "Bicchieri da cocktail allineati e pronti sul bancone",
+    "alt_en": "Cocktail glasses lined up and ready on the counter",
+    "source": {
+      "provider": "rawpixel",
+      "title": "",
+      "creator": "",
+      "creator_url": "",
+      "license": "cc0-1.0",
+      "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "landing": "https://www.rawpixel.com/image/5942104/free-public-domain-cc0-photo",
+      "original": "https://images.rawpixel.com/editor_1024/czNmcy1wcml2YXRlL3Jhd3BpeGVsX2ltYWdlcy93ZWJzaXRlX2NvbnRlbnQvbHIvcHg5MTAxNTktaW1hZ2Uta3d5bzQ2Y3EuanBn.jpg"
+    }
+  },
+  {
+    "name": "galleria-atmosfera",
+    "slot": "gallery",
+    "file": "/tmp/claude-0/-home-user-Progetto/b4f83179-0888-51b9-a79c-6fc23a254732/scratchpad/final/galleria-atmosfera.webp",
+    "bytes": 76456,
+    "w": 1100,
+    "h": 1100,
+    "alt_it": "Bicchiere in primo piano davanti alle luci sfocate del locale",
+    "alt_en": "Glass in the foreground against the blurred lights of the venue",
+    "source": {
+      "provider": "rawpixel",
+      "title": "Free mojito cocktail close blurry",
+      "creator": "",
+      "creator_url": "",
+      "license": "cc0-1.0",
+      "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "landing": "https://www.rawpixel.com/image/5917151/photo-image-background-public-domain-free",
+      "original": "https://images.rawpixel.com/editor_1024/czNmcy1wcml2YXRlL3Jhd3BpeGVsX2ltYWdlcy93ZWJzaXRlX2NvbnRlbnQvbHIvaXMxNzg0My1pbWFnZS1rd3Z3dXRrNi5qcGc.jpg"
+    }
+  }
+]

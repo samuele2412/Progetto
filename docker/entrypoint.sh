@@ -31,6 +31,12 @@ node dist-scripts/migrate.cjs
 if [ "${SEED_ON_START:-true}" = "true" ]; then
   echo "[entrypoint] planting initial content if this is the first boot…"
   node dist-scripts/seed.cjs || echo "[entrypoint] seed skipped"
+
+  # Points the image fields at the temporary photographs shipped in
+  # public/images/stock, but only where nothing real is set: a field already
+  # pointing at a file that exists is left alone, so the owner's own uploads
+  # survive every restart. See docs/photo-sources.md.
+  node dist-scripts/seed-stock-photos.cjs || echo "[entrypoint] stock photos skipped"
 fi
 
 # Creates the account if it is missing. It does NOT reset an existing password:

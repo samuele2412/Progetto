@@ -2,7 +2,7 @@
   "name": "cordiale-private-cocktail-bar",
   "version": "1.0.0",
   "private": true,
-  "description": "Private Cocktail Bar Roma — sito, configuratore preventivi e admin panel",
+  "description": "Private Cocktail Bar Roma \u2014 sito, configuratore preventivi e admin panel",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -15,7 +15,8 @@
     "db:studio": "drizzle-kit studio",
     "admin:create": "tsx scripts/create-admin.ts",
     "db:retention": "tsx scripts/retention.ts",
-    "build:scripts": "esbuild scripts/migrate.ts scripts/seed.ts scripts/create-admin.ts scripts/retention.ts --bundle --platform=node --target=node22 --format=cjs --outdir=dist-scripts --external:pg-native --out-extension:.js=.cjs --log-level=warning"
+    "build:scripts": "esbuild scripts/migrate.ts scripts/seed.ts scripts/seed-stock-photos.ts scripts/create-admin.ts scripts/retention.ts --bundle --platform=node --target=node22 --format=cjs --outdir=dist-scripts --external:pg-native --out-extension:.js=.cjs --log-level=warning",
+    "db:stock-photos": "tsx scripts/seed-stock-photos.ts"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",

@@ -22,6 +22,13 @@
       "when": 1789118606007,
       "tag": "0002_whole_green_goblin",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1789172385874,
+      "tag": "0003_cheerful_aaron_stack",
+      "breakpoints": true
     }
   ]
 }

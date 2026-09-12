@@ -84,8 +84,13 @@ export async function HomePage({ locale }: { locale: Locale }) {
             aria-hidden
             className="absolute inset-0"
             style={{
+              // Tuned against the real photograph rather than against a blank
+              // placeholder: the bottom stays almost opaque because the copy
+              // sits there and has to clear AA contrast, while the top half is
+              // let up from 0.45 to 0.32 so the photograph is actually visible
+              // instead of being a dark texture.
               background:
-                'linear-gradient(to top, rgba(10,9,8,0.97) 6%, rgba(10,9,8,0.72) 42%, rgba(10,9,8,0.45) 100%)',
+                'linear-gradient(to top, rgba(10,9,8,0.96) 4%, rgba(10,9,8,0.80) 30%, rgba(10,9,8,0.55) 62%, rgba(10,9,8,0.32) 100%)',
             }}
           />
         </div>
