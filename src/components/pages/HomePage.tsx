@@ -1,59 +1,42 @@
 import Link from 'next/link';
 import { Media } from '@/components/Media';
-import { CocktailCard } from '@/components/blocks/CocktailCard';
-import { FaqList } from '@/components/blocks/FaqList';
 import { FinalCta } from '@/components/blocks/FinalCta';
-import { PackageCard } from '@/components/blocks/PackageCard';
-import { SectionHeader } from '@/components/blocks/SectionHeader';
-import { StepList } from '@/components/blocks/StepList';
-import { Testimonials } from '@/components/blocks/Testimonials';
 import { JsonLd } from '@/components/JsonLd';
-import { d } from '@/lib/dictionary';
-import { t, tList, type Locale } from '@/lib/i18n';
-import {
-  getEventTypes,
-  getFaqs,
-  getFeaturedCocktails,
-  getGalleryItems,
-  getNavigationLandings,
-  getPackages,
-  getTestimonials,
-} from '@/lib/queries';
-import { landingPath, path } from '@/lib/routes';
-import { absoluteUrl, faqJsonLd, serviceJsonLd } from '@/lib/seo';
+import { t, type Locale } from '@/lib/i18n';
+import { getFeaturedCocktails, getNavigationLandings } from '@/lib/queries';
+import { landingNavLabel, landingPath, path } from '@/lib/routes';
+import { absoluteUrl, serviceJsonLd } from '@/lib/seo';
 import { getSettings } from '@/lib/settings';
-import { cn, isPlaceholder, whatsappLink } from '@/lib/utils';
 
+/**
+ * The home page: five sections, one main button.
+ *
+ *   1. who and what, in one line         (hero)
+ *   2. who he is, with facts            (intro)
+ *   3. what the service covers          (service)
+ *   4. the one thing that is his        (method)
+ *   5. how to get in touch              (FinalCta)
+ *
+ * Everything else the old home carried — formats, eight event cards, gallery,
+ * FAQ, value props — lives on its own page now. See docs/13-brand-voice.md for
+ * why each section is here and what it may not say.
+ */
 export async function HomePage({ locale }: { locale: Locale }) {
-  const [settings, packages, cocktails, eventTypes, faqs, testimonials, gallery, landings] = await Promise.all([
+  const [settings, cocktails, landings] = await Promise.all([
     getSettings(),
-    getPackages(),
     getFeaturedCocktails(),
-    getEventTypes(),
-    getFaqs('general'),
-    getTestimonials(),
-    getGalleryItems(),
     getNavigationLandings(),
   ]);
 
-  const copy = d(locale);
-  const whatsappHref = whatsappLink(settings.contact.whatsapp, t(settings.contact.whatsappMessage, locale));
-  const homeFaqs = faqs.slice(0, 6);
-  // `?? ` only catches undefined: an English list saved as empty from the panel
-  // rendered an empty section instead of falling back to Italian.
-  const pickList = <T,>(value: { it: T[]; en: T[] }) =>
-    value[locale]?.length ? value[locale] : value.it;
-  const valueProps = pickList(settings.home.valueProps);
-  const steps = pickList(settings.home.steps);
-  const badges = tList(settings.hero.badges, locale);
-
-  const landingBySlug = new Map(
-    landings.map((landing) => [landing.eventTypeSlug, locale === 'en' ? landing.slugEn : landing.slugIt]),
-  );
+  const featured = cocktails.slice(0, 3);
+  const eventLinks = landings.map((landing) => ({
+    label: landingNavLabel(t(landing.heroTitle, locale), locale),
+    href: landingPath(locale === 'en' ? landing.slugEn : landing.slugIt, locale),
+  }));
 
   return (
     <>
-      {/* ================= HERO ================= */}
+      {/* ================= 1. HERO ================= */}
       <section className="hero-viewport relative isolate flex items-end overflow-hidden">
         <div className="absolute inset-0 -z-10">
           {settings.hero.videoPath ? (
@@ -73,7 +56,7 @@ export async function HomePage({ locale }: { locale: Locale }) {
           ) : (
             <Media
               src={settings.hero.imagePath}
-              alt={t(settings.hero.title, locale)}
+              alt=""
               priority
               sizes="100vw"
               variant="background"
@@ -84,11 +67,9 @@ export async function HomePage({ locale }: { locale: Locale }) {
             aria-hidden
             className="absolute inset-0"
             style={{
-              // Tuned against the real photograph rather than against a blank
-              // placeholder: the bottom stays almost opaque because the copy
-              // sits there and has to clear AA contrast, while the top half is
-              // let up from 0.45 to 0.32 so the photograph is actually visible
-              // instead of being a dark texture.
+              // Tuned against the real photograph: the bottom stays almost
+              // opaque because the copy sits there and has to clear AA
+              // contrast, while the top lets the picture through.
               background:
                 'linear-gradient(to top, rgba(10,9,8,0.96) 4%, rgba(10,9,8,0.80) 30%, rgba(10,9,8,0.55) 62%, rgba(10,9,8,0.32) 100%)',
             }}
@@ -97,291 +78,119 @@ export async function HomePage({ locale }: { locale: Locale }) {
 
         <div className="hero-content container-page pb-16 pt-28 md:pb-24">
           <div className="max-w-3xl">
-            <p className="eyebrow fade-in-up">{t(settings.hero.eyebrow, locale)}</p>
-            <h1 className="hero-title display-1 fade-in-up mt-5 text-bone-50 text-shadow-hero">
-              {t(settings.hero.title, locale)}
+            {/* The kicker sits inside the h1 on purpose: the headline is a
+                person talking ("Sono Samuele…") and carries no search terms,
+                so what he does and where is read as part of the heading. */}
+            <h1>
+              <span className="eyebrow fade-in-up block">{t(settings.hero.eyebrow, locale)}</span>
+              {/* Invisible between two blocks, but without it the heading's
+                  text reads "…Roma e provinciaSono Samuele" to a crawler. */}{' '}
+              <span className="hero-title display-1 fade-in-up mt-5 block text-bone-50 text-shadow-hero">
+                {t(settings.hero.title, locale)}
+              </span>
             </h1>
             <p className="lede fade-in-up mt-6 max-w-xl text-bone-200">{t(settings.hero.subtitle, locale)}</p>
 
-            <div className="hero-actions fade-in-up mt-9 flex flex-col gap-3 sm:flex-row">
+            <div className="hero-actions fade-in-up mt-9 flex">
               <Link href={path('request', locale)} className="btn btn-primary">
                 {t(settings.hero.primaryCta, locale)}
               </Link>
-              <Link href={path('cocktails', locale)} className="btn btn-ghost">
-                {t(settings.hero.secondaryCta, locale)}
-              </Link>
             </div>
-
-            {badges.length > 0 && (
-              <ul className="hero-badges fade-in-up mt-10 flex flex-wrap gap-x-6 gap-y-2 text-sm text-bone-400">
-                {badges.map((badge) => (
-                  <li key={badge} className="flex items-center gap-2">
-                    <span aria-hidden className="h-1 w-1 rounded-full bg-brass-500" />
-                    {badge}
-                  </li>
-                ))}
-              </ul>
-            )}
           </div>
         </div>
       </section>
 
-      {/* ================= VALUE PROPS ================= */}
+      {/* ================= 2. CHI SONO, IN BREVE ================= */}
       <section className="section">
-        <div className="container-page">
-          <SectionHeader
-            title={t(settings.home.valuePropTitle, locale)}
-            intro={t(settings.home.valuePropIntro, locale)}
-          />
-          <div className="section-body grid gap-px overflow-hidden rounded-[var(--radius-card)] border border-[var(--hairline)] bg-[var(--hairline)] sm:grid-cols-2">
-            {valueProps.map((prop, index) => (
-              <div
-                key={`${index}-${prop.title}`}
-                className={`reveal reveal-delay-${Math.min(index + 1, 4)} bg-ink-950 p-6 sm:p-7 md:p-9`}
-              >
-                <h3 className="font-[family-name:var(--font-display)] text-xl text-bone-50">{prop.title}</h3>
-                <p className="mt-3 text-[0.95rem] leading-relaxed text-bone-400">{prop.body}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ================= HOW IT WORKS ================= */}
-      <section className="section border-t border-[var(--hairline)] bg-ink-900">
-        <div className="container-page">
-          <SectionHeader
-            title={t(settings.home.howTitle, locale)}
-            intro={t(settings.home.howIntro, locale)}
-          />
-          <div className="section-body">
-            <StepList steps={steps} />
-          </div>
-        </div>
-      </section>
-
-      {/* ================= PACKAGES ================= */}
-      <section id="pacchetti" className="section">
-        <div className="container-page">
-          <div className="flex flex-wrap items-end justify-between gap-6">
-            <SectionHeader
-              title={t(settings.home.packagesTitle, locale)}
-              intro={t(settings.home.packagesIntro, locale)}
-            />
-            <Link href={path('packages', locale)} className="btn btn-ghost !min-h-11 !py-2.5 text-sm">
-              {copy.cta.seePackages}
-            </Link>
-          </div>
-          <div className="section-body grid gap-5 md:grid-cols-2 xl:grid-cols-4">
-            {packages.map((pkg) => (
-              <div key={pkg.id} className="reveal">
-                <PackageCard pkg={pkg} locale={locale} copy={copy} compact />
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ================= COCKTAILS ================= */}
-      <section className="section border-t border-[var(--hairline)] bg-ink-900">
-        <div className="container-page">
-          <div className="flex flex-wrap items-end justify-between gap-6">
-            <SectionHeader
-              title={t(settings.home.cocktailsTitle, locale)}
-              intro={t(settings.home.cocktailsIntro, locale)}
-            />
-            <Link href={path('cocktails', locale)} className="btn btn-ghost !min-h-11 !py-2.5 text-sm">
-              {copy.cta.seeCocktails}
-            </Link>
-          </div>
-          <div className="section-body grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
-            {cocktails.slice(0, 8).map((cocktail, index) => (
-              <div
-                key={cocktail.id}
-                className={cn(
-                  `reveal reveal-delay-${Math.min((index % 4) + 1, 4)}`,
-                  // Six on a phone: in two columns a seventh card sits alone on
-                  // a fourth row, which costs a whole row of scrolling to show
-                  // one more drink. The full list is one tap away in the link
-                  // above, and every larger layout still shows all of them.
-                  index >= 6 && 'hidden sm:block',
-                )}
-              >
-                <CocktailCard cocktail={cocktail} locale={locale} />
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ================= EVENTS ================= */}
-      <section className="section">
-        <div className="container-page">
-          <SectionHeader
-            title={t(settings.home.eventsTitle, locale)}
-            intro={t(settings.home.eventsIntro, locale)}
-          />
-          {/* Two columns from the smallest screen, matching the cocktail grid
-              above it. As a single column these eight cards were 3.200px on
-              a phone — a fifth of the whole page for one "which of these are
-              you?" question. */}
-          <ul className="section-body grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
-            {eventTypes.map((eventType, index) => {
-              const landingSlug = landingBySlug.get(eventType.slug);
-              const href = landingSlug
-                ? landingPath(landingSlug, locale)
-                : path('request', locale, { evento: eventType.slug });
-              return (
-                <li key={eventType.id} className={`reveal reveal-delay-${Math.min(index % 4 + 1, 4)}`}>
-                  <Link href={href} className="card card-hover group block h-full overflow-hidden">
-                    <div className="relative aspect-[5/4] overflow-hidden">
-                      <Media
-                        src={eventType.imagePath}
-                        alt={t(eventType.name, locale)}
-                        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-                        imageClassName="transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-105"
-                        placeholderLabel={t(eventType.name, locale)}
-                      />
-                      <div
-                        aria-hidden
-                        className="pointer-events-none absolute inset-0 bg-gradient-to-t from-ink-950 via-ink-950/30 to-transparent"
-                      />
-                    </div>
-                    <div className="p-4 sm:p-5">
-                      <h3 className="font-[family-name:var(--font-display)] text-base text-bone-50 transition-colors group-hover:text-brass-300 sm:text-lg">
-                        {t(eventType.name, locale)}
-                      </h3>
-                      {/* Clamped on a phone only: in a 160px column the full
-                          blurb ran to five lines of 14px text, which reads as a
-                          wall rather than a caption. The card links to the page
-                          that carries the whole sentence. */}
-                      <p className="mt-1.5 line-clamp-3 text-[0.82rem] leading-relaxed text-bone-400 sm:mt-2 sm:line-clamp-none sm:text-sm">
-                        {t(eventType.blurb, locale)}
-                      </p>
-                    </div>
-                  </Link>
-                </li>
-              );
-            })}
-          </ul>
-        </div>
-      </section>
-
-      {/* ================= THE PERSON ================= */}
-      <section className="section border-t border-[var(--hairline)] bg-ink-900">
-        <div className="container-page grid items-center gap-8 sm:gap-12 lg:grid-cols-2 lg:gap-20">
-          {/* 4/5 full-bleed meant a 487px portrait on a 390px phone — half a
-              screen of decoration before the text it belongs to. 4/3 keeps the
-              framing and gives back ~190px; the desktop ratio is untouched. */}
-          <div className="reveal relative aspect-[4/3] overflow-hidden rounded-[var(--radius-panel)] sm:aspect-[3/2] lg:aspect-[4/5]">
+        <div className="container-page grid items-center gap-8 sm:gap-12 lg:grid-cols-[1fr_1.1fr] lg:gap-20">
+          <div className="reveal relative aspect-[16/10] overflow-hidden rounded-[var(--radius-panel)] sm:aspect-[3/2] lg:aspect-[4/5]">
             <Media
               src={settings.about.imagePath}
-              alt={t(settings.about.title, locale)}
+              alt={t(settings.about.imageAlt, locale)}
               sizes="(max-width: 1024px) 100vw, 45vw"
-              placeholderLabel={locale === 'en' ? 'Portrait of the bartender' : 'Ritratto del bartender'}
+              placeholderLabel={locale === 'en' ? 'Photo' : 'Foto'}
             />
           </div>
           <div className="reveal reveal-delay-1">
-            <p className="eyebrow">{t(settings.about.eyebrow, locale)}</p>
-            <h2 className="display-2 mt-3 text-bone-50">{t(settings.about.title, locale)}</h2>
-            <div className="mt-6 space-y-4 text-[0.98rem] leading-relaxed text-bone-400">
-              {t(settings.about.body, locale)
-                .split('\n\n')
-                .map((paragraph, index) => (
-                  <p key={`${index}-${paragraph.slice(0, 24)}`}>{paragraph}</p>
-                ))}
-            </div>
-            <ul className="mt-8 space-y-2.5 text-sm text-bone-200">
-              {tList(settings.about.facts, locale).map((fact) => (
-                <li key={fact} className="flex gap-2.5">
-                  <svg viewBox="0 0 16 16" className="mt-1 h-3.5 w-3.5 shrink-0 text-brass-500" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden>
-                    <path d="M3 8.5l3.2 3.2L13 5" strokeLinecap="round" strokeLinejoin="round" />
-                  </svg>
-                  <span>{fact}</span>
+            <p className="eyebrow">{t(settings.intro.eyebrow, locale)}</p>
+            <h2 className="display-2 mt-3 text-bone-50">{t(settings.intro.title, locale)}</h2>
+            <p className="mt-6 max-w-xl text-[1.02rem] leading-relaxed text-bone-200">{t(settings.intro.body, locale)}</p>
+            <Link href={path('about', locale)} className="tap-target gap-2 text-sm font-medium text-brass-300 transition-colors hover:text-bone-50 mt-6">
+              {t(settings.intro.linkLabel, locale)} <span aria-hidden>→</span>
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* ================= 3. COSA FACCIO ================= */}
+      <section className="section border-t border-[var(--hairline)] bg-ink-900">
+        <div className="container-page">
+          <div className="reveal max-w-2xl">
+            <h2 className="display-2 text-bone-50">{t(settings.service.homeTitle, locale)}</h2>
+            <p className="lede mt-5">{t(settings.service.homeBody, locale)}</p>
+          </div>
+          {eventLinks.length > 0 && (
+            <ul className="reveal section-body flex flex-wrap gap-2.5">
+              {eventLinks.map((link) => (
+                <li key={link.href}>
+                  <Link
+                    href={link.href}
+                    className="inline-flex min-h-11 items-center rounded-full border border-[var(--hairline-strong)] px-4 text-sm text-bone-200 transition-colors hover:border-brass-500 hover:text-brass-300"
+                  >
+                    {link.label}
+                  </Link>
                 </li>
               ))}
             </ul>
-            {!isPlaceholder(settings.about.signature) && (
-              <p className="mt-8 font-[family-name:var(--font-display)] text-lg text-brass-400">
-                {settings.about.signature}
-              </p>
-            )}
-          </div>
+          )}
+          <Link href={path('packages', locale)} className="reveal tap-target gap-2 text-sm font-medium text-brass-300 transition-colors hover:text-bone-50 mt-6">
+            {t(settings.service.homeLinkLabel, locale)} <span aria-hidden>→</span>
+          </Link>
         </div>
       </section>
 
-      {/* ================= GALLERY ================= */}
-      {gallery.length > 0 && (
-        <section className="section">
-          <div className="container-page">
-            <SectionHeader
-              title={t(settings.home.galleryTitle, locale)}
-              intro={t(settings.home.galleryIntro, locale)}
-            />
-            <div className="section-body grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-4">
-              {gallery.slice(0, 8).map((item, index) => (
-                <figure
-                  key={item.id}
-                  className={`reveal reveal-delay-${Math.min(index % 4 + 1, 4)} relative aspect-square overflow-hidden rounded-xl`}
-                >
-                  <Media
-                    src={item.imagePath}
-                    alt={t(item.alt, locale)}
-                    sizes="(max-width: 768px) 50vw, 25vw"
-                    placeholderLabel={t(item.caption, locale) || undefined}
-                  />
-                </figure>
-              ))}
-            </div>
-            <div className="mt-8">
-              <Link href={path('gallery', locale)} className="btn btn-ghost !min-h-11 !py-2.5 text-sm">
-                {copy.cta.seeAll}
-              </Link>
-            </div>
-          </div>
-        </section>
-      )}
-
-      {/* ================= TESTIMONIALS ================= */}
-      <section className="section border-t border-[var(--hairline)] bg-ink-900">
+      {/* ================= 4. IL MIO MODO DI LAVORARE ================= */}
+      <section className="section">
         <div className="container-page">
-          <SectionHeader
-            title={testimonials.length ? t(settings.home.testimonialsTitle, locale) : copy.misc.promisesTitle}
-            intro={testimonials.length ? t(settings.home.testimonialsIntro, locale) : copy.misc.promisesIntro}
-          />
-          <div className="section-body">
-            <Testimonials testimonials={testimonials} locale={locale} copy={copy} />
+          <div className="reveal max-w-3xl">
+            <p className="eyebrow">{t(settings.method.eyebrow, locale)}</p>
+            <h2 className="display-2 mt-3 text-bone-50">{t(settings.method.title, locale)}</h2>
+            <p className="mt-6 max-w-xl text-[1.02rem] leading-relaxed text-bone-200">{t(settings.method.body, locale)}</p>
           </div>
+
+          {featured.length > 0 && (
+            <ul className="section-body grid gap-3 sm:grid-cols-3 sm:gap-5">
+              {featured.map((cocktail, index) => (
+                <li key={cocktail.id} className={`reveal reveal-delay-${index + 1}`}>
+                  {/* A thumbnail row on a phone, a card from sm up: three full
+                      cards stacked would cost two screens for three examples. */}
+                  <article className="card grid grid-cols-[5rem_minmax(0,1fr)] items-center gap-4 overflow-hidden p-2 pr-4 sm:block sm:p-0">
+                    <div className="relative aspect-square overflow-hidden rounded-lg sm:aspect-[4/5] sm:rounded-none">
+                      <Media
+                        src={cocktail.imagePath}
+                        alt={cocktail.name}
+                        sizes="(max-width: 640px) 80px, 33vw"
+                        placeholderLabel={cocktail.name}
+                      />
+                    </div>
+                    <div className="sm:p-5">
+                      <h3 className="font-[family-name:var(--font-display)] text-lg text-bone-50">{cocktail.name}</h3>
+                      <p className="mt-1 text-xs uppercase tracking-wider text-brass-500">{t(cocktail.ingredients, locale)}</p>
+                    </div>
+                  </article>
+                </li>
+              ))}
+            </ul>
+          )}
+
+          <Link href={path('cocktails', locale)} className="reveal tap-target gap-2 text-sm font-medium text-brass-300 transition-colors hover:text-bone-50 mt-6">
+            {t(settings.method.linkLabel, locale)} <span aria-hidden>→</span>
+          </Link>
         </div>
       </section>
 
-      {/* ================= FAQ ================= */}
-      {homeFaqs.length > 0 && (
-        <section className="section">
-          <div className="container-page">
-            <SectionHeader
-              title={t(settings.home.faqTitle, locale)}
-              intro={t(settings.home.faqIntro, locale)}
-            />
-            <div className="reveal section-body">
-              <FaqList faqs={homeFaqs} locale={locale} />
-            </div>
-            <div className="mt-8">
-              <Link href={path('faq', locale)} className="btn btn-ghost !min-h-11 !py-2.5 text-sm">
-                {copy.cta.seeAll}
-              </Link>
-            </div>
-          </div>
-        </section>
-      )}
-
-      <FinalCta
-        locale={locale}
-        copy={copy}
-        title={t(settings.home.finalCtaTitle, locale)}
-        body={t(settings.home.finalCtaBody, locale)}
-        whatsappHref={whatsappHref}
-      />
+      {/* ================= 5. CONTATTO ================= */}
+      <FinalCta locale={locale} />
 
       <JsonLd
         data={serviceJsonLd({
@@ -389,17 +198,7 @@ export async function HomePage({ locale }: { locale: Locale }) {
           description: t(settings.seo.defaultDescription, locale),
           url: absoluteUrl(path('home', locale)),
           settings,
-          offers: packages.map((pkg) => ({
-            name: t(pkg.name, locale),
-            price: pkg.pricePerGuestFrom,
-            description: t(pkg.description, locale),
-          })),
         })}
-      />
-      <JsonLd
-        data={faqJsonLd(
-          homeFaqs.map((faq) => ({ question: t(faq.question, locale), answer: t(faq.answer, locale) })),
-        )}
       />
     </>
   );

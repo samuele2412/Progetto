@@ -129,7 +129,9 @@ export function localBusinessJsonLd(settings: SiteSettings, locale: Locale): Jso
     image: absoluteUrl(settings.seo.ogImagePath),
     ...(settings.contact.email.endsWith('_HERE') ? {} : { email: settings.contact.email }),
     ...(settings.contact.phone.endsWith('_HERE') ? {} : { telephone: settings.contact.phone }),
-    priceRange: '€€–€€€',
+    // No priceRange: prices are not set yet, and a price band in structured
+    // data is a public claim like any other. Optional for Google; add it back
+    // once there is a real one.
     currenciesAccepted: 'EUR',
     areaServed: [
       { '@type': 'City', name: 'Roma' },

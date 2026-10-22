@@ -44,10 +44,10 @@ const SEED_MARKER = 'seed.initialContent';
  */
 const BUILT_IN_PAGES: { routeKey: string; slugIt: string; slugEn: string; it: string; en: string }[] = [
   { routeKey: 'home', slugIt: '', slugEn: '', it: 'Home', en: 'Home' },
-  { routeKey: 'packages', slugIt: 'pacchetti', slugEn: 'packages', it: 'Pacchetti', en: 'Packages' },
+  { routeKey: 'packages', slugIt: 'pacchetti', slugEn: 'packages', it: 'Il servizio', en: 'The service' },
   { routeKey: 'cocktails', slugIt: 'cocktail', slugEn: 'cocktails', it: 'Cocktail', en: 'Cocktails' },
   { routeKey: 'gallery', slugIt: 'galleria', slugEn: 'gallery', it: 'Galleria', en: 'Gallery' },
-  { routeKey: 'about', slugIt: 'chi-siamo', slugEn: 'about', it: 'Chi siamo', en: 'About' },
+  { routeKey: 'about', slugIt: 'chi-siamo', slugEn: 'about', it: 'Chi sono', en: 'About me' },
   { routeKey: 'partners', slugIt: 'collaboriamo', slugEn: 'partners', it: 'Collaboriamo', en: 'Partners' },
   { routeKey: 'faq', slugIt: 'domande-frequenti', slugEn: 'faq', it: 'Domande frequenti', en: 'FAQ' },
   { routeKey: 'request', slugIt: 'richiedi-preventivo', slugEn: 'request-a-quote', it: 'Richiedi preventivo', en: 'Request a quote' },

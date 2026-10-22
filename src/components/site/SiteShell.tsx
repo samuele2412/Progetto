@@ -4,7 +4,7 @@ import { d } from '@/lib/dictionary';
 import { t, type Locale } from '@/lib/i18n';
 import { getPublishedPages } from '@/lib/cms';
 import { getLandingPages, getNavigationLandings, getPosts } from '@/lib/queries';
-import { landingPath, path } from '@/lib/routes';
+import { landingNavLabel, landingPath, path } from '@/lib/routes';
 import { getSettings } from '@/lib/settings';
 import { telLink, whatsappLink } from '@/lib/utils';
 import { Footer } from './Footer';
@@ -40,7 +40,7 @@ export async function SiteShell({ locale, children }: { locale: Locale; children
 
   const eventLinks = [
     ...navLandings.map((landing) => ({
-      label: t(landing.heroTitle, locale).replace(/ — .*$/, ''),
+      label: landingNavLabel(t(landing.heroTitle, locale), locale),
       href: landingPath(locale === 'en' ? landing.slugEn : landing.slugIt, locale),
     })),
     ...cmsPages
@@ -72,7 +72,6 @@ export async function SiteShell({ locale, children }: { locale: Locale; children
           { label: copy.nav.packages, href: path('packages', locale) },
           { label: copy.nav.cocktails, href: path('cocktails', locale) },
           { label: copy.nav.about, href: path('about', locale) },
-          { label: copy.nav.journal, href: path('journal', locale) },
         ]}
         eventLinks={eventLinks}
         eventsLabel={copy.nav.events}
@@ -114,6 +113,9 @@ export async function SiteShell({ locale, children }: { locale: Locale; children
               { label: copy.nav.gallery, href: path('gallery', locale) },
               { label: copy.nav.faq, href: path('faq', locale) },
               { label: copy.nav.partners, href: path('partners', locale) },
+              // Out of the header since the brand-voice rewrite: three guides
+              // are worth keeping for search, not worth a place in the menu.
+              { label: copy.nav.journal, href: path('journal', locale) },
             ],
           },
           { title: copy.footer.events, links: eventLinks.slice(0, 6) },

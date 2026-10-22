@@ -10,10 +10,10 @@ import type { Locale } from './i18n';
 
 export const dictionary = {
   nav: {
-    packages: { it: 'Pacchetti', en: 'Packages' },
+    packages: { it: 'Il servizio', en: 'The service' },
     cocktails: { it: 'Cocktail', en: 'Cocktails' },
     events: { it: 'Eventi', en: 'Events' },
-    about: { it: 'Chi siamo', en: 'About' },
+    about: { it: 'Chi sono', en: 'About me' },
     gallery: { it: 'Galleria', en: 'Gallery' },
     journal: { it: 'Journal', en: 'Journal' },
     partners: { it: 'Collaboriamo', en: 'Partners' },
@@ -23,29 +23,31 @@ export const dictionary = {
     quickActions: { it: 'Azioni rapide', en: 'Quick actions' },
   },
   cta: {
-    quote: { it: 'Richiedi il preventivo', en: 'Request a quote' },
-    quoteLong: { it: 'Richiedi il tuo preventivo', en: 'Request your quote' },
+    quote: { it: 'Chiedimi un preventivo', en: 'Ask me for a quote' },
+    quoteLong: { it: 'Chiedimi un preventivo', en: 'Ask me for a quote' },
     availability: { it: 'Verifica la disponibilità', en: 'Check availability' },
     whatsapp: { it: 'WhatsApp', en: 'WhatsApp' },
-    whatsappLong: { it: 'Scrivici su WhatsApp', en: 'Message us on WhatsApp' },
-    call: { it: 'Parla con noi', en: 'Talk to us' },
+    whatsappLong: { it: 'Scrivimi su WhatsApp', en: 'Message me on WhatsApp' },
+    call: { it: 'Chiamami', en: 'Call me' },
     seeAll: { it: 'Vedi tutto', en: 'See all' },
-    seePackages: { it: 'Vedi le formule', en: 'See the formats' },
+    seePackages: { it: 'Come funziona', en: 'How it works' },
     seeCocktails: { it: 'Vedi la carta', en: 'See the list' },
     readMore: { it: 'Continua a leggere', en: 'Read more' },
     back: { it: 'Torna indietro', en: 'Go back' },
     backHome: { it: 'Torna alla home', en: 'Back to home' },
   },
   footer: {
-    explore: { it: 'Il servizio', en: 'The service' },
+    explore: { it: 'Esplora', en: 'Explore' },
     events: { it: 'Eventi', en: 'Events' },
     contact: { it: 'Contatti', en: 'Contact' },
-    follow: { it: 'Seguici', en: 'Follow' },
+    follow: { it: 'Seguimi', en: 'Follow me' },
     rights: { it: 'Tutti i diritti riservati', en: 'All rights reserved' },
     privacy: { it: 'Privacy policy', en: 'Privacy policy' },
     cookies: { it: 'Cookie policy', en: 'Cookie policy' },
   },
   packages: {
+    /** Heading of the formats section, shown only once formats exist. */
+    title: { it: 'Le formule', en: 'Formats' },
     from: { it: 'a partire da', en: 'from' },
     perGuest: { it: 'a ospite', en: 'per guest' },
     minimum: { it: 'Investimento minimo', en: 'Minimum spend' },
@@ -54,8 +56,8 @@ export const dictionary = {
     includes: { it: 'Cosa comprende', en: 'What’s included' },
     notIncluded: { it: 'Non incluso (si può aggiungere)', en: 'Not included (can be added)' },
     onRequest: { it: 'Su preventivo', en: 'On request' },
-    mostRequested: { it: 'La più richiesta', en: 'Most requested' },
-    choose: { it: 'Richiedi questa formula', en: 'Request this format' },
+    mostRequested: { it: 'In evidenza', en: 'Featured' },
+    choose: { it: 'Chiedimi questa formula', en: 'Ask me about this format' },
     addons: { it: 'Extra', en: 'Add-ons' },
     addonsIntro: {
       it: 'Si aggiungono a qualsiasi formula. Nessuno è obbligatorio.',
@@ -67,11 +69,6 @@ export const dictionary = {
     fresh: { it: 'Freschi', en: 'Fresh' },
     signature: { it: 'Signature', en: 'Signature' },
     zero: { it: 'Analcolici', en: 'Alcohol-free' },
-    custom: { it: 'Su misura', en: 'Bespoke' },
-    customBody: {
-      it: 'Per le occasioni che lo meritano creiamo un cocktail apposta, con il nome che scegli tu, stampato sulla carta della serata.',
-      en: 'For occasions that deserve it we create a cocktail on purpose, named by you, printed on the menu for the night.',
-    },
   },
   form: {
     step: { it: 'Passo', en: 'Step' },
@@ -90,25 +87,25 @@ export const dictionary = {
     eventDate: { it: 'Data dell’evento', en: 'Date of the event' },
     dateFlexible: { it: 'La data è ancora da definire', en: 'The date is not fixed yet' },
     dateNote: {
-      it: 'La disponibilità viene verificata personalmente: nessuna data è confermata automaticamente.',
-      en: 'Availability is checked personally: no date is confirmed automatically.',
+      it: 'La data la verifico io: nessuna data si conferma in automatico.',
+      en: 'I check the date myself: no date is confirmed automatically.',
     },
     area: { it: 'Dove si svolge?', en: 'Where is it happening?' },
     venueNote: { it: 'Casa, villa, terrazzo, sala… (facoltativo)', en: 'House, villa, terrace, hall… (optional)' },
     guests: { it: 'Quante persone?', en: 'How many people?' },
     package: { it: 'Formula', en: 'Format' },
     packageHint: {
-      it: 'Te ne suggeriamo una in base agli ospiti. Puoi cambiarla o lasciare decidere a noi.',
-      en: 'We suggest one based on your guest count. Change it, or let us decide.',
+      it: 'Te ne suggerisco una in base agli ospiti. Puoi cambiarla o lasciare decidere a me.',
+      en: 'I suggest one based on your guest count. Change it, or let me decide.',
     },
-    packageUndecided: { it: 'Consigliatemi voi', en: 'Recommend one for me' },
+    packageUndecided: { it: 'Consigliami tu', en: 'You recommend one' },
     serviceMode: { it: 'Le bevande', en: 'The drinks' },
-    preferences: { it: 'Che cocktail vi piacerebbe?', en: 'What kind of cocktails?' },
+    preferences: { it: 'Che drink piacciono a te e ai tuoi ospiti?', en: 'What do you and your guests like to drink?' },
     preferencesHint: { it: 'Scegli quello che vuoi, anche più di uno.', en: 'Pick as many as you like.' },
-    message: { it: 'Qualcos’altro che dovremmo sapere?', en: 'Anything else we should know?' },
+    message: { it: 'C’è altro che dovrei sapere?', en: 'Anything else I should know?' },
     messagePlaceholder: {
-      it: 'Numero di ospiti approssimativo, orari, se c’è un ascensore, allergie, un’idea che avete in mente…',
-      en: 'Rough guest numbers, timings, whether there is a lift, allergies, an idea you have in mind…',
+      it: 'Orari, com’è il posto, allergie, un’idea che hai in mente…',
+      en: 'Timings, what the place is like, allergies, an idea you have in mind…',
     },
     name: { it: 'Nome e cognome', en: 'Full name' },
     phone: { it: 'Telefono', en: 'Phone' },
@@ -122,7 +119,7 @@ export const dictionary = {
     summary: { it: 'Riepilogo', en: 'Summary' },
   },
   errors: {
-    name_short: { it: 'Serve almeno un nome.', en: 'We need at least a name.' },
+    name_short: { it: 'Serve almeno un nome.', en: 'I need at least a name.' },
     name_long: { it: 'Nome troppo lungo.', en: 'That name is too long.' },
     email_invalid: { it: 'Controlla l’indirizzo email.', en: 'Please check the email address.' },
     phone_invalid: { it: 'Controlla il numero di telefono.', en: 'Please check the phone number.' },
@@ -133,11 +130,11 @@ export const dictionary = {
     },
     event_type_required: { it: 'Scegli il tipo di evento.', en: 'Please choose the event type.' },
     area_required: { it: 'Scegli la zona.', en: 'Please choose an area.' },
-    guests_required: { it: 'Indica quante persone.', en: 'Please tell us how many people.' },
+    guests_required: { it: 'Indica quante persone.', en: 'Please tell me how many people.' },
     message_long: { it: 'Messaggio troppo lungo.', en: 'That message is too long.' },
     consent_required: {
       it: 'Serve il consenso per poterti ricontattare.',
-      en: 'We need your consent in order to reply.',
+      en: 'I need your consent in order to reply.',
     },
     spam_detected: { it: 'Richiesta non valida.', en: 'Invalid request.' },
     too_fast: {
@@ -145,16 +142,16 @@ export const dictionary = {
       en: 'That was submitted too quickly. Please try again.',
     },
     rate_limited: {
-      it: 'Hai già inviato diverse richieste. Riprova più tardi o scrivici su WhatsApp.',
-      en: 'You have already sent several requests. Try again later, or message us on WhatsApp.',
+      it: 'Hai già inviato diverse richieste. Riprova più tardi o scrivimi su WhatsApp.',
+      en: 'You have already sent several requests. Try again later, or message me on WhatsApp.',
     },
     turnstile_failed: {
       it: 'Verifica anti-spam non riuscita. Ricarica la pagina e riprova.',
       en: 'Anti-spam check failed. Reload the page and try again.',
     },
     server: {
-      it: 'Qualcosa è andato storto da parte nostra. Riprova, oppure scrivici su WhatsApp.',
-      en: 'Something went wrong on our side. Try again, or message us on WhatsApp.',
+      it: 'Qualcosa è andato storto. Riprova, oppure scrivimi su WhatsApp.',
+      en: 'Something went wrong. Try again, or message me on WhatsApp.',
     },
     network: {
       it: 'Connessione interrotta. Controlla la rete e riprova.',
@@ -173,17 +170,17 @@ export const dictionary = {
     },
     errorTitle: { it: 'Qualcosa è andato storto', en: 'Something went wrong' },
     errorBody: {
-      it: 'Riprova fra un istante. Se il problema resta, scrivici su WhatsApp.',
-      en: 'Try again in a moment. If it persists, message us on WhatsApp.',
+      it: 'Riprova fra un istante. Se il problema resta, scrivimi su WhatsApp.',
+      en: 'Try again in a moment. If it persists, message me on WhatsApp.',
     },
     retry: { it: 'Riprova', en: 'Try again' },
     noReviewsYet: {
-      it: 'Le prime recensioni arriveranno qui appena i clienti le lasceranno. Non pubblichiamo recensioni che non esistono.',
-      en: 'The first reviews will appear here as soon as clients leave them. We do not publish reviews that do not exist.',
+      it: 'Le prime recensioni arriveranno qui appena i clienti le lasceranno. Non pubblico recensioni che non esistono.',
+      en: 'The first reviews will appear here as soon as clients leave them. I don’t publish reviews that don’t exist.',
     },
     noReviewsTitle: {
-      it: 'Non abbiamo ancora recensioni da mostrarti',
-      en: 'We have no reviews to show you yet',
+      it: 'Non ho ancora recensioni da mostrarti',
+      en: 'I have no reviews to show you yet',
     },
     /**
      * Replace the section's own title and intro while the list is empty: with
@@ -191,14 +188,14 @@ export const dictionary = {
      * propria festa") the heading promised reviews that the card underneath
      * then said do not exist.
      */
-    promisesTitle: { it: 'Cosa possiamo prometterti', en: 'What we can promise you' },
+    promisesTitle: { it: 'Cosa posso prometterti', en: 'What I can promise you' },
     promisesIntro: {
       it: 'Queste sono le cose su cui puoi contare da subito.',
       en: 'These are the things you can count on from the start.',
     },
   },
   /**
-   * What we promise, before anyone has reviewed us.
+   * What Samuele promises, before anyone has reviewed him.
    *
    * Every line here restates a commitment already made elsewhere on the site
    * (the value props, the request page): it is what the service does, not a
@@ -206,30 +203,26 @@ export const dictionary = {
    * a testimonial, a number or a credential.
    */
   promises: {
-    fixedPrice: {
-      it: 'Prezzo concordato prima dell’evento, non un conteggio a fine serata.',
-      en: 'A price agreed before the event, not a tally at the end of the night.',
-    },
     noAutoBooking: {
-      it: 'Niente viene prenotato automaticamente: la data la verifichiamo noi.',
-      en: 'Nothing is booked automatically — we check the date ourselves.',
+      it: 'Nessuna data si conferma in automatico: la verifico io.',
+      en: 'No date is confirmed automatically: I check it myself.',
     },
     freeQuote: {
       it: 'Chiedere un preventivo non costa nulla e non impegna.',
       en: 'Asking for a quote costs nothing and commits you to nothing.',
     },
     onePerson: {
-      it: 'Ti risponde chi sta dietro al bancone, dalla prima domanda all’ultimo bicchiere.',
-      en: 'You talk to the person behind the counter, from the first question to the last glass.',
+      it: 'Ti rispondo io, dalla prima domanda all’ultimo drink.',
+      en: 'I reply myself, from your first question to the last drink.',
     },
-    replyTime: {
-      it: 'Di solito rispondiamo entro 24 ore.',
-      en: 'We usually reply within 24 hours.',
+    fromBoard: {
+      it: 'Rispondo anche quando sono a bordo, e fisso la data per quando torno.',
+      en: 'I reply even when I’m on board, and fix the date for when I’m back.',
     },
     inAHurry: { it: 'Hai fretta?', en: 'In a hurry?' },
     inAHurryBody: {
-      it: 'Scrivici direttamente. Legge la stessa persona che riceve il modulo.',
-      en: 'Write to us directly. It is the same person who reads the form.',
+      it: 'Scrivimi direttamente: rispondo io, come al modulo.',
+      en: 'Message me directly: I reply myself, just as I do to the form.',
     },
   },
 } as const;

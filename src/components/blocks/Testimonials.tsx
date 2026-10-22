@@ -50,10 +50,10 @@ export function Testimonials({
   const Heading = headingLevel === 2 ? 'h2' : 'h3';
   if (!testimonials.length) {
     const promises = [
-      copy.promises.fixedPrice,
       copy.promises.noAutoBooking,
       copy.promises.freeQuote,
       copy.promises.onePerson,
+      copy.promises.fromBoard,
     ];
     return (
       <div className="reveal card grid gap-8 p-6 sm:p-8 lg:grid-cols-[1fr_1.15fr] lg:gap-12 lg:p-10">

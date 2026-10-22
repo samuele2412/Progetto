@@ -4,11 +4,17 @@
  * Everything here can be overridden from the admin panel (Contenuti); these
  * values are the fallback and the seed. Placeholders in SCREAMING_SNAKE_CASE
  * are meant to be replaced before going live — the admin panel flags them.
+ *
+ * The copy follows docs/13-brand-voice.md: first person singular, "tu" to the
+ * reader, only facts Samuele confirmed. Nothing here may promise what the
+ * service does not do today (no counter, no glassware, no invoices, no prices,
+ * no fixed reply time) — the "Da evitare" section of that document lists them.
+ * The previous copy is frozen in scripts/content/legacy-v1.json.
  */
 
 export type L = { it: string; en: string };
 export type LL = { it: string[]; en: string[] };
-/** A localized list of small title + body pairs (steps, value props). */
+/** A localized list of small title + body pairs (steps). */
 export type LPairs = { it: { title: string; body: string }[]; en: { title: string; body: string }[] };
 
 export type SiteSettings = {
@@ -29,51 +35,83 @@ export type SiteSettings = {
     email: string;
     serviceArea: L;
     availability: L;
+    /**
+     * When Samuele is in Rome and taking parties, in his own words. He works
+     * on cruise ships between these periods, so this changes a few times a
+     * year; empty means nothing is shown anywhere.
+     */
+    periods: L;
     /** Prefix applied to national numbers before opening a WhatsApp chat. */
     defaultCountryCode: string;
   };
   social: { instagram: string; tiktok: string; facebook: string };
+  /** Home, section 1. */
   hero: {
     eyebrow: L;
     title: L;
     subtitle: L;
     primaryCta: L;
-    secondaryCta: L;
     imagePath: string;
     /** Optional short muted loop behind the hero. Leave empty to use the image. */
     videoPath: string;
-    /** Three short proof points under the CTAs. */
-    badges: LL;
   };
-  home: {
-    valuePropTitle: L;
-    valuePropIntro: L;
-    valueProps: LPairs;
-    howTitle: L;
-    howIntro: L;
+  /** Home, section 2: who he is, in three lines. The photo is the one in `about`. */
+  intro: {
+    eyebrow: L;
+    title: L;
+    body: L;
+    linkLabel: L;
+  };
+  /** Home, section 3, and the service page (/pacchetti). */
+  service: {
+    homeTitle: L;
+    homeBody: L;
+    homeLinkLabel: L;
+    pageTitle: L;
+    pageIntro: L;
+    bringTitle: L;
+    bringItems: LL;
+    needTitle: L;
+    needBody: L;
+    drinksTitle: L;
+    drinksBody: L;
+    priceTitle: L;
+    priceBody: L;
+    stepsTitle: L;
     steps: LPairs;
-    packagesTitle: L;
-    packagesIntro: L;
+  };
+  /** Home, section 4: the one thing that is his. */
+  method: {
+    eyebrow: L;
+    title: L;
+    body: L;
+    linkLabel: L;
+  };
+  /** Titles shared by pages, and the closing call to action. */
+  home: {
     cocktailsTitle: L;
     cocktailsIntro: L;
-    eventsTitle: L;
-    eventsIntro: L;
     galleryTitle: L;
     galleryIntro: L;
-    testimonialsTitle: L;
-    testimonialsIntro: L;
     faqTitle: L;
     faqIntro: L;
     finalCtaTitle: L;
     finalCtaBody: L;
+    /** One short line under the call to action. */
+    finalCtaNote: L;
   };
   about: {
     eyebrow: L;
     title: L;
     body: L;
-    /** Two or three factual lines — no CV, no superlatives. */
+    factsTitle: L;
+    /** Training and roles, one per line, no adjectives. */
     facts: LL;
+    approachTitle: L;
+    approachBody: L;
     imagePath: string;
+    /** Describes what the photo shows — not who it is meant to be. */
+    imageAlt: L;
     signature: string;
   };
   partners: {
@@ -81,6 +119,7 @@ export type SiteSettings = {
     intro: L;
     bullets: LL;
     ctaLabel: L;
+    ctaBody: L;
   };
   requestForm: {
     title: L;
@@ -113,12 +152,12 @@ export const defaultSettings: SiteSettings = {
   brand: {
     name: 'Cordiale',
     descriptor: {
-      it: 'Private Cocktail Bar · Roma',
-      en: 'Private Cocktail Bar · Rome',
+      it: 'Bartender per feste private · Roma',
+      en: 'Private party bartender · Rome',
     },
     claim: {
-      it: 'Tu pensa alla festa. Al bar pensiamo noi.',
-      en: 'You throw the party. We take care of the bar.',
+      it: 'Tu pensa alla festa, ai drink penso io.',
+      en: 'You plan the party, I’ll handle the drinks.',
     },
     legalName: 'LEGAL_NAME_HERE',
     vatNumber: 'VAT_NUMBER_HERE',
@@ -128,18 +167,19 @@ export const defaultSettings: SiteSettings = {
     phone: 'PHONE_NUMBER_HERE',
     whatsapp: 'WHATSAPP_NUMBER_HERE',
     whatsappMessage: {
-      it: 'Ciao! Vorrei un cocktail bar per il mio evento a Roma. Ti racconto: ',
-      en: 'Hi! I would like a cocktail bar for my event in Rome. Here are the details: ',
+      it: 'Ciao Samuele! Vorrei un bartender per una festa. Ti racconto: ',
+      en: 'Hi Samuele! I’d like a bartender for a party. Here are the details: ',
     },
     email: 'EMAIL_HERE',
     serviceArea: {
-      it: 'Roma e provincia — fuori zona su richiesta',
-      en: 'Rome and its province — further afield on request',
+      it: 'Roma e provincia. Più lontano? Chiedimi pure.',
+      en: 'Rome and its province. Further away? Just ask.',
     },
     availability: {
-      it: 'Rispondiamo tutti i giorni, 10:00–20:00',
-      en: 'We reply every day, 10:00–20:00',
+      it: 'Rispondo io, anche quando sono a bordo.',
+      en: 'I reply myself, even when I’m on board.',
     },
+    periods: { it: '', en: '' },
     defaultCountryCode: '39',
   },
 
@@ -151,215 +191,223 @@ export const defaultSettings: SiteSettings = {
 
   hero: {
     eyebrow: {
-      it: 'Private cocktail bar — Roma e provincia',
-      en: 'Private cocktail bar — Rome and province',
+      it: 'Bartender per feste private · Roma e provincia',
+      en: 'Private party bartender · Rome and province',
     },
     title: {
-      it: 'Portiamo un bar vero alla tua festa.',
-      en: 'We bring a real bar to your party.',
+      it: 'Sono Samuele. Vengo a fare da bere alla tua festa.',
+      en: 'I’m Samuele. I’ll make the drinks at your party.',
     },
     subtitle: {
-      it: 'Bancone, bartender, attrezzatura e bottiglie. Arriviamo, montiamo, serviamo e a fine serata portiamo via tutto. Tu devi solo decidere chi invitare.',
-      en: 'Counter, bartender, kit and bottles. We arrive, set up, serve, and clear everything away at the end of the night. All you have to do is decide who to invite.',
+      it: 'Porto io attrezzatura, ghiaccio e bottiglie. Tu pensi agli ospiti.',
+      en: 'I bring the kit, the ice and the bottles. You look after your guests.',
     },
-    primaryCta: { it: 'Richiedi il tuo preventivo', en: 'Request your quote' },
-    secondaryCta: { it: 'Guarda i cocktail', en: 'See the cocktails' },
+    primaryCta: { it: 'Chiedimi un preventivo', en: 'Ask me for a quote' },
     imagePath: '/images/hero/hero-main.jpg',
     videoPath: '',
-    badges: {
-      it: ['Bottiglie e ghiaccio inclusi', 'Prezzo chiuso, deciso prima', 'Montaggio e pulizia compresi'],
-      en: ['Bottles and ice included', 'Fixed price, agreed upfront', 'Set-up and clean-up included'],
+  },
+
+  intro: {
+    eyebrow: { it: 'Chi sono', en: 'About me' },
+    title: {
+      it: 'Dietro al bancone da quando avevo 16 anni.',
+      en: 'Behind the bar since I was 16.',
+    },
+    body: {
+      it: 'Ho 21 anni. Ho iniziato per caso, in un piccolo bistrot vicino Roma, e mi sono innamorato del mestiere. Oggi lavoro anche come barman sulle navi Costa Crociere, e tra un imbarco e l’altro porto lo stesso ritmo alle feste private.',
+      en: 'I’m 21. I started by chance, in a small bistro just outside Rome, and fell in love with the job. Today I also work as a bartender on Costa Cruises ships, and between contracts I bring the same pace to private parties.',
+    },
+    linkLabel: { it: 'La mia storia', en: 'My story' },
+  },
+
+  service: {
+    homeTitle: {
+      it: 'Dal compleanno in casa al matrimonio.',
+      en: 'From a birthday at home to a wedding.',
+    },
+    homeBody: {
+      it: 'Lavoro su un tavolo o un piano che trovo sul posto, e dalla prima domanda all’ultimo drink parli con me.',
+      en: 'I work at a table or a counter I find on site, and from your first question to the last drink, you deal with me.',
+    },
+    homeLinkLabel: { it: 'Come funziona il servizio', en: 'How the service works' },
+    pageTitle: { it: 'Come funziona il servizio', en: 'How the service works' },
+    pageIntro: {
+      it: 'Vengo alla tua festa e mi occupo di tutto il bere. Qui trovi cosa porto io, cosa serve a te e come scegliamo cosa preparare.',
+      en: 'I come to your party and take care of all the drinks. Here is what I bring, what you need to provide and how we choose what to make.',
+    },
+    bringTitle: { it: 'Cosa porto io', en: 'What I bring' },
+    bringItems: {
+      it: [
+        'Shaker e attrezzi da bar',
+        'Il ghiaccio, con frigo o borse frigo per tenerlo',
+        'Le bottiglie, che compro io',
+        'I bicchieri, monouso',
+      ],
+      en: [
+        'A shaker and the bar tools',
+        'The ice, with a fridge or cool bags to keep it',
+        'The bottles, which I buy',
+        'The cups, disposable',
+      ],
+    },
+    needTitle: { it: 'Cosa serve a te', en: 'What you need to provide' },
+    needBody: {
+      it: 'Un tavolo o un piano dove lavorare. Gli altri dettagli, come spazio e orari, li vediamo insieme quando mi scrivi.',
+      en: 'A table or a counter to work at. The other details, like space and timings, we work out together when you get in touch.',
+    },
+    drinksTitle: { it: 'Come scegliamo i drink', en: 'How we choose the drinks' },
+    drinksBody: {
+      it: 'Mi dici cosa piace a te e ai tuoi ospiti, e da lì scegliamo cosa preparare. Se vuoi qualche idea, nella carta trovi da dove partire.',
+      en: 'You tell me what you and your guests like, and we choose what to make from there. If you want a few ideas, the list is a good place to start.',
+    },
+    priceTitle: { it: 'Quanto costa', en: 'What it costs' },
+    priceBody: {
+      it: 'Ogni festa è diversa: dipende da quante persone siete, da cosa bevete e dal posto. Per questo faccio ogni preventivo su misura. È gratuito e non impegna.',
+      en: 'Every party is different: it depends on how many of you there are, what you drink and where it is. That is why every quote is made to measure. It is free and commits you to nothing.',
+    },
+    stepsTitle: { it: 'Come si procede', en: 'What happens next' },
+    steps: {
+      it: [
+        { title: 'Mi racconti la festa', body: 'Dal modulo: data, zona, quante persone, che tipo di serata.' },
+        { title: 'Ti rispondo io', body: 'Con una proposta pensata per la tua festa.' },
+        { title: 'Fissiamo la data', body: 'Solo quando la proposta ti convince. Nessuna data si conferma in automatico.' },
+      ],
+      en: [
+        { title: 'Tell me about the party', body: 'Through the form: date, area, how many people, what kind of night.' },
+        { title: 'I reply myself', body: 'With a proposal made for your party.' },
+        { title: 'We fix the date', body: 'Only once the proposal works for you. No date is confirmed automatically.' },
+      ],
     },
   },
 
+  method: {
+    eyebrow: { it: 'Il mio modo di lavorare', en: 'How I work' },
+    title: {
+      it: 'Dimmi cosa bevi di solito. Ti preparo qualcosa di simile, ma più interessante.',
+      en: 'Tell me what you usually drink. I’ll make you something similar, but more interesting.',
+    },
+    body: {
+      it: 'Spesso capisco i gusti di una persona solo guardandola. Quando non ci riesco, chiedo. Poi lavoro veloce, senza lasciare niente al caso.',
+      en: 'I can often tell what someone likes just by looking at them. When I can’t, I ask. Then I work fast, without leaving anything to chance.',
+    },
+    linkLabel: { it: 'Vedi la carta', en: 'See the list' },
+  },
+
   home: {
-    valuePropTitle: {
-      it: 'Non è un barman a ore. È un bar che si sposta.',
-      en: 'Not a bartender by the hour. A bar that travels.',
-    },
-    valuePropIntro: {
-      it: 'La differenza fra una festa con le bottiglie sul tavolo e una serata di cui si parla per mesi sta quasi sempre in quattro cose.',
-      en: 'The difference between bottles on a table and a night people talk about for months usually comes down to four things.',
-    },
-    valueProps: {
-      it: [
-        {
-          title: 'Un bar vero, non un tavolo con le bottiglie',
-          body: 'Bancone professionale, ghiaccio nella forma giusta per ogni drink, bicchieri veri, garnish preparati sul posto. La differenza si vede al primo giro.',
-        },
-        {
-          title: 'Alle bottiglie pensiamo noi',
-          body: 'Calcoliamo le quantità sui tuoi ospiti, facciamo la spesa e portiamo tutto. Niente code al supermercato, niente cinque bottiglie avanzate da smaltire.',
-        },
-        {
-          title: 'Prezzo chiuso, deciso prima',
-          body: 'Una cifra concordata prima dell’evento, non un conteggio a consumo a fine serata. Quello che avanza integro resta a te.',
-        },
-        {
-          title: 'C’è una persona, non un centralino',
-          body: 'Ti risponde chi sta dietro al bancone. Stessa persona dalla prima domanda all’ultimo bicchiere.',
-        },
-      ],
-      en: [
-        {
-          title: 'A real bar, not a table with bottles on it',
-          body: 'A professional counter, the right shape of ice for each drink, real glassware, garnish prepped on site. You notice it on the first round.',
-        },
-        {
-          title: 'We take care of the bottles',
-          body: 'We calculate quantities against your guest list, do the shopping and bring everything. No supermarket queue, no five leftover bottles to deal with.',
-        },
-        {
-          title: 'A fixed price, agreed upfront',
-          body: 'A figure agreed before the event, not a tally at the end of the night. Anything unopened stays with you.',
-        },
-        {
-          title: 'A person, not a switchboard',
-          body: 'The person who replies is the person behind the counter. Same one from the first question to the last glass.',
-        },
-      ],
-    },
-    howTitle: { it: 'Come funziona', en: 'How it works' },
-    howIntro: {
-      it: 'Quattro passaggi. Il primo dura due minuti, gli altri tre li gestiamo noi.',
-      en: 'Four steps. The first takes two minutes; we handle the other three.',
-    },
-    steps: {
-      it: [
-        { title: 'Raccontaci la festa', body: 'Data, zona, quante persone, che tipo di serata. Due minuti di form, nessun impegno.' },
-        { title: 'Ricevi una proposta', body: 'Ti rispondiamo di persona con la formula consigliata, la carta dei cocktail e un prezzo chiuso.' },
-        { title: 'Pensiamo noi al bar', body: 'Spesa, ghiaccio, bicchieri, bancone. Arriviamo in anticipo e montiamo tutto prima che entrino gli ospiti.' },
-        { title: 'Goditi la serata', body: 'A fine festa smontiamo e portiamo via tutto. Tu non tocchi un bicchiere.' },
-      ],
-      en: [
-        { title: 'Tell us about the party', body: 'Date, area, how many people, what kind of night. Two minutes of form, no commitment.' },
-        { title: 'Get a proposal', body: 'We reply personally with a recommended format, a cocktail list and a fixed price.' },
-        { title: 'We handle the bar', body: 'Shopping, ice, glassware, counter. We arrive early and build everything before guests walk in.' },
-        { title: 'Enjoy your night', body: 'At the end we break it down and take it all away. You never touch a glass.' },
-      ],
-    },
-    packagesTitle: { it: 'Le formule', en: 'The formats' },
-    packagesIntro: {
-      it: 'Prezzi a partire da, tutto compreso: bartender, attrezzatura, bottiglie, ghiaccio, bicchieri, allestimento. Il preventivo finale lo costruiamo insieme sulla tua festa.',
-      en: 'Starting prices, all in: bartender, equipment, bottles, ice, glassware, set-up. We build the final quote together, around your party.',
-    },
     cocktailsTitle: { it: 'La carta', en: 'The list' },
     cocktailsIntro: {
-      it: 'Una selezione stretta, fatta bene. Scegli tu quali entrano nella carta della tua serata — o ne creiamo uno apposta.',
-      en: 'A short list, done properly. You pick which ones make it onto your night — or we create one just for you.',
+      it: 'Qualche idea da cui partire. Se cerchi qualcosa che non c’è, chiedimelo: di solito parto da quello che bevi tu.',
+      en: 'A few ideas to start from. If what you want isn’t here, just ask: I usually start from what you already drink.',
     },
-    eventsTitle: { it: 'Per che tipo di serata', en: 'What kind of night' },
-    eventsIntro: {
-      it: 'Cambia la location, cambia il ritmo, cambia la carta. Il bar arriva comunque montato e pronto.',
-      en: 'The venue changes, the pace changes, the list changes. The bar still turns up ready to go.',
-    },
-    galleryTitle: { it: 'Qualche serata', en: 'A few nights' },
+    galleryTitle: { it: 'Galleria', en: 'Gallery' },
     galleryIntro: {
-      it: 'Setup, bancone, dettagli.',
-      en: 'Set-ups, counters, details.',
+      it: 'Qualche immagine per darti un’idea dell’atmosfera.',
+      en: 'A few images to give you a feel for the atmosphere.',
     },
-    testimonialsTitle: { it: 'Cosa dicono', en: 'What people say' },
-    testimonialsIntro: {
-      it: 'Recensioni di chi ci ha avuto alla propria festa.',
-      en: 'Reviews from people who had us at their party.',
-    },
-    faqTitle: { it: 'Domande frequenti', en: 'Frequently asked' },
+    faqTitle: { it: 'Domande frequenti', en: 'Frequently asked questions' },
     faqIntro: {
-      it: 'Le cose che ci chiedono davvero, prima di prenotare.',
-      en: 'The things people actually ask before booking.',
+      it: 'Le cose da sapere prima di scrivermi.',
+      en: 'What is worth knowing before you get in touch.',
     },
     finalCtaTitle: {
-      it: 'Raccontaci la tua festa.',
-      en: 'Tell us about your party.',
+      it: 'Raccontami la tua festa.',
+      en: 'Tell me about your party.',
     },
     finalCtaBody: {
-      it: 'Due minuti di form, poi ti risponde una persona — non un preventivo automatico. Nessun impegno, nessun anticipo per chiedere.',
-      en: 'Two minutes of form, then a person replies — not an automated quote. No commitment, nothing to pay to ask.',
+      it: 'Mi scrivi dal modulo, ti rispondo con una proposta e, se ti convince, fissiamo la data. Il preventivo è gratuito e non impegna.',
+      en: 'You write to me through the form, I reply with a proposal and, if it works for you, we fix the date. The quote is free and commits you to nothing.',
+    },
+    finalCtaNote: {
+      it: 'Se sono a bordo, fisso la data per quando torno.',
+      en: 'If I’m on board, I book the date for when I’m back.',
     },
   },
 
   about: {
-    eyebrow: { it: 'Dietro al bancone', en: 'Behind the counter' },
-    title: {
-      it: 'C’è una persona, e quella persona sono io.',
-      en: 'There is one person behind this, and it is me.',
-    },
+    eyebrow: { it: 'Chi sono', en: 'About me' },
+    title: { it: 'Sono Samuele.', en: 'I’m Samuele.' },
     body: {
-      it: 'Faccio il bartender da anni, in bar veri, con turni veri. Quando ho iniziato a portare il banco a casa degli amici mi sono accorto di una cosa: quasi nessuno organizza il bar di una festa privata come si organizza un bar. Si comprano bottiglie a caso, il ghiaccio finisce alle undici e qualcuno passa la serata a versare invece che a divertirsi.\n\nCordiale nasce per risolvere esattamente quel problema. Rispondo io alle richieste, faccio io la spesa e sto io dietro al bancone. Se una sera non posso esserci, lo dico subito: preferisco perdere un evento che mandare qualcuno che non conosco a rappresentarmi.',
-      en: 'I have been bartending for years, in real bars, on real shifts. When I started taking a counter to friends’ houses I noticed something: almost nobody sets up a private party’s bar the way a bar is set up. Bottles get bought at random, the ice runs out at eleven, and somebody spends the whole night pouring instead of enjoying it.\n\nCordiale exists to fix exactly that. I answer the enquiries, I do the shopping, and I am the one behind the counter. If I can’t make a date, I say so straight away — I would rather lose the booking than send someone I don’t know to stand in for me.',
+      it: 'Ho 21 anni e lavoro dietro al bancone da quando ne avevo 16. All’inizio era un modo per guadagnare qualcosa, in un piccolo bistrot vicino Roma, e lo alternavo con la scuola. Poi mi sono innamorato del mestiere.\n\nDopo il bistrot ho fatto qualche serata in locali diversi e ho continuato a studiare. Oggi lavoro come barman sulle navi Costa Crociere.\n\nTra un imbarco e l’altro porto il mio lavoro alle feste private, a Roma e provincia. Si chiama Cordiale, e di solito lavoro da solo: dalla prima domanda all’ultimo drink, parli con me.',
+      en: 'I’m 21 and I’ve been working behind a bar since I was 16. At first it was a way to earn some money, in a small bistro just outside Rome, alongside school. Then I fell in love with the job.\n\nAfter the bistro I worked a few nights in different venues and kept studying. Today I work as a bartender on Costa Cruises ships.\n\nBetween contracts I bring my work to private parties in Rome and its province. It’s called Cordiale, and I usually work alone: from your first question to the last drink, you deal with me.',
     },
+    factsTitle: { it: 'Formazione', en: 'Training' },
     facts: {
-      it: [
-        'Attrezzatura professionale di proprietà: bancone, frigo, ghiaccio, bicchieri',
-        'Acquisto e trasporto delle bottiglie inclusi nel servizio',
-        'Un solo interlocutore dalla richiesta alla fine della serata',
-      ],
-      en: [
-        'Professional kit, owned outright: counter, fridge, ice, glassware',
-        'Buying and transporting the bottles is part of the service',
-        'One person to talk to, from enquiry to the end of the night',
-      ],
+      it: ['Corso alla Mixology Academy', 'Master sui cocktail sour', 'Corso da barman per Costa Crociere'],
+      en: ['A course at Mixology Academy', 'A masterclass on sour cocktails', 'Bartender training for Costa Cruises'],
+    },
+    approachTitle: { it: 'Come lavoro', en: 'How I work' },
+    approachBody: {
+      it: 'Mi dicono spesso che sono molto veloce ma preciso, e che ho un modo elegante di fare da bere. Niente flair: il mio stile sta nei gesti e nel ritmo.\n\nLavoro in ordine e tengo pulito. Quando il lavoro lo permette chiacchiero con gli ospiti, senza esagerare: la serata deve essere più leggera per tutti, anche per chi la organizza.\n\nLa parte che preferisco è quando una serata riesce meglio grazie al mio lavoro. Bastano piccoli segnali: un sorriso, un complimento sincero, un grazie.',
+      en: 'People often tell me I’m very fast but precise, and that I have an elegant way of making drinks. No flair: my style is in the gestures and the pace.\n\nI work tidily and keep things clean. When there’s time I chat with the guests, without overdoing it: the night should feel lighter for everyone, including whoever is hosting.\n\nThe part I love most is when a night goes better because of my work. The signs are small: a smile, a sincere compliment, a thank-you.',
     },
     imagePath: '/images/bartender/bartender-portrait.jpg',
-    signature: 'FOUNDER_NAME_HERE',
+    imageAlt: {
+      it: 'Mani che completano un cocktail con menta fresca e ghiaccio tritato',
+      en: 'Hands finishing a cocktail with fresh mint and crushed ice',
+    },
+    signature: '',
   },
 
   partners: {
     title: { it: 'Location, planner, catering', en: 'Venues, planners, caterers' },
     intro: {
-      it: 'Lavoriamo volentieri come fornitore bar per chi organizza eventi di mestiere. Arriviamo autonomi, ci coordiniamo con la cucina e con il vostro timing, e non parliamo mai con il cliente scavalcandovi.',
-      en: 'We are happy to work as the bar supplier for people who organise events for a living. We arrive self-sufficient, we work to your timing and the kitchen’s, and we never go around you to talk to the client.',
+      it: 'Se organizzi eventi per lavoro, posso essere il bartender delle tue serate. Arrivo con la mia attrezzatura e mi adeguo ai tuoi orari e al tuo modo di lavorare con i clienti.',
+      en: 'If you organise events for a living, I can be the bartender at your events. I arrive with my own kit and fit around your timings and the way you work with your clients.',
     },
     bullets: {
       it: [
-        'Listino dedicato e condizioni concordate per collaborazioni continuative',
-        'Documentazione, assicurazione e requisiti della location gestiti da noi',
-        'Disponibilità a sopralluogo congiunto e prova cocktail',
-        'Nessun materiale nostro esposto se non lo volete',
+        'Orari e spazi concordati con te prima dell’evento',
+        'Attrezzatura, ghiaccio e bottiglie li porto io',
+        'Drink scelti sui gusti dei tuoi ospiti',
+        'Disponibile tra un imbarco e l’altro: scrivimi per tempo',
       ],
       en: [
-        'Dedicated rates and agreed terms for ongoing partnerships',
-        'Paperwork, insurance and venue requirements handled on our side',
-        'Happy to do joint site visits and tasting sessions',
-        'No branding of ours on show unless you want it',
+        'Timings and space agreed with you before the event',
+        'I bring the kit, the ice and the bottles',
+        'Drinks chosen around your guests’ tastes',
+        'Available between contracts at sea: get in touch early',
       ],
     },
-    ctaLabel: { it: 'Scrivici come professionista', en: 'Get in touch as a professional' },
+    ctaLabel: { it: 'Scrivimi come professionista', en: 'Get in touch as a professional' },
+    ctaBody: {
+      it: 'Raccontami che eventi organizzi e con che frequenza. Ti rispondo con le date in cui sono disponibile.',
+      en: 'Tell me what kind of events you organise and how often. I’ll reply with the dates I’m available.',
+    },
   },
 
   requestForm: {
-    title: { it: 'Raccontaci la tua festa', en: 'Tell us about your party' },
+    title: { it: 'Raccontami la tua festa', en: 'Tell me about your party' },
     intro: {
-      it: 'Cinque domande veloci. Ti rispondiamo di persona, di solito entro 24 ore, con la formula consigliata e un prezzo chiuso.',
-      en: 'Five quick questions. We reply personally, usually within 24 hours, with a recommended format and a fixed price.',
+      it: 'Poche domande veloci. Ti rispondo io, con una proposta pensata per la tua festa.',
+      en: 'A few quick questions. I’ll reply myself, with a proposal made for your party.',
     },
-    submitLabel: { it: 'Richiedi il tuo preventivo', en: 'Request your quote' },
+    submitLabel: { it: 'Invia la richiesta', en: 'Send the request' },
     reassurance: {
-      it: 'Nessun pagamento, nessun impegno. La data viene verificata personalmente prima di ogni conferma.',
-      en: 'No payment, no commitment. Availability is always checked personally before anything is confirmed.',
+      it: 'Nessun pagamento e nessun impegno: mi stai solo raccontando la festa.',
+      en: 'No payment and no commitment: you’re just telling me about the party.',
     },
     successTitle: { it: 'Richiesta ricevuta.', en: 'Request received.' },
     successBody: {
-      it: 'Ti contatteremo personalmente per definire tutti i dettagli — di solito entro 24 ore. Se hai fretta, scrivici direttamente su WhatsApp.',
-      en: 'We will get in touch personally to work out the details — usually within 24 hours. If you are in a hurry, message us on WhatsApp.',
+      it: 'Ti rispondo io appena posso, anche se sono a bordo.',
+      en: 'I’ll reply as soon as I can, even if I’m on board.',
     },
   },
 
   seo: {
     siteName: 'Cordiale',
     defaultTitle: {
-      it: 'Cordiale — Private Cocktail Bar a Roma | Cocktail catering per eventi',
-      en: 'Cordiale — Private Cocktail Bar in Rome | Cocktail catering for events',
+      it: 'Cordiale · Samuele, bartender per feste private a Roma',
+      en: 'Cordiale · Samuele, private party bartender in Rome',
     },
     titleTemplate: { it: '%s | Cordiale Roma', en: '%s | Cordiale Rome' },
     defaultDescription: {
-      it: 'Un cocktail bar professionale al tuo evento a Roma e provincia: bartender, bancone, attrezzatura e bottiglie inclusi. Feste private, compleanni, lauree, matrimoni ed eventi aziendali. Richiedi un preventivo.',
-      en: 'A professional cocktail bar at your event in Rome: bartender, counter, equipment and bottles included. Private parties, birthdays, graduations, weddings and corporate events. Request a quote.',
+      it: 'Sono Samuele, bartender da quando avevo 16 anni. Vengo alla tua festa a Roma e provincia con attrezzatura, ghiaccio e bottiglie. Preventivo gratuito.',
+      en: 'I’m Samuele, a bartender since I was 16. I come to your party in Rome with the kit, the ice and the bottles. Free, no-obligation quote.',
     },
     ogImagePath: '/images/og/og-default.jpg',
     focusKeywords: {
-      it: 'cocktail bar a domicilio Roma, barman a domicilio Roma, cocktail catering Roma, open bar eventi privati',
-      en: 'private cocktail bar Rome, mobile bar hire Rome, cocktail catering Rome, private party bartender',
+      it: 'barman a domicilio Roma, bartender per feste private Roma, cocktail bar a domicilio Roma, cocktail catering Roma',
+      en: 'private bartender Rome, party bartender Rome, mobile cocktail bar Rome, cocktail catering Rome',
     },
   },
 

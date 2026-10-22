@@ -80,7 +80,9 @@ sbaglia.
   servizio che si sposta, e pubblicare l'indirizzo di casa sarebbe sbagliato sia
   per Google sia per la privacy del titolare
 - `WebSite` a livello di sito
-- `Service` con `OfferCatalog` sui pacchetti (home, pacchetti, landing)
+- `Service` con `OfferCatalog` sui pacchetti (home, pacchetti, landing) — solo
+  per le formule attive: finché non ce ne sono, il `Service` esce senza
+  offerte e senza `priceRange`
 - `FAQPage` dove ci sono FAQ reali — è lo schema che più spesso produce rich
   result su questo tipo di query
 - `BreadcrumbList` su landing e articoli

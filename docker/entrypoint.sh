@@ -3,7 +3,8 @@
 #   1. wait for Postgres
 #   2. apply any pending migration (no-op when up to date)
 #   3. seed the catalogue the first time only
-#   4. create the first administrator if ADMIN_EMAIL/ADMIN_PASSWORD are set
+#   4. bring old copy in line with the current version, once
+#   5. create the first administrator if ADMIN_EMAIL/ADMIN_PASSWORD are set
 set -e
 
 echo "[entrypoint] waiting for the database…"
@@ -37,6 +38,16 @@ if [ "${SEED_ON_START:-true}" = "true" ]; then
   # pointing at a file that exists is left alone, so the owner's own uploads
   # survive every restart. See docs/photo-sources.md.
   node dist-scripts/seed-stock-photos.cjs || echo "[entrypoint] stock photos skipped"
+fi
+
+# Moves the copy already in the database to the brand-voice rewrite, once.
+# Only fields still holding the previous version's default are touched; what
+# was edited from the panel stays as it is. Every change is logged in the
+# database and can be undone with `node dist-scripts/content-update.cjs
+# --restore`. See docs/13-brand-voice.md.
+if [ "${CONTENT_UPDATE_ON_START:-true}" = "true" ]; then
+  echo "[entrypoint] updating the site copy if this install predates the rewrite…"
+  node dist-scripts/content-update.cjs || echo "[entrypoint] content update skipped"
 fi
 
 # Creates the account if it is missing. It does NOT reset an existing password:

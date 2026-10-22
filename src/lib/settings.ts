@@ -29,7 +29,15 @@ export const getSettings = cache(async (): Promise<SiteSettings> => {
   const merged = structuredClone(defaultSettings) as Record<string, Record<string, unknown>>;
   for (const row of rows) {
     if (!(row.key in merged)) continue;
-    merged[row.key] = { ...merged[row.key], ...(row.value as Record<string, unknown>) };
+    const group = merged[row.key];
+    const stored = (row.value ?? {}) as Record<string, unknown>;
+    // Only fields the current version still has. A group saved from the panel
+    // stores every field it had at the time, so after an update that retired
+    // a field (the hero badges, the old home sections) the stale value would
+    // otherwise come back as an extra box in the editor, editing nothing.
+    for (const field of Object.keys(group)) {
+      if (field in stored) group[field] = stored[field];
+    }
   }
   return merged as unknown as SiteSettings;
 });

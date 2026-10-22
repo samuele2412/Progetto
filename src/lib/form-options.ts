@@ -16,7 +16,11 @@ export const guestRangeLabels: Record<GuestRange, Record<Locale, string>> = {
   '100+': { it: 'Più di 100 ospiti', en: 'More than 100 guests' },
 };
 
-/** Which package we pre-select for a given crowd size. */
+/**
+ * Which package the form pre-selects for a given crowd size — only when that
+ * package is active. With no formats published (no prices yet) the question
+ * is not asked at all.
+ */
 export const suggestedPackageFor: Record<GuestRange, string> = {
   '10-20': 'aperitivo',
   '20-30': 'signature',
@@ -39,10 +43,10 @@ export type CocktailPreference = (typeof cocktailPreferences)[number];
 export const cocktailPreferenceLabels: Record<CocktailPreference, Record<Locale, string>> = {
   classics: { it: 'Grandi classici', en: 'The classics' },
   fresh: { it: 'Freschi e dissetanti', en: 'Fresh and refreshing' },
-  signature: { it: 'Signature della casa', en: 'House signatures' },
+  signature: { it: 'Qualcosa di originale', en: 'Something original' },
   bubbles: { it: 'Bollicine e brindisi', en: 'Bubbles and toasts' },
-  zero: { it: 'Analcolici curati', en: 'Proper alcohol-free' },
-  surprise: { it: 'Scegliete voi', en: 'You choose' },
+  zero: { it: 'Analcolici', en: 'Alcohol-free' },
+  surprise: { it: 'Scegli tu', en: 'You choose' },
 };
 
 export const serviceModes = ['full_service', 'bar_only', 'undecided'] as const;
@@ -50,12 +54,12 @@ export type ServiceMode = (typeof serviceModes)[number];
 
 export const serviceModeLabels: Record<ServiceMode, Record<Locale, string>> = {
   full_service: {
-    it: 'Full service — alle bottiglie pensate voi',
-    en: 'Full service — you take care of the bottles',
+    it: 'Le bottiglie le compri tu',
+    en: 'You buy the bottles',
   },
   bar_only: {
-    it: 'Solo bar — le bottiglie le fornisco io',
-    en: 'Bar only — I supply the bottles',
+    it: 'Le bottiglie le fornisco io',
+    en: 'I’ll supply the bottles',
   },
   undecided: { it: 'Non ho ancora deciso', en: 'Not decided yet' },
 };

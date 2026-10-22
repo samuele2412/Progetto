@@ -42,11 +42,7 @@ export async function PartnersPage({ locale }: { locale: Locale }) {
             <h2 className="font-[family-name:var(--font-display)] text-xl text-bone-50">
               {t(settings.partners.ctaLabel, locale)}
             </h2>
-            <p className="mt-3 text-sm leading-relaxed text-bone-400">
-              {locale === 'en'
-                ? 'Tell us what you organise and how often. We will send rates and availability for the season.'
-                : 'Raccontaci che eventi organizzi e con che frequenza. Ti mandiamo listino e disponibilità per la stagione.'}
-            </p>
+            <p className="mt-3 text-sm leading-relaxed text-bone-400">{t(settings.partners.ctaBody, locale)}</p>
             <div className="mt-7 space-y-3">
               <Link
                 href={path('request', locale, { evento: 'aziendale', partner: '1' })}

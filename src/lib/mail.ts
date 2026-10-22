@@ -161,39 +161,42 @@ export function buildClientAcknowledgement(input: {
   whatsappUrl: string;
 }): MailMessage {
   const greeting = safeGreetingName(input.name);
+  // First person, like the site: the client wrote to Samuele, not to a
+  // company. No reply time and no price: neither is decided yet.
+  const signOff = `Samuele · ${input.brandName}`;
   const it = {
-    subject: `Abbiamo ricevuto la tua richiesta — ${input.reference}`,
+    subject: `Ho ricevuto la tua richiesta — ${input.reference}`,
     body: [
       `Ciao ${greeting},`,
       '',
-      `abbiamo ricevuto la tua richiesta (riferimento ${input.reference}).`,
+      `ho ricevuto la tua richiesta (riferimento ${input.reference}).`,
       '',
-      'Ti risponderemo personalmente, di solito entro 24 ore, con la formula consigliata e un prezzo chiuso. La disponibilità della data viene verificata a mano: nessun evento è confermato finché non ne parliamo.',
+      'Ti rispondo io appena posso, anche se sono a bordo, con una proposta pensata per la tua festa. La data la verifico io: nessuna data è confermata finché non ne parliamo.',
       '',
       input.whatsappUrl
-        ? `Se nel frattempo vuoi aggiungere qualcosa, rispondi a questa email o scrivici su WhatsApp: ${input.whatsappUrl}`
+        ? `Se nel frattempo vuoi aggiungere qualcosa, rispondi a questa email o scrivimi su WhatsApp: ${input.whatsappUrl}`
         : 'Se nel frattempo vuoi aggiungere qualcosa, rispondi pure a questa email.',
       '',
       `A presto,`,
-      input.brandName,
+      signOff,
     ].join('\n'),
   };
 
   const en = {
-    subject: `We received your request — ${input.reference}`,
+    subject: `I’ve received your request — ${input.reference}`,
     body: [
       `Hi ${greeting},`,
       '',
-      `we have received your request (reference ${input.reference}).`,
+      `I’ve received your request (reference ${input.reference}).`,
       '',
-      'We will reply personally, usually within 24 hours, with a recommended format and a fixed price. Availability is checked by hand: nothing is confirmed until we have spoken.',
+      'I’ll reply myself as soon as I can, even if I’m on board, with a proposal made for your party. I check the date myself: nothing is confirmed until we’ve spoken.',
       '',
       input.whatsappUrl
-        ? `If you want to add anything in the meantime, reply to this email or message us on WhatsApp: ${input.whatsappUrl}`
+        ? `If you want to add anything in the meantime, reply to this email or message me on WhatsApp: ${input.whatsappUrl}`
         : 'If you want to add anything in the meantime, just reply to this email.',
       '',
       'Speak soon,',
-      input.brandName,
+      signOff,
     ].join('\n'),
   };
 

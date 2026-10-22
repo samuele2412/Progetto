@@ -1,20 +1,16 @@
-import Link from 'next/link';
 import { CocktailCard } from '@/components/blocks/CocktailCard';
 import { FinalCta } from '@/components/blocks/FinalCta';
 import { PageHero } from '@/components/blocks/PageHero';
 import { d } from '@/lib/dictionary';
 import { t, type Locale } from '@/lib/i18n';
 import { getCocktails } from '@/lib/queries';
-import { path } from '@/lib/routes';
 import { getSettings } from '@/lib/settings';
-import { whatsappLink } from '@/lib/utils';
 
 const order = ['signature', 'classics', 'fresh', 'zero'] as const;
 
 export async function CocktailsPage({ locale }: { locale: Locale }) {
   const [settings, cocktails] = await Promise.all([getSettings(), getCocktails()]);
   const copy = d(locale);
-  const whatsappHref = whatsappLink(settings.contact.whatsapp, t(settings.contact.whatsappMessage, locale));
 
   const grouped = order
     .map((category) => ({ category, items: cocktails.filter((c) => c.category === category) }))
@@ -33,7 +29,7 @@ export async function CocktailsPage({ locale }: { locale: Locale }) {
               <a
                 key={group.category}
                 href={`#${group.category}`}
-                className="inline-flex min-h-11 items-center rounded-full border border-[var(--hairline-strong)] px-4 text-sm text-bone-300 transition-colors hover:border-brass-500 hover:text-brass-300"
+                className="inline-flex min-h-11 items-center rounded-full border border-[var(--hairline-strong)] px-4 text-sm text-bone-200 transition-colors hover:border-brass-500 hover:text-brass-300"
               >
                 {copy.cocktails[group.category]}
               </a>
@@ -65,26 +61,7 @@ export async function CocktailsPage({ locale }: { locale: Locale }) {
         </section>
       ))}
 
-      <section className="section border-t border-[var(--hairline)]">
-        <div className="container-page">
-          <div className="card reveal mx-auto max-w-2xl p-8 text-center md:p-12">
-            <p className="eyebrow">{copy.cocktails.custom}</p>
-            <h2 className="display-3 mt-3 text-bone-50">{copy.cocktails.custom}</h2>
-            <p className="mt-4 text-[0.98rem] leading-relaxed text-bone-400">{copy.cocktails.customBody}</p>
-            <Link href={path('request', locale)} className="btn btn-primary mt-8">
-              {copy.cta.quoteLong}
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      <FinalCta
-        locale={locale}
-        copy={copy}
-        title={t(settings.home.finalCtaTitle, locale)}
-        body={t(settings.home.finalCtaBody, locale)}
-        whatsappHref={whatsappHref}
-      />
+      <FinalCta locale={locale} />
     </>
   );
 }

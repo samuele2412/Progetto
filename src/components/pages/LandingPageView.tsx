@@ -23,13 +23,22 @@ export async function LandingPageView({ locale, landing }: { locale: Locale; lan
   const copy = d(locale);
   const whatsappHref = whatsappLink(settings.contact.whatsapp, t(settings.contact.whatsappMessage, locale));
   const recommended = packages.find((pkg) => pkg.slug === landing.recommendedPackage);
+  // Only a format that is actually on offer travels to the form: a landing can
+  // still name one that has since been switched off in the panel.
+  const packageSlug = recommended?.slug;
   const highlights = tList(landing.highlights, locale);
   const slug = locale === 'en' ? landing.slugEn : landing.slugIt;
+  // Every landing shares the general questions now; four is enough on a page
+  // that exists to answer one kind of party, the rest are a link away.
+  const shownFaqs = faqs.slice(0, 4);
 
   return (
     <>
       <PageHero
-        eyebrow={t(settings.brand.descriptor, locale)}
+        // The descriptor ("Bartender per feste private") right above "Bartender
+        // per matrimoni a Roma" said the same word twice and named the wrong
+        // party; the menu section the page belongs to reads as orientation.
+        eyebrow={copy.nav.events}
         title={t(landing.heroTitle, locale)}
         intro={t(landing.heroSubtitle, locale)}
         imagePath={landing.heroImagePath}
@@ -38,7 +47,7 @@ export async function LandingPageView({ locale, landing }: { locale: Locale; lan
           <Link
             href={path('request', locale, {
               evento: landing.eventTypeSlug || undefined,
-              pacchetto: landing.recommendedPackage || undefined,
+              pacchetto: packageSlug,
             })}
             className="btn btn-primary"
           >
@@ -73,7 +82,7 @@ export async function LandingPageView({ locale, landing }: { locale: Locale; lan
       )}
 
       <section className="section">
-        <div className="container-page grid gap-14 lg:grid-cols-[1.5fr_1fr] lg:gap-20">
+        <div className={`container-page grid gap-14 lg:gap-20 ${recommended ? 'lg:grid-cols-[1.5fr_1fr]' : ''}`}>
           <article className="prose-cordiale reveal max-w-2xl">
             {renderMarkdown(t(landing.body, locale))}
           </article>
@@ -89,25 +98,30 @@ export async function LandingPageView({ locale, landing }: { locale: Locale; lan
         </div>
       </section>
 
-      {faqs.length > 0 && (
+      {shownFaqs.length > 0 && (
         <section className="section border-t border-[var(--hairline)] bg-ink-900">
           <div className="container-page max-w-4xl">
             <h2 className="display-2 reveal text-bone-50">{t(settings.home.faqTitle, locale)}</h2>
             <div className="reveal mt-8">
-              <FaqList faqs={faqs} locale={locale} />
+              <FaqList faqs={shownFaqs} locale={locale} />
             </div>
+            {faqs.length > shownFaqs.length && (
+              <Link
+                href={path('faq', locale)}
+                className="tap-target mt-6 gap-2 text-sm font-medium text-brass-300 transition-colors hover:text-bone-50"
+              >
+                {copy.cta.seeAll} <span aria-hidden>→</span>
+              </Link>
+            )}
           </div>
         </section>
       )}
 
       <FinalCta
         locale={locale}
-        copy={copy}
-        title={t(settings.home.finalCtaTitle, locale)}
-        body={t(settings.home.finalCtaBody, locale)}
-        whatsappHref={whatsappHref}
-        packageSlug={landing.recommendedPackage || undefined}
+        packageSlug={packageSlug}
         eventTypeSlug={landing.eventTypeSlug || undefined}
+        brief
       />
 
       <JsonLd
@@ -128,7 +142,7 @@ export async function LandingPageView({ locale, landing }: { locale: Locale; lan
         })}
       />
       <JsonLd
-        data={faqJsonLd(faqs.map((faq) => ({ question: t(faq.question, locale), answer: t(faq.answer, locale) })))}
+        data={faqJsonLd(shownFaqs.map((faq) => ({ question: t(faq.question, locale), answer: t(faq.answer, locale) })))}
       />
       <JsonLd
         data={breadcrumbJsonLd([

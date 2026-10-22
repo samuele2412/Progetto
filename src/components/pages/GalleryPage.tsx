@@ -1,16 +1,12 @@
 import { FinalCta } from '@/components/blocks/FinalCta';
 import { PageHero } from '@/components/blocks/PageHero';
 import { Media } from '@/components/Media';
-import { d } from '@/lib/dictionary';
 import { t, type Locale } from '@/lib/i18n';
 import { getGalleryItems } from '@/lib/queries';
 import { getSettings } from '@/lib/settings';
-import { whatsappLink } from '@/lib/utils';
 
 export async function GalleryPage({ locale }: { locale: Locale }) {
   const [settings, items] = await Promise.all([getSettings(), getGalleryItems()]);
-  const copy = d(locale);
-  const whatsappHref = whatsappLink(settings.contact.whatsapp, t(settings.contact.whatsappMessage, locale));
 
   return (
     <>
@@ -26,8 +22,8 @@ export async function GalleryPage({ locale }: { locale: Locale }) {
           {items.length === 0 ? (
             <p className="text-sm text-bone-500">
               {locale === 'en'
-                ? 'Photographs from the first events will appear here.'
-                : 'Qui arriveranno le foto delle prime serate.'}
+                ? 'Photos from my events will appear here.'
+                : 'Qui arriveranno le foto delle mie serate.'}
             </p>
           ) : (
             <div className="columns-2 gap-3 md:columns-3 lg:columns-4 [&>figure]:mb-3">
@@ -54,13 +50,7 @@ export async function GalleryPage({ locale }: { locale: Locale }) {
         </div>
       </section>
 
-      <FinalCta
-        locale={locale}
-        copy={copy}
-        title={t(settings.home.finalCtaTitle, locale)}
-        body={t(settings.home.finalCtaBody, locale)}
-        whatsappHref={whatsappHref}
-      />
+      <FinalCta locale={locale} />
     </>
   );
 }

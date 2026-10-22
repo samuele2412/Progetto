@@ -29,8 +29,7 @@ function findPlaceholders(settings: Awaited<ReturnType<typeof getSettings>>) {
     ['Instagram', settings.social.instagram],
     ['TikTok', settings.social.tiktok],
     ['Ragione sociale', settings.brand.legalName],
-    ['Partita IVA', settings.brand.vatNumber],
-    ['Nome del titolare (sezione “Chi siamo”)', settings.about.signature],
+    ['Partita IVA (se ce l’hai)', settings.brand.vatNumber],
     // These feed the privacy and cookie pages; leaving them unset is exactly
     // what keeps the "bozza" banner on the legal pages.
     ['Titolare del trattamento (privacy)', settings.legal.dataController],

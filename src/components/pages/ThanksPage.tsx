@@ -25,8 +25,8 @@ export async function ThanksPage({ locale, reference }: { locale: Locale; refere
               </p>
               <p className="mt-3 text-sm text-bone-400">
                 {locale === 'en'
-                  ? 'Quote this code if you get in touch before we do.'
-                  : 'Cita questo codice se ci scrivi prima che ti rispondiamo.'}
+                  ? 'Quote this code if you message me before I reply.'
+                  : 'Cita questo codice se mi scrivi prima che ti risponda.'}
               </p>
             </div>
           )}

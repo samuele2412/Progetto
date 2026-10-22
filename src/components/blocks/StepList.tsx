@@ -11,8 +11,11 @@ export function StepList({ steps, headingLevel = 3 }: {
   headingLevel?: 2 | 3;
 }) {
   const Heading = headingLevel === 2 ? 'h2' : 'h3';
+  // Three steps in a four-column grid left an empty hairline cell at the end
+  // of the row, which reads as a missing step.
+  const columns = steps.length === 3 ? 'md:grid-cols-3' : 'md:grid-cols-2 lg:grid-cols-4';
   return (
-    <ol className="grid gap-px overflow-hidden rounded-[var(--radius-card)] border border-[var(--hairline)] bg-[var(--hairline)] md:grid-cols-2 lg:grid-cols-4">
+    <ol className={`grid gap-px overflow-hidden rounded-[var(--radius-card)] border border-[var(--hairline)] bg-[var(--hairline)] ${columns}`}>
       {steps.map((step, index) => (
         <li
           key={`${index}-${step.title}`}

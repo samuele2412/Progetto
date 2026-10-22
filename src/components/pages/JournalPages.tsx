@@ -11,7 +11,6 @@ import { getPosts } from '@/lib/queries';
 import { journalPath, path } from '@/lib/routes';
 import { absoluteUrl, articleJsonLd, breadcrumbJsonLd } from '@/lib/seo';
 import { getSettings } from '@/lib/settings';
-import { whatsappLink } from '@/lib/utils';
 
 function readingMinutes(body: string): number {
   return Math.max(2, Math.round(body.split(/\s+/).length / 210));
@@ -20,7 +19,6 @@ function readingMinutes(body: string): number {
 export async function JournalIndexPage({ locale }: { locale: Locale }) {
   const [settings, posts] = await Promise.all([getSettings(), getPosts()]);
   const copy = d(locale);
-  const whatsappHref = whatsappLink(settings.contact.whatsapp, t(settings.contact.whatsappMessage, locale));
 
   return (
     <>
@@ -77,13 +75,7 @@ export async function JournalIndexPage({ locale }: { locale: Locale }) {
         </div>
       </section>
 
-      <FinalCta
-        locale={locale}
-        copy={copy}
-        title={t(settings.home.finalCtaTitle, locale)}
-        body={t(settings.home.finalCtaBody, locale)}
-        whatsappHref={whatsappHref}
-      />
+      <FinalCta locale={locale} />
     </>
   );
 }
@@ -91,7 +83,6 @@ export async function JournalIndexPage({ locale }: { locale: Locale }) {
 export async function JournalPostPage({ locale, post }: { locale: Locale; post: Post }) {
   const [settings, posts] = await Promise.all([getSettings(), getPosts()]);
   const copy = d(locale);
-  const whatsappHref = whatsappLink(settings.contact.whatsapp, t(settings.contact.whatsappMessage, locale));
   const slug = locale === 'en' ? post.slugEn : post.slugIt;
   const body = t(post.body, locale);
   const others = posts.filter((item) => item.id !== post.id).slice(0, 2);
@@ -157,13 +148,7 @@ export async function JournalPostPage({ locale, post }: { locale: Locale; post: 
         </section>
       )}
 
-      <FinalCta
-        locale={locale}
-        copy={copy}
-        title={t(settings.home.finalCtaTitle, locale)}
-        body={t(settings.home.finalCtaBody, locale)}
-        whatsappHref={whatsappHref}
-      />
+      <FinalCta locale={locale} brief />
 
       <JsonLd
         data={articleJsonLd({

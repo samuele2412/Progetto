@@ -1,17 +1,28 @@
+import Link from 'next/link';
 import { FaqList } from '@/components/blocks/FaqList';
 import { FinalCta } from '@/components/blocks/FinalCta';
 import { PackageCard } from '@/components/blocks/PackageCard';
 import { PageHero } from '@/components/blocks/PageHero';
 import { SectionHeader } from '@/components/blocks/SectionHeader';
+import { StepList } from '@/components/blocks/StepList';
 import { JsonLd } from '@/components/JsonLd';
 import { d } from '@/lib/dictionary';
-import { t, type Locale } from '@/lib/i18n';
+import { t, tList, type Locale } from '@/lib/i18n';
 import { getAddons, getFaqs, getPackages } from '@/lib/queries';
 import { path } from '@/lib/routes';
 import { absoluteUrl, faqJsonLd, serviceJsonLd } from '@/lib/seo';
 import { getSettings } from '@/lib/settings';
-import { whatsappLink } from '@/lib/utils';
 
+/**
+ * The service page. It still lives at /pacchetti so no link or search result
+ * breaks, but it no longer sells four priced formats: until Samuele sets his
+ * prices every quote is made to measure, and the page says what he brings,
+ * what the host provides and how a date gets fixed.
+ *
+ * Formats, extras and pricing questions come back on their own as soon as
+ * they are switched on in the panel — the sections below render only when
+ * there is something to show.
+ */
 export async function PackagesPage({ locale }: { locale: Locale }) {
   const [settings, packages, addons, faqs] = await Promise.all([
     getSettings(),
@@ -20,33 +31,79 @@ export async function PackagesPage({ locale }: { locale: Locale }) {
     getFaqs('pricing'),
   ]);
   const copy = d(locale);
-  const whatsappHref = whatsappLink(settings.contact.whatsapp, t(settings.contact.whatsappMessage, locale));
+  const service = settings.service;
+  const bring = tList(service.bringItems, locale);
+  // `??` only catches undefined: an English list saved as empty from the panel
+  // would render an empty block instead of falling back to Italian.
+  const steps = service.steps[locale]?.length ? service.steps[locale] : service.steps.it;
 
   return (
     <>
       <PageHero
         eyebrow={t(settings.brand.descriptor, locale)}
-        title={t(settings.home.packagesTitle, locale)}
-        intro={t(settings.home.packagesIntro, locale)}
+        title={t(service.pageTitle, locale)}
+        intro={t(service.pageIntro, locale)}
       />
 
       <section className="section">
-        <div className="container-page">
-          <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
-            {packages.map((pkg) => (
-              <div key={pkg.id} className="reveal">
-                <PackageCard pkg={pkg} locale={locale} copy={copy} headingLevel={2} />
-              </div>
-            ))}
+        <div className="container-page grid gap-10 md:grid-cols-3 md:gap-8 lg:gap-14">
+          <div className="reveal">
+            <h2 className="display-3 text-bone-50">{t(service.bringTitle, locale)}</h2>
+            <ul className="mt-5 space-y-3 text-[0.98rem] leading-relaxed text-bone-200">
+              {bring.map((item) => (
+                <li key={item} className="flex gap-3">
+                  <svg viewBox="0 0 16 16" className="mt-1.5 h-3.5 w-3.5 shrink-0 text-brass-500" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden>
+                    <path d="M3 8.5l3.2 3.2L13 5" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                  <span>{item}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div className="reveal reveal-delay-1">
+            <h2 className="display-3 text-bone-50">{t(service.needTitle, locale)}</h2>
+            <p className="mt-5 text-[0.98rem] leading-relaxed text-bone-200">{t(service.needBody, locale)}</p>
+          </div>
+          <div className="reveal reveal-delay-2">
+            <h2 className="display-3 text-bone-50">{t(service.drinksTitle, locale)}</h2>
+            <p className="mt-5 text-[0.98rem] leading-relaxed text-bone-200">{t(service.drinksBody, locale)}</p>
+            <Link
+              href={path('cocktails', locale)}
+              className="tap-target mt-4 gap-2 text-sm font-medium text-brass-300 transition-colors hover:text-bone-50"
+            >
+              {copy.cta.seeCocktails} <span aria-hidden>→</span>
+            </Link>
           </div>
         </div>
       </section>
+
+      <section className="section border-t border-[var(--hairline)] bg-ink-900">
+        <div className="container-page grid gap-5 lg:grid-cols-[1fr_1.4fr] lg:gap-20">
+          <h2 className="display-2 reveal text-bone-50">{t(service.priceTitle, locale)}</h2>
+          <p className="lede reveal reveal-delay-1 lg:pt-2">{t(service.priceBody, locale)}</p>
+        </div>
+      </section>
+
+      {packages.length > 0 && (
+        <section className="section">
+          <div className="container-page">
+            <SectionHeader title={copy.packages.title} />
+            <div className="section-body grid gap-5 md:grid-cols-2 xl:grid-cols-4">
+              {packages.map((pkg) => (
+                <div key={pkg.id} className="reveal">
+                  <PackageCard pkg={pkg} locale={locale} copy={copy} />
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
 
       {addons.length > 0 && (
         <section className="section border-t border-[var(--hairline)] bg-ink-900">
           <div className="container-page">
             <SectionHeader title={copy.packages.addons} intro={copy.packages.addonsIntro} />
-            <ul className="mt-12 grid gap-px overflow-hidden rounded-[var(--radius-card)] border border-[var(--hairline)] bg-[var(--hairline)] sm:grid-cols-2 lg:grid-cols-3">
+            <ul className="section-body grid gap-px overflow-hidden rounded-[var(--radius-card)] border border-[var(--hairline)] bg-[var(--hairline)] sm:grid-cols-2 lg:grid-cols-3">
               {addons.map((addon, index) => (
                 <li
                   key={addon.id}
@@ -68,8 +125,19 @@ export async function PackagesPage({ locale }: { locale: Locale }) {
         </section>
       )}
 
+      {steps.length > 0 && (
+        <section className="section border-t border-[var(--hairline)]">
+          <div className="container-page">
+            <h2 className="display-2 reveal max-w-xl text-bone-50">{t(service.stepsTitle, locale)}</h2>
+            <div className="section-body">
+              <StepList steps={steps} />
+            </div>
+          </div>
+        </section>
+      )}
+
       {faqs.length > 0 && (
-        <section className="section">
+        <section className="section border-t border-[var(--hairline)]">
           <div className="container-page">
             <SectionHeader title={t(settings.home.faqTitle, locale)} />
             <div className="reveal mt-10">
@@ -79,20 +147,16 @@ export async function PackagesPage({ locale }: { locale: Locale }) {
         </section>
       )}
 
-      <FinalCta
-        locale={locale}
-        copy={copy}
-        title={t(settings.home.finalCtaTitle, locale)}
-        body={t(settings.home.finalCtaBody, locale)}
-        whatsappHref={whatsappHref}
-      />
+      <FinalCta locale={locale} brief />
 
       <JsonLd
         data={serviceJsonLd({
-          name: `${settings.brand.name} — ${t(settings.home.packagesTitle, locale)}`,
-          description: t(settings.home.packagesIntro, locale),
+          name: `${settings.brand.name} — ${t(settings.brand.descriptor, locale)}`,
+          description: t(service.pageIntro, locale),
           url: absoluteUrl(path('packages', locale)),
           settings,
+          // Offers only for formats that really exist: the catalogue used to
+          // be built from estimates, and structured data is a public claim.
           offers: packages.map((pkg) => ({
             name: t(pkg.name, locale),
             price: pkg.pricePerGuestFrom,

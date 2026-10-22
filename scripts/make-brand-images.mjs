@@ -10,6 +10,11 @@
  *   npm run dev                                              (serves the fonts)
  *   node scripts/make-brand-images.mjs http://127.0.0.1:3000
  *
+ * Any static server over public/ will do instead of `npm run dev`, as long as
+ * it sends CORS headers (`npx http-server public -p 3200 --cors`): the card is
+ * rendered from about:blank, and a font from another origin without them
+ * silently falls back to Times — the image looks finished and is wrong.
+ *
  * Playwright is deliberately not a project dependency: it is only used here,
  * and it would pull a browser download into every `npm install`.
  *
@@ -28,8 +33,9 @@ const BASE = process.argv[2] || 'http://127.0.0.1:3000';
 const PUBLIC = path.join(ROOT, 'public');
 
 const BRAND = 'Cordiale';
-const DESCRIPTOR = 'Private Cocktail Bar · Roma e provincia';
-const CLAIM = 'Portiamo un bar vero alla tua festa.';
+const DESCRIPTOR = 'Bartender per feste private · Roma e provincia';
+// The hero headline, so a shared link says the same thing the home page does.
+const CLAIM = 'Sono Samuele. Vengo a fare da bere alla tua festa.';
 
 const card = /* html */ `
 <!doctype html>
@@ -58,7 +64,7 @@ const card = /* html */ `
   <div class="copy">
     <div><div class="word">${BRAND}</div><div class="desc">${DESCRIPTOR}</div></div>
     <div><div class="rule"></div><div class="claim">${CLAIM}</div></div>
-    <div class="foot">Bancone, bartender, attrezzatura e <b>bottiglie incluse</b></div>
+    <div class="foot">Attrezzatura, ghiaccio e bottiglie: <b>li porto io</b></div>
   </div>
 </div></body></html>`;
 

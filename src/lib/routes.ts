@@ -48,3 +48,21 @@ export function routeKeyForSlug(slug: string, locale: Locale): RouteKey | null {
   }
   return null;
 }
+
+/**
+ * The short form of a landing page's title, for menus and rows of links:
+ * "Bartender per matrimoni a Roma" becomes "Matrimoni". The full title is
+ * written for the page and for Google; six of them stacked in a menu read as
+ * one phrase repeated. A title that does not follow the pattern comes back
+ * whole, minus anything after a dash.
+ */
+export function landingNavLabel(title: string, locale: Locale): string {
+  const [prefix, suffix] =
+    locale === 'en'
+      ? [/^(?:an?\s+)?(?:bartender|cocktail bar)\s+for\s+(?:an?\s+)?/i, /\s+in\s+rome$/i]
+      : [/^(?:bartender|cocktail bar)\s+per\s+(?:una?\s+)?/i, /\s+a\s+roma$/i];
+  const base = title.replace(/\s+—.*$/, '').trim();
+  const short = base.replace(prefix, '').replace(suffix, '').trim();
+  if (!short) return base;
+  return short.charAt(0).toUpperCase() + short.slice(1);
+}

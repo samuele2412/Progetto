@@ -164,12 +164,15 @@ export async function generateMetadata({
       title: t(settings.seo.defaultTitle, locale),
       description: t(settings.seo.defaultDescription, locale),
     },
+    // The service page keeps its /pacchetti address but no longer lists
+    // prices, so the title stops promising them. "Roma" is left to the
+    // template, which already ends in it.
     packages: {
-      title: `${t(settings.home.packagesTitle, locale)} — ${locale === 'en' ? 'prices and what is included' : 'prezzi e cosa comprendono'}`,
-      description: t(settings.home.packagesIntro, locale),
+      title: locale === 'en' ? 'How my private bartender service works' : 'Come funziona il servizio di barman a domicilio',
+      description: t(settings.service.pageIntro, locale),
     },
     cocktails: {
-      title: `${t(settings.home.cocktailsTitle, locale)} — ${locale === 'en' ? 'our cocktail list' : 'la nostra carta dei cocktail'}`,
+      title: `${t(settings.home.cocktailsTitle, locale)} — ${locale === 'en' ? 'classic and alcohol-free cocktails for your party' : 'cocktail classici e analcolici per la tua festa'}`,
       description: t(settings.home.cocktailsIntro, locale),
     },
     gallery: {

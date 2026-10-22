@@ -1,5 +1,11 @@
 # 03 — Pricing e pacchetti
 
+> **Non in uso** (ottobre 2026). Le quattro formule e gli extra descritti qui
+> erano stime, non l'offerta di Samuele: sono spenti nel pannello e il sito
+> lavora solo su preventivo, finché i prezzi non sono decisi. Il ragionamento
+> resta come base di partenza per quando lo saranno. Vedi
+> [`13-brand-voice.md`](13-brand-voice.md).
+
 ## 3.1 La decisione di fondo: non si vendono ore
 
 Il briefing chiedeva di non costruire i pacchetti sul tempo di servizio. È la

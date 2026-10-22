@@ -31,11 +31,14 @@ codice.
 ## 1. Cosa contiene
 
 **Sito pubblico** (italiano e inglese, slug localizzati)
-Home · Pacchetti · Cocktail · Galleria · Chi siamo · FAQ · Collaboriamo ·
-Journal · sei pagine SEO per tipo di evento · privacy e cookie policy.
+Home · Il servizio · Cocktail · Galleria · Chi sono · FAQ · Collaboriamo ·
+Journal · sei pagine SEO per tipo di evento · privacy e cookie policy. I testi
+parlano in prima persona, con la voce di Samuele: le regole sono in
+[`docs/13-brand-voice.md`](docs/13-brand-voice.md).
 
 **Configuratore di richiesta** in tre passi, pensato per il telefono: tipo di
-evento, data, zona, numero di ospiti, formula, preferenze, contatti. Salva
+evento, data, zona, numero di ospiti, formula (solo se ce ne sono di attive),
+preferenze, contatti. Salva
 anche la provenienza (UTM, referrer, pagina di arrivo) per sapere quale canale
 porta clienti.
 
@@ -150,8 +153,10 @@ docker compose up -d --build
 
 Al primo avvio il container dell'applicazione, prima di servire una sola
 pagina: aspetta che Postgres sia pronto, applica le migrazioni, inserisce i
-contenuti iniziali (pacchetti, cocktail, FAQ, pagine SEO, articoli) e crea
-l'amministratore da `ADMIN_EMAIL` / `ADMIN_PASSWORD`.
+contenuti iniziali (cocktail, tipi di evento, FAQ, pagine SEO, articoli),
+porta alla versione attuale i testi rimasti quelli di una versione precedente
+(vedi [§ 9](#9-aggiornamenti)) e crea l'amministratore da `ADMIN_EMAIL` /
+`ADMIN_PASSWORD`.
 
 Seguire l'avvio:
 
@@ -422,6 +427,22 @@ cd /opt/cordiale
 Fa un backup, aggiorna il codice, ricostruisce le immagini e riavvia. Le
 migrazioni vengono applicate dal container all'avvio.
 
+**I testi.** Un aggiornamento che riscrive i contenuti (come la riscrittura in
+prima persona descritta in [`docs/13-brand-voice.md`](docs/13-brand-voice.md))
+li porta anche nel database, una volta sola, all'avvio del container. Cambia
+solo i campi rimasti identici alla versione precedente: quello che hai
+modificato dal pannello resta com'è, ed è elencato nei log
+(`docker compose logs app | grep content`). Ogni modifica è registrata e si può
+annullare:
+
+```bash
+docker compose exec app node dist-scripts/content-update.cjs --dry      # cosa cambierebbe
+docker compose exec app node dist-scripts/content-update.cjs --restore  # annulla
+```
+
+Per decidere tu quando applicarlo, metti `CONTENT_UPDATE_ON_START=false` in
+`.env` prima di aggiornare e lancialo a mano senza `--dry`.
+
 A mano, se si preferisce:
 
 ```bash
@@ -666,6 +687,7 @@ Le decisioni di prodotto e di mercato sono documentate, non improvvisate:
 | [`docs/10-analytics.md`](docs/10-analytics.md) | Analytics privacy-first, perché non GA4 |
 | [`docs/11-roadmap.md`](docs/11-roadmap.md) | Cosa fare dopo, e cosa non fare |
 | [`docs/12-page-builder.md`](docs/12-page-builder.md) | Come si usa il Page Builder: pagine, sezioni, bozze, pubblicazione |
+| [`docs/13-brand-voice.md`](docs/13-brand-voice.md) | Chi è Samuele, come parla il sito, cosa non promettere, le informazioni ancora mancanti |
 | [`docs/photo-sources.md`](docs/photo-sources.md) | Le fotografie temporanee: da dove vengono, con che licenza, come sostituirle |
 
 ---
@@ -673,6 +695,8 @@ Le decisioni di prodotto e di mercato sono documentate, non improvvisate:
 ## Prima di andare online
 
 - [ ] Sostituire tutti i segnaposto segnalati dalla dashboard
+- [ ] Completare le informazioni mancanti elencate in `docs/13-brand-voice.md`
+      (prezzi, periodi a Roma, carta dei cocktail, contatti)
 - [ ] Caricare le foto vere (almeno hero, ritratto, tre cocktail)
 - [ ] Completare e far verificare privacy e cookie policy
 - [ ] Impostare `SITE_URL` sul dominio definitivo

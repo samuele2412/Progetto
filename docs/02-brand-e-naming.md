@@ -1,5 +1,12 @@
 # 02 — Brand, naming e posizionamento
 
+> **Superato per voce e posizionamento** da
+> [`13-brand-voice.md`](13-brand-voice.md) (ottobre 2026): il sito ora parla in
+> prima persona, con la voce di Samuele, e non promette bancone, bicchieri in
+> vetro, fattura né prezzi. Il nome Cordiale e le valutazioni sul naming
+> qui sotto restano validi; claim, titoli e tabella del posizionamento sono
+> storici.
+
 ## 2.1 Il posizionamento in una riga
 
 > **Cordiale porta un bar vero — bancone, bartender, bottiglie — dentro la festa

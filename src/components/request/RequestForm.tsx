@@ -184,11 +184,17 @@ export function RequestForm(props: Props) {
     });
   }
 
-  /** Auto-suggests a package from the guest count until the user picks one. */
+  /**
+   * Auto-suggests a package from the guest count until the user picks one —
+   * but only a package that is on offer: with the formats switched off, the
+   * suggestion would travel invisibly to the email as a format he does not sell.
+   */
   function chooseGuests(range: GuestRange) {
     set('guestsRange', range);
     if (!touchedPackage) {
-      setValues((current) => ({ ...current, guestsRange: range, packageSlug: suggestedPackageFor[range] }));
+      const suggestion = suggestedPackageFor[range];
+      const available = props.packages.some((option) => option.slug === suggestion);
+      setValues((current) => ({ ...current, guestsRange: range, packageSlug: available ? suggestion : '' }));
     }
   }
 
@@ -513,47 +519,50 @@ export function RequestForm(props: Props) {
       {/* ---------------- STEP 2 ---------------- */}
       {step === 1 && (
         <div className="space-y-7">
-          <fieldset>
-            <legend className="field-label">{props.copy.form.package}</legend>
-            <p className="-mt-1 mb-3 text-xs text-bone-500">{props.copy.form.packageHint}</p>
-            <div className="grid gap-2 sm:grid-cols-2">
-              {props.packages.map((option) => (
-                <label key={option.slug} className="relative block cursor-pointer">
+          {/* No formats on offer (no prices yet): the question is not asked. */}
+          {props.packages.length > 0 && (
+            <fieldset>
+              <legend className="field-label">{props.copy.form.package}</legend>
+              <p className="-mt-1 mb-3 text-xs text-bone-500">{props.copy.form.packageHint}</p>
+              <div className="grid gap-2 sm:grid-cols-2">
+                {props.packages.map((option) => (
+                  <label key={option.slug} className="relative block cursor-pointer">
+                    <input
+                      type="radio"
+                      name="packageSlug"
+                      value={option.slug}
+                      checked={values.packageSlug === option.slug}
+                      onChange={() => {
+                        setTouchedPackage(true);
+                        set('packageSlug', option.slug);
+                      }}
+                      className="peer sr-only"
+                    />
+                    <span className="chip !flex-col !items-start !gap-0.5 !py-3 text-left">
+                      <span className="font-medium">{option.label}</span>
+                      {option.hint && <span className="text-xs text-bone-500">{option.hint}</span>}
+                    </span>
+                  </label>
+                ))}
+                <label className="relative block cursor-pointer">
                   <input
                     type="radio"
                     name="packageSlug"
-                    value={option.slug}
-                    checked={values.packageSlug === option.slug}
+                    value=""
+                    checked={values.packageSlug === ''}
                     onChange={() => {
                       setTouchedPackage(true);
-                      set('packageSlug', option.slug);
+                      set('packageSlug', '');
                     }}
                     className="peer sr-only"
                   />
                   <span className="chip !flex-col !items-start !gap-0.5 !py-3 text-left">
-                    <span className="font-medium">{option.label}</span>
-                    {option.hint && <span className="text-xs text-bone-500">{option.hint}</span>}
+                    <span className="font-medium">{props.copy.form.packageUndecided}</span>
                   </span>
                 </label>
-              ))}
-              <label className="relative block cursor-pointer">
-                <input
-                  type="radio"
-                  name="packageSlug"
-                  value=""
-                  checked={values.packageSlug === ''}
-                  onChange={() => {
-                    setTouchedPackage(true);
-                    set('packageSlug', '');
-                  }}
-                  className="peer sr-only"
-                />
-                <span className="chip !flex-col !items-start !gap-0.5 !py-3 text-left">
-                  <span className="font-medium">{props.copy.form.packageUndecided}</span>
-                </span>
-              </label>
-            </div>
-          </fieldset>
+              </div>
+            </fieldset>
+          )}
 
           <fieldset>
             <legend className="field-label">{props.copy.form.serviceMode}</legend>
