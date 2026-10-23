@@ -1,3 +1,4 @@
+import type { Metadata } from 'next';
 import Link from 'next/link';
 import { headers } from 'next/headers';
 import { d } from '@/lib/dictionary';
@@ -13,6 +14,11 @@ async function localeFromPath(): Promise<Locale> {
   const pathname = (await headers()).get('x-pathname') ?? '';
   const first = pathname.split('/').filter(Boolean)[0];
   return isLocale(first) ? first : defaultLocale;
+}
+
+/** Without it the tab kept the home page's title over a page that says "not found". */
+export async function generateMetadata(): Promise<Metadata> {
+  return { title: d(await localeFromPath()).misc.notFoundTitle };
 }
 
 export default async function NotFound() {
