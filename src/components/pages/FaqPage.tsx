@@ -35,15 +35,18 @@ export async function FaqPage({ locale }: { locale: Locale }) {
       />
 
       <section className="section">
-        <div className="container-page max-w-4xl">
-          {groups.map((group) => (
-            <div key={group.title} className="mb-14 last:mb-0">
-              <h2 className="display-3 reveal mb-6 text-bone-50">{group.title}</h2>
-              <div className="reveal">
-                <FaqList faqs={group.faqs} locale={locale} />
+        {/* Aligned with the page title above, not centred in its own column. */}
+        <div className="container-page">
+          <div className="max-w-4xl">
+            {groups.map((group) => (
+              <div key={group.title} className="mb-14 last:mb-0">
+                <h2 className="display-3 reveal mb-6">{group.title}</h2>
+                <div className="reveal">
+                  <FaqList faqs={group.faqs} locale={locale} />
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </section>
 

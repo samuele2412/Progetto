@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { FinalCta } from '@/components/blocks/FinalCta';
 import { PageHero } from '@/components/blocks/PageHero';
 import { JsonLd } from '@/components/JsonLd';
-import { Media } from '@/components/Media';
+import { Media, mediaExists } from '@/components/Media';
 import type { Post } from '@/db/schema';
 import { d } from '@/lib/dictionary';
 import { formatDate, t, type Locale } from '@/lib/i18n';
@@ -36,35 +36,39 @@ export async function JournalIndexPage({ locale }: { locale: Locale }) {
       <section className="section">
         <div className="container-page">
           {posts.length === 0 ? (
-            <p className="text-sm text-bone-500">
+            <p className="text-sm text-ink-3">
               {locale === 'en' ? 'Nothing published yet.' : 'Non c’è ancora niente di pubblicato.'}
             </p>
           ) : (
-            <ul className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-              {posts.map((post, index) => {
+            // An index of articles, not a grid of cards: the covers are not
+            // shot yet, and a title with two lines of summary is what someone
+            // choosing what to read actually needs. A cover appears beside its
+            // article as soon as the file exists.
+            <ul className="max-w-4xl border-t border-[var(--hairline-strong)]">
+              {posts.map((post) => {
                 const slug = locale === 'en' ? post.slugEn : post.slugIt;
+                const hasCover = mediaExists(post.coverImagePath);
                 return (
-                  <li key={post.id} className={`reveal reveal-delay-${Math.min(index % 3 + 1, 4)}`}>
-                    <Link href={journalPath(slug, locale)} className="card card-hover group block h-full overflow-hidden">
-                      <div className="relative aspect-[16/10] overflow-hidden">
-                        <Media
-                          src={post.coverImagePath}
-                          alt={t(post.title, locale)}
-                          sizes="(max-width: 768px) 100vw, 33vw"
-                          imageClassName="transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-105"
-                          placeholderLabel={t(post.title, locale)}
-                        />
-                      </div>
-                      <div className="p-6">
-                        <p className="text-xs text-bone-500">
+                  <li key={post.id} className="reveal border-b border-[var(--hairline)]">
+                    <Link
+                      href={journalPath(slug, locale)}
+                      className={`group grid gap-5 py-7 ${hasCover ? 'sm:grid-cols-[12rem_minmax(0,1fr)] sm:gap-8' : ''}`}
+                    >
+                      {hasCover && (
+                        <div className="frame aspect-[16/10]">
+                          <Media src={post.coverImagePath} alt="" sizes="(max-width: 640px) 100vw, 12rem" />
+                        </div>
+                      )}
+                      <div>
+                        <p className="text-xs text-ink-3">
                           {formatDate(post.publishedAt, locale)} · {readingMinutes(t(post.body, locale))}{' '}
                           {copy.misc.readingTime}
                         </p>
-                        <h2 className="mt-2 font-[family-name:var(--font-display)] text-xl leading-snug text-bone-50 transition-colors group-hover:text-brass-300">
-                          {t(post.title, locale)}
-                        </h2>
-                        <p className="mt-3 text-sm leading-relaxed text-bone-400">{t(post.excerpt, locale)}</p>
-                        <p className="mt-5 text-sm text-brass-400">{copy.cta.readMore} →</p>
+                        <h2 className="display-3 mt-2 transition-colors group-hover:text-accent-strong">{t(post.title, locale)}</h2>
+                        <p className="mt-3 max-w-2xl leading-relaxed text-ink-2">{t(post.excerpt, locale)}</p>
+                        <p className="link-more mt-3">
+                          <span className="label">{copy.cta.readMore}</span> <span aria-hidden className="arrow">→</span>
+                        </p>
                       </div>
                     </Link>
                   </li>
@@ -92,11 +96,11 @@ export async function JournalPostPage({ locale, post }: { locale: Locale; post: 
       <article>
         <header className="border-b border-[var(--hairline)]">
           <div className="container-page max-w-3xl py-14 md:py-20">
-            <Link href={path('journal', locale)} className="tap-target text-sm text-bone-500 transition-colors hover:text-brass-300">
+            <Link href={path('journal', locale)} className="tap-target text-sm text-ink-3 transition-colors hover:text-ink">
               ← Journal
             </Link>
-            <h1 className="display-2 fade-in-up mt-6 text-bone-50">{t(post.title, locale)}</h1>
-            <p className="mt-5 text-sm text-bone-500">
+            <h1 className="display-2 mt-6">{t(post.title, locale)}</h1>
+            <p className="mt-5 text-sm text-ink-3">
               {copy.misc.published} {formatDate(post.publishedAt, locale)} · {readingMinutes(body)}{' '}
               {copy.misc.readingTime}
             </p>
@@ -104,9 +108,9 @@ export async function JournalPostPage({ locale, post }: { locale: Locale; post: 
           </div>
         </header>
 
-        {post.coverImagePath && (
+        {mediaExists(post.coverImagePath) && (
           <div className="container-page max-w-4xl py-10">
-            <div className="relative aspect-[16/9] overflow-hidden rounded-[var(--radius-panel)]">
+            <div className="frame aspect-[16/9]">
               <Media
                 src={post.coverImagePath}
                 alt={t(post.title, locale)}
@@ -118,27 +122,27 @@ export async function JournalPostPage({ locale, post }: { locale: Locale; post: 
           </div>
         )}
 
-        <div className="container-page max-w-3xl pb-16 md:pb-24">
+        <div className="container-page max-w-3xl pb-16 pt-10 md:pb-24 md:pt-14">
           <div className="prose-cordiale">{renderMarkdown(body)}</div>
         </div>
       </article>
 
       {others.length > 0 && (
-        <section className="border-t border-[var(--hairline)] bg-ink-900 py-14">
+        <section className="border-t border-[var(--hairline)] py-14">
           <div className="container-page max-w-4xl">
-            <h2 className="display-3 text-bone-50">
+            <h2 className="display-3">
               {locale === 'en' ? 'Keep reading' : 'Continua a leggere'}
             </h2>
-            <ul className="mt-6 grid gap-4 sm:grid-cols-2">
+            <ul className="mt-6 grid gap-x-10 sm:grid-cols-2">
               {others.map((item) => {
                 const otherSlug = locale === 'en' ? item.slugEn : item.slugIt;
                 return (
-                  <li key={item.id}>
-                    <Link href={journalPath(otherSlug, locale)} className="card card-hover block h-full p-6">
-                      <h3 className="font-[family-name:var(--font-display)] text-lg text-bone-50">
+                  <li key={item.id} className="border-t border-[var(--hairline-strong)]">
+                    <Link href={journalPath(otherSlug, locale)} className="group block py-5">
+                      <h3 className="font-[family-name:var(--font-display)] text-lg transition-colors group-hover:text-accent-strong">
                         {t(item.title, locale)}
                       </h3>
-                      <p className="mt-2 text-sm leading-relaxed text-bone-400">{t(item.excerpt, locale)}</p>
+                      <p className="mt-2 text-sm leading-relaxed text-ink-2">{t(item.excerpt, locale)}</p>
                     </Link>
                   </li>
                 );
@@ -155,7 +159,9 @@ export async function JournalPostPage({ locale, post }: { locale: Locale; post: 
           headline: t(post.title, locale),
           description: markdownToPlainText(t(post.excerpt, locale), 200),
           url: absoluteUrl(journalPath(slug, locale)),
-          imagePath: post.coverImagePath || settings.seo.ogImagePath,
+          // Never a cover that is not there yet: the structured data would
+          // name a 404 as the article's image.
+          imagePath: mediaExists(post.coverImagePath) ? post.coverImagePath : settings.seo.ogImagePath,
           publishedTime: new Date(post.publishedAt).toISOString(),
           authorName: settings.brand.name,
         })}

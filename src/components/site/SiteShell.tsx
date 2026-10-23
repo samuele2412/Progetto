@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react';
 import { Reveal } from '@/components/Reveal';
+import { analyticsEnabled } from '@/lib/env';
 import { d } from '@/lib/dictionary';
 import { t, type Locale } from '@/lib/i18n';
 import { getPublishedPages } from '@/lib/cms';
@@ -9,6 +10,7 @@ import { getSettings } from '@/lib/settings';
 import { telLink, whatsappLink } from '@/lib/utils';
 import { Footer } from './Footer';
 import { Header } from './Header';
+import { ConversionTracking } from './ConversionTracking';
 import { MobileActionBar } from './MobileActionBar';
 import type { SlugPair } from './LanguageSwitcher';
 
@@ -58,7 +60,7 @@ export async function SiteShell({ locale, children }: { locale: Locale; children
     <>
       <a
         href="#main"
-        className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-full focus:bg-brass-500 focus:px-5 focus:py-3 focus:text-sm focus:font-semibold focus:text-ink-950"
+        className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-full focus:bg-accent focus:px-5 focus:py-3 focus:text-sm focus:font-semibold focus:text-paper"
       >
         {locale === 'en' ? 'Skip to content' : 'Vai al contenuto'}
       </a>
@@ -120,6 +122,8 @@ export async function SiteShell({ locale, children }: { locale: Locale; children
           },
           { title: copy.footer.events, links: eventLinks.slice(0, 6) },
         ]}
+        quoteLabel={copy.cta.quote}
+        quoteHref={quoteHref}
         legalLinks={[
           { label: copy.footer.privacy, href: path('privacy', locale) },
           { label: copy.footer.cookies, href: path('cookies', locale) },
@@ -137,6 +141,8 @@ export async function SiteShell({ locale, children }: { locale: Locale; children
       />
 
       <Reveal />
+      {/* Only shipped when there is somewhere to send the events. */}
+      {analyticsEnabled && <ConversionTracking />}
     </>
   );
 }

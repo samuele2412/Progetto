@@ -29,7 +29,7 @@ export default function RootNotFound() {
       <body className="flex min-h-screen flex-col antialiased">
         <main className="container-page flex min-h-screen flex-col items-center justify-center text-center">
           <p className="eyebrow">404</p>
-          <h1 className="display-2 mt-4 text-bone-50">Pagina non trovata</h1>
+          <h1 className="display-2 mt-4 text-ink">Pagina non trovata</h1>
           <p className="lede mt-4 max-w-md">
             Il link che hai seguito non porta da nessuna parte. Può capitare.
           </p>

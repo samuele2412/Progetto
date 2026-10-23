@@ -378,8 +378,8 @@ export const defaultSettings: SiteSettings = {
   requestForm: {
     title: { it: 'Raccontami la tua festa', en: 'Tell me about your party' },
     intro: {
-      it: 'Poche domande veloci. Ti rispondo io, con una proposta pensata per la tua festa.',
-      en: 'A few quick questions. I’ll reply myself, with a proposal made for your party.',
+      it: 'Poche domande veloci: la festa, i dettagli che vuoi darmi e come ricontattarti.',
+      en: 'A few quick questions: the party, any details you want to add, and how to reach you.',
     },
     submitLabel: { it: 'Invia la richiesta', en: 'Send the request' },
     reassurance: {

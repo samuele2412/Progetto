@@ -6,7 +6,7 @@ import { defaultSettings } from '@/content/settings';
  *
  * Not a PWA — there is no service worker and nothing to install. It exists so
  * that a visitor who adds the site to a phone's home screen gets the wordmark,
- * the right name and the dark background instead of a screenshot and a URL, and
+ * the right name and the paper background instead of a screenshot and a URL, and
  * so Android uses the brand colour for the address bar.
  *
  * Deliberately reads the *default* brand name rather than the database: a
@@ -21,8 +21,8 @@ export default function manifest(): MetadataRoute.Manifest {
     start_url: '/it',
     scope: '/',
     display: 'browser',
-    background_color: '#0a0908',
-    theme_color: '#0a0908',
+    background_color: '#f7f3ec',
+    theme_color: '#f7f3ec',
     lang: 'it-IT',
     icons: [
       { src: '/icon.svg', sizes: 'any', type: 'image/svg+xml' },

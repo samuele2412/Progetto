@@ -6,6 +6,7 @@ import { PageHero } from '@/components/blocks/PageHero';
 import { SectionHeader } from '@/components/blocks/SectionHeader';
 import { StepList } from '@/components/blocks/StepList';
 import { JsonLd } from '@/components/JsonLd';
+import { CheckIcon } from '@/components/icons';
 import { d } from '@/lib/dictionary';
 import { t, tList, type Locale } from '@/lib/i18n';
 import { getAddons, getFaqs, getPackages } from '@/lib/queries';
@@ -48,38 +49,36 @@ export async function PackagesPage({ locale }: { locale: Locale }) {
       <section className="section">
         <div className="container-page grid gap-10 md:grid-cols-3 md:gap-8 lg:gap-14">
           <div className="reveal">
-            <h2 className="display-3 text-bone-50">{t(service.bringTitle, locale)}</h2>
-            <ul className="mt-5 space-y-3 text-[0.98rem] leading-relaxed text-bone-200">
+            <h2 className="display-3">{t(service.bringTitle, locale)}</h2>
+            <ul className="mt-5 space-y-3 text-[0.98rem] leading-relaxed text-ink-2">
               {bring.map((item) => (
                 <li key={item} className="flex gap-3">
-                  <svg viewBox="0 0 16 16" className="mt-1.5 h-3.5 w-3.5 shrink-0 text-brass-500" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden>
-                    <path d="M3 8.5l3.2 3.2L13 5" strokeLinecap="round" strokeLinejoin="round" />
-                  </svg>
+                  <CheckIcon className="mt-1.5 h-3.5 w-3.5 text-accent" />
                   <span>{item}</span>
                 </li>
               ))}
             </ul>
           </div>
           <div className="reveal reveal-delay-1">
-            <h2 className="display-3 text-bone-50">{t(service.needTitle, locale)}</h2>
-            <p className="mt-5 text-[0.98rem] leading-relaxed text-bone-200">{t(service.needBody, locale)}</p>
+            <h2 className="display-3">{t(service.needTitle, locale)}</h2>
+            <p className="mt-5 text-[0.98rem] leading-relaxed text-ink-2">{t(service.needBody, locale)}</p>
           </div>
           <div className="reveal reveal-delay-2">
-            <h2 className="display-3 text-bone-50">{t(service.drinksTitle, locale)}</h2>
-            <p className="mt-5 text-[0.98rem] leading-relaxed text-bone-200">{t(service.drinksBody, locale)}</p>
+            <h2 className="display-3">{t(service.drinksTitle, locale)}</h2>
+            <p className="mt-5 text-[0.98rem] leading-relaxed text-ink-2">{t(service.drinksBody, locale)}</p>
             <Link
               href={path('cocktails', locale)}
-              className="tap-target mt-4 gap-2 text-sm font-medium text-brass-300 transition-colors hover:text-bone-50"
+              className="link-more mt-4"
             >
-              {copy.cta.seeCocktails} <span aria-hidden>→</span>
+              <span className="label">{copy.cta.seeCocktails}</span> <span aria-hidden className="arrow">→</span>
             </Link>
           </div>
         </div>
       </section>
 
-      <section className="section border-t border-[var(--hairline)] bg-ink-900">
+      <section className="section border-t border-[var(--hairline)] bg-paper-2">
         <div className="container-page grid gap-5 lg:grid-cols-[1fr_1.4fr] lg:gap-20">
-          <h2 className="display-2 reveal text-bone-50">{t(service.priceTitle, locale)}</h2>
+          <h2 className="display-2 reveal">{t(service.priceTitle, locale)}</h2>
           <p className="lede reveal reveal-delay-1 lg:pt-2">{t(service.priceBody, locale)}</p>
         </div>
       </section>
@@ -100,24 +99,24 @@ export async function PackagesPage({ locale }: { locale: Locale }) {
       )}
 
       {addons.length > 0 && (
-        <section className="section border-t border-[var(--hairline)] bg-ink-900">
+        <section className="section border-t border-[var(--hairline)] bg-paper-2">
           <div className="container-page">
             <SectionHeader title={copy.packages.addons} intro={copy.packages.addonsIntro} />
-            <ul className="section-body grid gap-px overflow-hidden rounded-[var(--radius-card)] border border-[var(--hairline)] bg-[var(--hairline)] sm:grid-cols-2 lg:grid-cols-3">
+            <ul className="section-body grid gap-x-10 sm:grid-cols-2 lg:grid-cols-3">
               {addons.map((addon, index) => (
                 <li
                   key={addon.id}
-                  className={`reveal reveal-delay-${Math.min(index % 4 + 1, 4)} flex flex-col bg-ink-900 p-6`}
+                  className={`reveal reveal-delay-${Math.min(index % 4 + 1, 4)} flex flex-col border-t border-[var(--hairline-strong)] py-5`}
                 >
                   <div className="flex items-start justify-between gap-4">
-                    <h3 className="font-[family-name:var(--font-display)] text-lg text-bone-50">
+                    <h3 className="font-[family-name:var(--font-display)] text-lg text-ink">
                       {t(addon.name, locale)}
                     </h3>
-                    <span className="shrink-0 whitespace-nowrap text-sm font-medium text-brass-400">
+                    <span className="shrink-0 whitespace-nowrap text-sm font-medium text-accent">
                       {t(addon.price, locale)}
                     </span>
                   </div>
-                  <p className="mt-2 text-sm leading-relaxed text-bone-400">{t(addon.description, locale)}</p>
+                  <p className="mt-2 text-sm leading-relaxed text-ink-2">{t(addon.description, locale)}</p>
                 </li>
               ))}
             </ul>
@@ -128,7 +127,7 @@ export async function PackagesPage({ locale }: { locale: Locale }) {
       {steps.length > 0 && (
         <section className="section border-t border-[var(--hairline)]">
           <div className="container-page">
-            <h2 className="display-2 reveal max-w-xl text-bone-50">{t(service.stepsTitle, locale)}</h2>
+            <h2 className="display-2 reveal max-w-xl">{t(service.stepsTitle, locale)}</h2>
             <div className="section-body">
               <StepList steps={steps} />
             </div>

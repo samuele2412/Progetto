@@ -22,6 +22,7 @@ import {
   type GuestRange,
   type ServiceMode,
 } from '@/lib/form-options';
+import { track } from '@/lib/track';
 import { cn } from '@/lib/utils';
 import { captureSource } from './source';
 
@@ -174,7 +175,15 @@ export function RequestForm(props: Props) {
     if (step > 0) headingRef.current?.focus();
   }, [step]);
 
+  // The first answer given, once per visit: how many people start the form is
+  // the denominator every other number about it needs.
+  const started = useRef(false);
+
   function set<K extends keyof Values>(key: K, value: Values[K]) {
+    if (!started.current) {
+      started.current = true;
+      track('form-start');
+    }
     setValues((current) => ({ ...current, [key]: value }));
     setErrors((current) => {
       if (!current[key]) return current;
@@ -253,7 +262,8 @@ export function RequestForm(props: Props) {
     if (index === 2) {
       if (values.name.trim().length < 2) next.name = errorMessage('name_short', props.locale);
       if (!/^[+]?[\d\s().-]{7,20}$/.test(values.phone.trim())) next.phone = errorMessage('phone_invalid', props.locale);
-      if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(values.email.trim())) {
+      // Optional, but checked when given: it is where the confirmation goes.
+      if (values.email.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(values.email.trim())) {
         next.email = errorMessage('email_invalid', props.locale);
       }
       if (!values.consentPrivacy) next.consentPrivacy = errorMessage('consent_required', props.locale);
@@ -268,6 +278,8 @@ export function RequestForm(props: Props) {
   function goNext() {
     if (!validateStep(step)) return;
     setFormError(null);
+    // Where people stop is the most useful thing the form can say about itself.
+    track('form-step', { step: step + 2 });
     setStep((current) => Math.min(current + 1, STEPS - 1));
   }
 
@@ -319,15 +331,19 @@ export function RequestForm(props: Props) {
           else if (bad.some((field) => contactFields.includes(field))) setStep(2);
         }
         setFormError(errorMessage(result.error ?? 'server', props.locale));
+        track('form-submit-error', { error: result.error ?? 'server' });
         // The token is single-use: without a reset the next attempt fails too.
         resetTurnstile();
         setSubmitting(false);
         return;
       }
 
+      // Only here, after the server has saved it, is it a request received.
+      track('form-submit-success', { partner: props.isPartner ? 1 : 0 });
       router.push(`${props.thanksHref}?ref=${encodeURIComponent(result.reference ?? '')}`);
     } catch {
       setFormError(errorMessage('network', props.locale));
+      track('form-submit-error', { error: 'network' });
       resetTurnstile();
       setSubmitting(false);
     }
@@ -340,14 +356,19 @@ export function RequestForm(props: Props) {
   const consentAfter = linkIndex >= 0 ? props.copy.form.consent.slice(linkIndex + props.copy.form.consentLink.length) : '';
 
   return (
-    <form ref={formRef} onSubmit={handleSubmit} noValidate className="card p-6 md:p-9">
+    <form
+      ref={formRef}
+      onSubmit={handleSubmit}
+      noValidate
+      className="rounded-[var(--radius-panel)] border border-[var(--hairline)] bg-paper-2 p-6 md:p-9"
+    >
       {/* Progress */}
       <div className="mb-8">
-        <div className="flex items-center justify-between text-xs text-bone-500">
+        <div className="flex items-center justify-between text-xs text-ink-3">
           <span>
             {props.copy.form.step} {step + 1} {props.copy.form.of} {STEPS}
           </span>
-          <span className="text-brass-400">{stepTitles[step]}</span>
+          <span className="text-accent">{stepTitles[step]}</span>
         </div>
         {/* The bars are decorative; without a name a screen reader announces a
             bare "progress bar, 1". The label reuses the visible caption above,
@@ -366,7 +387,7 @@ export function RequestForm(props: Props) {
               key={index}
               className={cn(
                 'h-1 flex-1 rounded-full transition-colors duration-300',
-                index <= step ? 'bg-brass-500' : 'bg-ink-700',
+                index <= step ? 'bg-accent' : 'bg-paper-3',
               )}
             />
           ))}
@@ -442,7 +463,7 @@ export function RequestForm(props: Props) {
               {...describe('eventDate', 'date-note')}
               onChange={(event) => set('eventDate', event.target.value)}
             />
-            <label className="mt-2 flex min-h-11 cursor-pointer items-center gap-3 text-sm text-bone-400">
+            <label className="mt-2 flex min-h-11 cursor-pointer items-center gap-3 text-sm text-ink-3">
               <input
                 type="checkbox"
                 checked={values.dateFlexible}
@@ -459,7 +480,7 @@ export function RequestForm(props: Props) {
                 {errors.eventDate}
               </p>
             )}
-            <p id="date-note" className="mt-2 text-xs text-bone-500">
+            <p id="date-note" className="mt-2 text-xs text-ink-3">
               {props.copy.form.dateNote}
             </p>
           </div>
@@ -523,7 +544,7 @@ export function RequestForm(props: Props) {
           {props.packages.length > 0 && (
             <fieldset>
               <legend className="field-label">{props.copy.form.package}</legend>
-              <p className="-mt-1 mb-3 text-xs text-bone-500">{props.copy.form.packageHint}</p>
+              <p className="-mt-1 mb-3 text-xs text-ink-3">{props.copy.form.packageHint}</p>
               <div className="grid gap-2 sm:grid-cols-2">
                 {props.packages.map((option) => (
                   <label key={option.slug} className="relative block cursor-pointer">
@@ -540,7 +561,7 @@ export function RequestForm(props: Props) {
                     />
                     <span className="chip !flex-col !items-start !gap-0.5 !py-3 text-left">
                       <span className="font-medium">{option.label}</span>
-                      {option.hint && <span className="text-xs text-bone-500">{option.hint}</span>}
+                      {option.hint && <span className="text-xs text-ink-3">{option.hint}</span>}
                     </span>
                   </label>
                 ))}
@@ -585,7 +606,7 @@ export function RequestForm(props: Props) {
 
           <fieldset>
             <legend className="field-label">{props.copy.form.preferences}</legend>
-            <p className="-mt-1 mb-3 text-xs text-bone-500">{props.copy.form.preferencesHint}</p>
+            <p className="-mt-1 mb-3 text-xs text-ink-3">{props.copy.form.preferencesHint}</p>
             <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
               {cocktailPreferences.map((preference) => (
                 <label key={preference} className="relative block cursor-pointer">
@@ -627,7 +648,7 @@ export function RequestForm(props: Props) {
 
           <div>
             <label htmlFor="message" className="field-label">
-              {props.copy.form.message} <span className="text-bone-500">({props.copy.form.optional})</span>
+              {props.copy.form.message} <span className="text-ink-3">({props.copy.form.optional})</span>
             </label>
             <textarea
               id="message"
@@ -639,7 +660,7 @@ export function RequestForm(props: Props) {
               value={values.message}
               onChange={(event) => set('message', event.target.value)}
             />
-            <p className="mt-1 text-right text-xs text-bone-500">
+            <p className="mt-1 text-right text-xs text-ink-3">
               {values.message.length}/{maxMessageLength}
             </p>
           </div>
@@ -695,7 +716,7 @@ export function RequestForm(props: Props) {
             </div>
             <div>
               <label htmlFor="email" className="field-label">
-                {props.copy.form.email}
+                {props.copy.form.email} <span className="font-normal text-ink-3">({props.copy.form.optional})</span>
               </label>
               <input
                 id="email"
@@ -705,9 +726,12 @@ export function RequestForm(props: Props) {
                 autoComplete="email"
                 className="field"
                 value={values.email}
-                {...describe('email')}
+                {...describe('email', 'email-hint')}
                 onChange={(event) => set('email', event.target.value)}
               />
+              <p id="email-hint" className="mt-1.5 text-xs text-ink-3">
+                {props.copy.form.emailHint}
+              </p>
               {errors.email && (
                 <p id="email-error" className="field-error">
                   {errors.email}
@@ -716,7 +740,7 @@ export function RequestForm(props: Props) {
             </div>
           </div>
 
-          <label className="flex min-h-11 cursor-pointer items-center gap-3 text-sm text-bone-300">
+          <label className="flex min-h-11 cursor-pointer items-center gap-3 text-sm text-ink-2">
             <input
               type="checkbox"
               checked={values.prefersWhatsapp}
@@ -726,7 +750,7 @@ export function RequestForm(props: Props) {
             {props.copy.form.prefersWhatsapp}
           </label>
 
-          <label className="flex min-h-11 cursor-pointer items-start gap-3 py-1 text-sm text-bone-300">
+          <label className="flex min-h-11 cursor-pointer items-start gap-3 py-1 text-sm text-ink-2">
             <input
               type="checkbox"
               name="consentPrivacy"
@@ -744,7 +768,7 @@ export function RequestForm(props: Props) {
                 href={props.privacyHref}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-brass-300 underline underline-offset-2"
+                className="text-accent underline underline-offset-2"
               >
                 {props.copy.form.consentLink}
               </a>
@@ -768,12 +792,12 @@ export function RequestForm(props: Props) {
             </>
           )}
 
-          <p className="text-xs leading-relaxed text-bone-500">{props.reassurance}</p>
+          <p className="text-xs leading-relaxed text-ink-3">{props.reassurance}</p>
         </div>
       )}
 
       {formError && (
-        <p role="alert" className="mt-6 rounded-lg border border-bitter-500/40 bg-bitter-500/10 p-3 text-sm text-bone-200">
+        <p role="alert" className="mt-6 rounded-lg border border-danger/40 bg-danger/10 p-3 text-sm text-ink-2">
           {formError}
         </p>
       )}

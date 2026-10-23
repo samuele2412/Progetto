@@ -45,7 +45,7 @@ export async function CmsPage({
     return (
       <section className="section">
         <div className="container-page">
-          <p className="text-sm text-bone-500">
+          <p className="text-sm text-ink-3">
             {locale === 'en' ? 'This page has no content yet.' : 'Questa pagina non ha ancora contenuti.'}
           </p>
         </div>

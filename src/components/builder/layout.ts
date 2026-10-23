@@ -16,8 +16,8 @@ export function sectionClass(background: Background, extra?: string): string {
     background === 'default'
       ? 'section'
       : background === 'alt'
-        ? 'section border-t border-[var(--hairline)] bg-ink-900'
-        : 'section border-t border-[var(--hairline)] bg-ink-850';
+        ? 'section border-t border-[var(--hairline)] bg-paper-2'
+        : 'section border-t border-[var(--hairline)] bg-paper-3';
   return extra ? `${base} ${extra}` : base;
 }
 

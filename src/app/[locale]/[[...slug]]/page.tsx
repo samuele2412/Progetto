@@ -171,8 +171,10 @@ export async function generateMetadata({
       title: locale === 'en' ? 'How my private bartender service works' : 'Come funziona il servizio di barman a domicilio',
       description: t(settings.service.pageIntro, locale),
     },
+    // Kept under ~60 characters with the template: longer titles are cut off
+    // in the results page, and the cut used to fall in the middle of a word.
     cocktails: {
-      title: `${t(settings.home.cocktailsTitle, locale)} — ${locale === 'en' ? 'classic and alcohol-free cocktails for your party' : 'cocktail classici e analcolici per la tua festa'}`,
+      title: locale === 'en' ? 'Cocktail list: classics and alcohol-free' : 'La carta: cocktail classici e analcolici',
       description: t(settings.home.cocktailsIntro, locale),
     },
     gallery: {
@@ -180,8 +182,9 @@ export async function generateMetadata({
       description: t(settings.home.galleryIntro, locale),
     },
     about: {
-      title: t(settings.about.title, locale),
-      description: summarise(t(settings.about.body, locale), 180),
+      // "Sono Samuele." alone said nothing to someone reading a results page.
+      title: `${t(settings.about.title, locale).replace(/[.!]\s*$/, '')}, ${locale === 'en' ? 'private party bartender' : 'bartender per feste private'}`,
+      description: summarise(t(settings.about.body, locale), 155),
     },
     partners: {
       title: t(settings.partners.title, locale),

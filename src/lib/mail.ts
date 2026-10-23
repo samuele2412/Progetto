@@ -135,7 +135,8 @@ export function buildOwnerNotification(input: {
     subject: `Nuova richiesta ${input.reference} — ${input.eventType} ${input.eventDate}`,
     text,
     html,
-    replyTo: input.email,
+    // Optional on the form: without it a reply goes back to the sender address.
+    ...(input.email ? { replyTo: input.email } : {}),
   };
 }
 

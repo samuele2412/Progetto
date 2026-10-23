@@ -20,7 +20,7 @@ export default function ErrorBoundary({ error, reset }: { error: Error & { diges
   return (
     <section className="section">
       <div className="container-page flex min-h-[50vh] flex-col items-center justify-center text-center">
-        <h1 className="display-2 text-bone-50">{copy.misc.errorTitle}</h1>
+        <h1 className="display-2 text-ink">{copy.misc.errorTitle}</h1>
         <p className="lede mt-4 max-w-md">{copy.misc.errorBody}</p>
         <button type="button" onClick={reset} className="btn btn-primary mt-9">
           {copy.misc.retry}

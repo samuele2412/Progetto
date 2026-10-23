@@ -23,7 +23,7 @@ export default async function NotFound() {
     <section className="section">
       <div className="container-page flex min-h-[50vh] flex-col items-center justify-center text-center">
         <p className="eyebrow">404</p>
-        <h1 className="display-2 mt-4 text-bone-50">{copy.misc.notFoundTitle}</h1>
+        <h1 className="display-2 mt-4 text-ink">{copy.misc.notFoundTitle}</h1>
         <p className="lede mt-4 max-w-md">{copy.misc.notFoundBody}</p>
         <div className="mt-9 flex flex-col gap-3 sm:flex-row">
           <Link href={path('home', locale)} className="btn btn-primary">

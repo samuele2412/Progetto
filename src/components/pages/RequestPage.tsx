@@ -1,6 +1,7 @@
 import { PageHero } from '@/components/blocks/PageHero';
 import { RequestForm } from '@/components/request/RequestForm';
 import { SourceTracker } from '@/components/request/SourceTracker';
+import { PhoneIcon, WhatsAppIcon } from '@/components/icons';
 import { d } from '@/lib/dictionary';
 import { env, turnstileEnabled } from '@/lib/env';
 import { formatEuro, t, type Locale } from '@/lib/i18n';
@@ -25,6 +26,7 @@ export async function RequestPage({
   const whatsappHref = whatsappLink(settings.contact.whatsapp, t(settings.contact.whatsappMessage, locale));
   const hasPhone = !isPlaceholder(settings.contact.phone);
   const periods = t(settings.contact.periods, locale);
+  const steps = settings.service.steps[locale]?.length ? settings.service.steps[locale] : settings.service.steps.it;
   // An old link can still carry ?pacchetto= for a format that has since been
   // switched off; the form would keep it, hidden, and the email would name it.
   const packageSlug = packages.some((pkg) => pkg.slug === initialPackage) ? initialPackage : undefined;
@@ -71,17 +73,26 @@ export async function RequestPage({
             {/* Only with a number to offer: without one the card said "write
                 to me directly" above no button at all. */}
             {(whatsappHref || hasPhone) && (
-              <div className="card mb-6 p-6">
+              <div className="card mb-8 p-6">
                 <p className="eyebrow">{copy.promises.inAHurry}</p>
-                <p className="mt-3 text-sm leading-relaxed text-bone-400">{copy.promises.inAHurryBody}</p>
+                <p className="mt-3 text-sm leading-relaxed text-ink-2">{copy.promises.inAHurryBody}</p>
                 <div className="mt-5 space-y-2.5">
                   {whatsappHref && (
-                    <a href={whatsappHref} target="_blank" rel="noopener noreferrer" className="btn btn-whatsapp w-full">
+                    <a
+                      href={whatsappHref}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="btn btn-whatsapp w-full"
+                      data-track="whatsapp"
+                      data-track-location="request"
+                    >
+                      <WhatsAppIcon />
                       {copy.cta.whatsappLong}
                     </a>
                   )}
                   {hasPhone && (
-                    <a href={telLink(settings.contact.phone)} className="btn btn-ghost w-full">
+                    <a href={telLink(settings.contact.phone)} className="btn btn-ghost w-full" data-track-location="request">
+                      <PhoneIcon />
                       {copy.cta.call}
                     </a>
                   )}
@@ -89,19 +100,23 @@ export async function RequestPage({
               </div>
             )}
 
-            {/* The date note sits by the date field and "no payment, no
-                commitment" by the submit button; this column adds only what
-                the form does not already say. */}
-            <ul className="space-y-4 text-sm text-bone-400">
-              {[copy.promises.fromBoard, periods].filter(Boolean).map((line) => (
-                <li key={line} className="flex gap-3">
-                  <svg viewBox="0 0 16 16" className="mt-1 h-3.5 w-3.5 shrink-0 text-brass-500" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden>
-                    <path d="M3 8.5l3.2 3.2L13 5" strokeLinecap="round" strokeLinejoin="round" />
-                  </svg>
-                  <span>{line}</span>
-                </li>
-              ))}
-            </ul>
+            {/* What happens after "Invia": the uncertainty that stops people at
+                the last step. Titles only — the date note sits by the date
+                field and "no payment, no commitment" by the submit button, so
+                this column adds only what the form does not already say. */}
+            <div className="border-t border-[var(--hairline-strong)] pt-5">
+              <p className="eyebrow">{copy.form.nextTitle}</p>
+              <ol className="mt-4 space-y-3">
+                {steps.map((item, index) => (
+                  <li key={item.title} className="flex items-baseline gap-3">
+                    <span className="text-sm font-medium tabular-nums text-accent">{String(index + 1).padStart(2, '0')}</span>
+                    <span className="text-ink">{item.title}</span>
+                  </li>
+                ))}
+              </ol>
+              <p className="mt-6 text-sm leading-relaxed text-ink-2">{copy.promises.fromBoard}</p>
+              {periods && <p className="mt-2 text-sm font-medium text-ink">{periods}</p>}
+            </div>
           </aside>
         </div>
       </section>

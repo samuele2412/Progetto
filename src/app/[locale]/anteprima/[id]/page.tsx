@@ -47,15 +47,15 @@ export default async function PreviewPage({
 
   return (
     <>
-      <div className="sticky top-16 z-40 border-b border-brass-500/30 bg-brass-500/10 backdrop-blur md:top-20">
+      <div className="sticky top-16 z-40 border-b border-accent/30 bg-accent/10 backdrop-blur md:top-20">
         <div className="container-page flex flex-wrap items-center justify-between gap-3 py-2.5">
-          <p className="text-xs text-brass-200">
+          <p className="text-xs text-accent">
             <strong className="font-semibold">Anteprima</strong> — {t(found.page.title, locale) || 'senza titolo'}
             {unpublished ? ' · contiene modifiche non ancora pubblicate' : ' · identica alla versione pubblicata'}
           </p>
           <Link
             href={`/admin/pagine/${pageId}`}
-            className="flex min-h-9 items-center rounded-full border border-brass-500/50 px-3 text-xs text-brass-200 transition-colors hover:bg-brass-500/15"
+            className="flex min-h-9 items-center rounded-full border border-accent/50 px-3 text-xs text-accent transition-colors hover:bg-accent/15"
           >
             Torna all’editor
           </Link>

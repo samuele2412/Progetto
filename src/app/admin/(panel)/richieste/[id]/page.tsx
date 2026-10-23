@@ -50,7 +50,7 @@ export default async function RequestDetailPage({ params }: { params: Promise<{ 
   const rows: [string, string][] = [
     ['Riferimento', request.reference],
     ['Telefono', request.phone],
-    ['Email', request.email],
+    ['Email', request.email || '—'],
     ['Preferisce WhatsApp', request.prefersWhatsapp ? 'Sì' : 'No'],
     ['Data evento', request.dateFlexible ? 'Da definire' : fullDate(request.eventDate)],
     ['Tipo di evento', request.eventTypeSlug || '—'],
@@ -175,12 +175,15 @@ export default async function RequestDetailPage({ params }: { params: Promise<{ 
               <a href={`tel:${request.phone.replace(/[^\d+]/g, '')}`} className="admin-btn admin-btn-secondary w-full">
                 Chiama
               </a>
-              <a
-                href={`mailto:${request.email}?subject=${encodeURIComponent(`La tua richiesta ${request.reference}`)}`}
-                className="admin-btn admin-btn-secondary w-full"
-              >
-                Email
-              </a>
+              {/* The email is optional on the form since the light redesign. */}
+              {request.email && (
+                <a
+                  href={`mailto:${request.email}?subject=${encodeURIComponent(`La tua richiesta ${request.reference}`)}`}
+                  className="admin-btn admin-btn-secondary w-full"
+                >
+                  Email
+                </a>
+              )}
             </div>
           </section>
 

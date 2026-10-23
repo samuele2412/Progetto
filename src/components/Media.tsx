@@ -1,7 +1,8 @@
-import { existsSync } from 'node:fs';
-import path from 'node:path';
 import Image from 'next/image';
+import { mediaExists } from '@/lib/media-files';
 import { cn } from '@/lib/utils';
+
+export { mediaExists };
 
 /**
  * An image that degrades gracefully.
@@ -11,37 +12,6 @@ import { cn } from '@/lib/utils';
  * instead of a broken image icon. Drop a file at the same path later and the
  * real photo appears — no code change, which is the whole point.
  */
-const publicDir = path.join(process.cwd(), 'public');
-
-/**
- * Memoised because `existsSync` is a blocking syscall and the home page asks
- * about ~25 images: without this every render stats the disk 25 times on the
- * request thread. The answer only changes when files are added, which in this
- * deployment means a redeploy for /images and an upload for /uploads.
- */
-const existsCache = new Map<string, boolean>();
-
-function fileExists(src: string): boolean {
-  if (!src.startsWith('/')) return false;
-  // Uploads live on a mounted volume that can change under a running process,
-  // so they are assumed present and left to 404 if they are not.
-  if (src.startsWith('/uploads/')) return true;
-
-  const cached = existsCache.get(src);
-  if (cached !== undefined) return cached;
-
-  let present = false;
-  try {
-    present = existsSync(path.join(publicDir, src.replace(/^\//, '').split('?')[0]));
-  } catch {
-    present = false;
-  }
-  // Only cache in production: in development the point is to see a file appear
-  // as soon as it is dropped into the folder.
-  if (process.env.NODE_ENV === 'production') existsCache.set(src, present);
-  return present;
-}
-
 type MediaProps = {
   src: string;
   alt: string;
@@ -76,14 +46,14 @@ export function Media({
   placeholderLabel,
   variant = 'card',
 }: MediaProps) {
-  const present = src ? fileExists(src) : false;
+  const present = mediaExists(src);
 
   if (!present) {
     const isBackground = variant === 'background';
     return (
       <div
         className={cn(
-          'relative overflow-hidden bg-ink-800 grain',
+          'relative overflow-hidden bg-paper-2',
           isBackground ? 'flex items-end justify-end' : 'flex items-center justify-center',
           fill ? 'absolute inset-0 h-full w-full' : '',
           className,
@@ -91,12 +61,14 @@ export function Media({
         role="img"
         aria-label={alt}
       >
+        {/* A quiet paper tone with a fine diagonal hatch: reads as "a photo
+            goes here", not as a broken image or a design element. */}
         <div
           aria-hidden
-          className="absolute inset-0 opacity-70"
+          className="absolute inset-0 opacity-60"
           style={{
-            background:
-              'radial-gradient(120% 90% at 25% 15%, rgba(201,164,106,0.16), transparent 55%), linear-gradient(150deg, #1c1814 0%, #100e0c 100%)',
+            backgroundImage:
+              'repeating-linear-gradient(135deg, rgba(28,26,23,0.045) 0 1px, transparent 1px 11px)',
           }}
         />
         <div
@@ -107,7 +79,7 @@ export function Media({
         >
           {!isBackground && (
             <svg
-              className="mx-auto mb-2 h-6 w-6 text-brass-500/70"
+              className="mx-auto mb-2 h-6 w-6 text-ink-3"
               viewBox="0 0 24 24"
               fill="none"
               stroke="currentColor"
@@ -117,23 +89,11 @@ export function Media({
               <path d="M3 5h18l-8 9v5l-2 1v-6z" strokeLinejoin="round" />
             </svg>
           )}
-          <p
-            className={cn(
-              'uppercase tracking-[0.18em]',
-              isBackground ? 'text-[0.6rem] text-bone-500/40' : 'text-[0.7rem] text-bone-500',
-            )}
-          >
+          <p className="text-[0.7rem] uppercase tracking-[0.18em] text-ink-3">
             {placeholderLabel ?? 'Foto in arrivo'}
           </p>
           {process.env.NODE_ENV !== 'production' && src ? (
-            <p
-              className={cn(
-                'mt-1 break-all font-mono',
-                isBackground ? 'text-[0.58rem] text-bone-500/30' : 'text-[0.62rem] text-bone-500/60',
-              )}
-            >
-              {src}
-            </p>
+            <p className="mt-1 break-all font-mono text-[0.62rem] text-ink-3">{src}</p>
           ) : null}
         </div>
       </div>
@@ -148,6 +108,10 @@ export function Media({
         fill
         sizes={sizes}
         priority={priority}
+        // `priority` alone preloads the file at the browser's default image
+        // priority, Low: under a slow connection the fonts went first and the
+        // largest image on the page arrived last.
+        fetchPriority={priority ? 'high' : undefined}
         className={cn('object-cover', imageClassName)}
       />
     );
@@ -161,6 +125,7 @@ export function Media({
       height={height ?? 800}
       sizes={sizes}
       priority={priority}
+      fetchPriority={priority ? 'high' : undefined}
       className={cn('h-auto w-full', imageClassName)}
     />
   );

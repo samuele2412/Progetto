@@ -22,7 +22,18 @@ const trimmedTo = (max: number) =>
 
 export const eventRequestSchema = z.object({
   name: z.string().trim().min(2, 'name_short').max(160, 'name_long'),
-  email: z.string().trim().toLowerCase().email('email_invalid').max(255),
+  /**
+   * Optional: the reply goes by phone or WhatsApp, and asking for both was one
+   * required field more than the request needs. Given, it has to be valid —
+   * it is where the confirmation is sent.
+   */
+  email: z
+    .string()
+    .trim()
+    .toLowerCase()
+    .max(255)
+    .default('')
+    .refine((value) => value === '' || z.email().safeParse(value).success, 'email_invalid'),
   phone: z.string().trim().regex(phonePattern, 'phone_invalid'),
   prefersWhatsapp: z.boolean().default(true),
 

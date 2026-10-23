@@ -37,23 +37,23 @@ export function PackageCard({
     <article
       className={cn(
         'card card-hover relative flex flex-col p-5 sm:p-6 md:p-7',
-        pkg.highlighted && 'border-brass-500/50 bg-ink-850',
+        pkg.highlighted && 'border-accent/50 bg-field',
       )}
     >
       {pkg.highlighted && (
-        <span className="absolute -top-3 left-6 rounded-full bg-brass-500 px-3 py-1 text-[0.68rem] font-semibold uppercase tracking-wider text-ink-950">
+        <span className="absolute -top-3 left-6 rounded-full bg-accent px-3 py-1 text-[0.68rem] font-semibold uppercase tracking-wider text-paper">
           {copy.packages.mostRequested}
         </span>
       )}
 
       {/* Reserves two lines so the four cards stay aligned when one kicker wraps. */}
       <p className="eyebrow sm:min-h-[2.1em]">{t(pkg.kicker, locale)}</p>
-      <Heading className="display-3 mt-2 text-bone-50">{t(pkg.name, locale)}</Heading>
-      <p className="mt-1 text-sm text-bone-500">{guestLabel}</p>
+      <Heading className="display-3 mt-2 text-ink">{t(pkg.name, locale)}</Heading>
+      <p className="mt-1 text-sm text-ink-3">{guestLabel}</p>
 
       <div className="mt-5 sm:mt-6">
         {onRequest ? (
-          <span className="font-[family-name:var(--font-display)] text-2xl text-bone-100">
+          <span className="font-[family-name:var(--font-display)] text-2xl text-ink">
             {copy.packages.onRequest}
           </span>
         ) : (
@@ -61,45 +61,45 @@ export function PackageCard({
             {/* The label sits on its own line: at narrow card widths "a partire
                 da" and "a ospite" both wrap, and the price stops reading as a
                 single number. */}
-            <p className="text-[0.7rem] uppercase tracking-[0.14em] text-bone-500">{copy.packages.from}</p>
+            <p className="text-[0.7rem] uppercase tracking-[0.14em] text-ink-3">{copy.packages.from}</p>
             <p className="mt-1 flex items-baseline gap-2">
-              <span className="font-[family-name:var(--font-display)] text-4xl leading-none text-brass-400">
+              <span className="font-[family-name:var(--font-display)] text-4xl leading-none text-accent">
                 {formatEuro(pkg.pricePerGuestFrom, locale)}
               </span>
-              <span className="whitespace-nowrap text-sm text-bone-400">{copy.packages.perGuest}</span>
+              <span className="whitespace-nowrap text-sm text-ink-3">{copy.packages.perGuest}</span>
             </p>
           </>
         )}
       </div>
       {pkg.minimumTotal > 0 && (
-        <p className="mt-1.5 text-xs text-bone-500">
+        <p className="mt-1.5 text-xs text-ink-3">
           {copy.packages.minimum} {formatEuro(pkg.minimumTotal, locale)}
         </p>
       )}
 
-      <p className="mt-4 text-sm leading-relaxed text-bone-400 sm:mt-5">{t(pkg.description, locale)}</p>
+      <p className="mt-4 text-sm leading-relaxed text-ink-3 sm:mt-5">{t(pkg.description, locale)}</p>
 
-      <ul className="mt-5 space-y-2 text-sm text-bone-200 sm:mt-6 sm:space-y-2.5">
+      <ul className="mt-5 space-y-2 text-sm text-ink-2 sm:mt-6 sm:space-y-2.5">
         {(compact ? includes.slice(0, 5) : includes).map((item, index) => (
           <li key={`${index}-${item}`} className="flex gap-2.5">
-            <svg viewBox="0 0 16 16" className="mt-1 h-3.5 w-3.5 shrink-0 text-brass-500" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden>
+            <svg viewBox="0 0 16 16" className="mt-1 h-3.5 w-3.5 shrink-0 text-accent" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden>
               <path d="M3 8.5l3.2 3.2L13 5" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
             <span>{item}</span>
           </li>
         ))}
         {compact && includes.length > 5 && (
-          <li className="pl-6 text-xs text-bone-500">+ {includes.length - 5}…</li>
+          <li className="pl-6 text-xs text-ink-3">+ {includes.length - 5}…</li>
         )}
       </ul>
 
       {!compact && excludes.length > 0 && (
         <>
-          <p className="mt-6 text-xs uppercase tracking-wider text-bone-500">{copy.packages.notIncluded}</p>
-          <ul className="mt-2.5 space-y-1.5 text-sm text-bone-500">
+          <p className="mt-6 text-xs uppercase tracking-wider text-ink-3">{copy.packages.notIncluded}</p>
+          <ul className="mt-2.5 space-y-1.5 text-sm text-ink-3">
             {excludes.map((item, index) => (
               <li key={`${index}-${item}`} className="flex gap-2.5">
-                <span aria-hidden className="mt-2 h-px w-3 shrink-0 bg-bone-500/60" />
+                <span aria-hidden className="mt-2 h-px w-3 shrink-0 bg-ink-3/60" />
                 <span>{item}</span>
               </li>
             ))}
@@ -107,7 +107,7 @@ export function PackageCard({
         </>
       )}
 
-      <p className="mt-5 text-xs leading-relaxed text-bone-500 sm:mt-6">{t(pkg.priceNote, locale)}</p>
+      <p className="mt-5 text-xs leading-relaxed text-ink-3 sm:mt-6">{t(pkg.priceNote, locale)}</p>
 
       <Link
         href={path('request', locale, { pacchetto: pkg.slug })}

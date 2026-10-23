@@ -108,17 +108,35 @@ Cloudflare verso `http://localhost:3001`.
   non porta nulla va riscritta o rimossa, non lasciata lì
 - Quale canale genera gli eventi di valore più alto, non solo i più numerosi
 
-## 10.5 Misurare l'invio del modulo
+## 10.5 Gli eventi di conversione
 
-Con Umami, l'evento si registra con una riga nel `RequestForm`, subito dopo
-l'esito positivo dell'invio:
+Sono già nel codice e partono solo se Umami è configurato (le due variabili
+del § 10.3): senza, nessuno script e nessun evento. Non portano mai dati
+personali: niente nomi, numeri o indirizzi.
 
-```ts
-window.umami?.track('richiesta-inviata', { pacchetto: values.packageSlug });
-```
+| Evento | Quando | Dati |
+| --- | --- | --- |
+| `quote-click` | Clic su un pulsante "Chiedimi un preventivo" | `location` (hero, final, landing, partners…), `page` |
+| `whatsapp-click` | Clic su un link WhatsApp | `location`, `page` |
+| `phone-click` / `email-click` | Clic su un numero o un indirizzo | `location`, `page` |
+| `form-start` | Prima risposta data nel modulo | — |
+| `form-step` | Passaggio al passo successivo | `step` (2 o 3) |
+| `form-submit-success` | Richiesta **salvata** dal server | `partner` (0/1) |
+| `form-submit-error` | Invio rifiutato o fallito | `error` |
 
-Non è incluso di serie: aggiungerlo solo dopo aver attivato l'analytics, per
-non lasciare in giro riferimenti a un oggetto che non esiste.
+I clic sono intenzioni, non contatti: il contatto ricevuto è
+`form-submit-success`, e la fonte di verità resta il database (un ad-blocker
+può fermare un evento, non un INSERT). Il codice: `src/lib/track.ts`,
+`src/components/site/ConversionTracking.tsx` (un solo ascoltatore per tutti i
+link, attivati con `data-track` e `data-track-location`) e `RequestForm.tsx`.
 
-Nota metodologica: **la fonte di verità sulle richieste resta il database**, non
-l'analytics. Un ad-blocker può bloccare lo script; non può bloccare un INSERT.
+**Gli indicatori da guardare ogni mese**
+
+- **Tasso di conversione**: `form-submit-success` ÷ visitatori unici.
+- **Abbandono del modulo**: `form-start` → `form-step` 2 → 3 →
+  `form-submit-success`. Se molti si fermano al passo 3, il problema sono i
+  dati di contatto chiesti; se al passo 1, le domande iniziali.
+- **Canali diretti**: `whatsapp-click` e `phone-click` per pagina, da
+  confrontare con le richieste dal modulo.
+- **Qualità**: dal pannello, quante richieste diventano eventi confermati, per
+  provenienza (UTM, pagina di arrivo).

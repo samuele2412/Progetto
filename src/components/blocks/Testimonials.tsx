@@ -9,7 +9,7 @@ function Stars({ rating }: { rating: number }) {
         <svg
           key={index}
           viewBox="0 0 20 20"
-          className={index < rating ? 'h-3.5 w-3.5 text-brass-400' : 'h-3.5 w-3.5 text-bone-500/40'}
+          className={index < rating ? 'h-3.5 w-3.5 text-accent' : 'h-3.5 w-3.5 text-ink-3/40'}
           fill="currentColor"
           aria-hidden
         >
@@ -58,17 +58,17 @@ export function Testimonials({
     return (
       <div className="reveal card grid gap-8 p-6 sm:p-8 lg:grid-cols-[1fr_1.15fr] lg:gap-12 lg:p-10">
         <div>
-          <Heading className="font-[family-name:var(--font-display)] text-xl text-bone-50 sm:text-2xl">
+          <Heading className="font-[family-name:var(--font-display)] text-xl text-ink sm:text-2xl">
             {copy.misc.noReviewsTitle}
           </Heading>
-          <p className="mt-4 text-sm leading-relaxed text-bone-400">{copy.misc.noReviewsYet}</p>
+          <p className="mt-4 text-sm leading-relaxed text-ink-3">{copy.misc.noReviewsYet}</p>
         </div>
         <ul className="grid gap-x-8 gap-y-4 sm:grid-cols-2 lg:border-l lg:border-[var(--hairline)] lg:pl-12">
           {promises.map((promise) => (
-            <li key={promise} className="flex gap-3 text-sm leading-relaxed text-bone-200">
+            <li key={promise} className="flex gap-3 text-sm leading-relaxed text-ink-2">
               <svg
                 viewBox="0 0 16 16"
-                className="mt-1 h-3.5 w-3.5 shrink-0 text-brass-500"
+                className="mt-1 h-3.5 w-3.5 shrink-0 text-accent"
                 fill="none"
                 stroke="currentColor"
                 strokeWidth="1.8"
@@ -92,12 +92,12 @@ export function Testimonials({
           className={`card reveal reveal-delay-${Math.min(index + 1, 4)} flex flex-col p-6`}
         >
           <Stars rating={item.rating} />
-          <blockquote className="mt-4 flex-1 text-[0.95rem] leading-relaxed text-bone-200">
+          <blockquote className="mt-4 flex-1 text-[0.95rem] leading-relaxed text-ink-2">
             “{t(item.quote, locale)}”
           </blockquote>
           <figcaption className="mt-5 border-t border-[var(--hairline)] pt-4 text-sm">
-            <span className="text-bone-100">{item.authorName}</span>
-            <span className="block text-xs text-bone-500">{t(item.eventLabel, locale)}</span>
+            <span className="text-ink">{item.authorName}</span>
+            <span className="block text-xs text-ink-3">{t(item.eventLabel, locale)}</span>
           </figcaption>
         </figure>
       ))}

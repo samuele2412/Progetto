@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { PageHero } from '@/components/blocks/PageHero';
+import { CheckIcon, PhoneIcon, WhatsAppIcon } from '@/components/icons';
 import { d } from '@/lib/dictionary';
 import { t, tList, type Locale } from '@/lib/i18n';
 import { path } from '@/lib/routes';
@@ -30,39 +31,48 @@ export async function PartnersPage({ locale }: { locale: Locale }) {
           <ul className="reveal space-y-6">
             {tList(settings.partners.bullets, locale).map((bullet) => (
               <li key={bullet} className="flex gap-4 border-b border-[var(--hairline)] pb-6 last:border-0">
-                <svg viewBox="0 0 16 16" className="mt-1 h-4 w-4 shrink-0 text-brass-500" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden>
-                  <path d="M3 8.5l3.2 3.2L13 5" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-                <span className="text-[1.02rem] leading-relaxed text-bone-200">{bullet}</span>
+                <CheckIcon className="mt-1 h-4 w-4 text-accent" />
+                <span className="text-[1.02rem] leading-relaxed text-ink-2">{bullet}</span>
               </li>
             ))}
           </ul>
 
           <aside className="card reveal reveal-delay-1 h-fit p-7">
-            <h2 className="font-[family-name:var(--font-display)] text-xl text-bone-50">
+            <h2 className="font-[family-name:var(--font-display)] text-xl text-ink">
               {t(settings.partners.ctaLabel, locale)}
             </h2>
-            <p className="mt-3 text-sm leading-relaxed text-bone-400">{t(settings.partners.ctaBody, locale)}</p>
+            <p className="mt-3 text-sm leading-relaxed text-ink-2">{t(settings.partners.ctaBody, locale)}</p>
             <div className="mt-7 space-y-3">
               <Link
                 href={path('request', locale, { evento: 'aziendale', partner: '1' })}
                 className="btn btn-primary w-full"
+                data-track="quote"
+                data-track-location="partners"
               >
                 {copy.cta.quoteLong}
               </Link>
               {whatsappHref && (
-                <a href={whatsappHref} target="_blank" rel="noopener noreferrer" className="btn btn-ghost w-full">
+                <a
+                  href={whatsappHref}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="btn btn-whatsapp w-full"
+                  data-track="whatsapp"
+                  data-track-location="partners"
+                >
+                  <WhatsAppIcon />
                   {copy.cta.whatsappLong}
                 </a>
               )}
               {!isPlaceholder(settings.contact.phone) && (
-                <a href={telLink(settings.contact.phone)} className="btn btn-ghost w-full">
+                <a href={telLink(settings.contact.phone)} className="btn btn-ghost w-full" data-track-location="partners">
+                  <PhoneIcon />
                   {copy.cta.call}
                 </a>
               )}
             </div>
             {!isPlaceholder(settings.contact.email) && (
-              <p className="mt-6 break-all text-center text-xs text-bone-500">{settings.contact.email}</p>
+              <p className="mt-6 break-all text-center text-xs text-ink-3">{settings.contact.email}</p>
             )}
           </aside>
         </div>

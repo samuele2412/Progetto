@@ -14,7 +14,7 @@ export function generateStaticParams() {
 }
 
 export const viewport: Viewport = {
-  themeColor: '#0a0908',
+  themeColor: '#f7f3ec',
   colorScheme: 'dark',
   width: 'device-width',
   initialScale: 1,
@@ -78,8 +78,7 @@ export default async function LocaleLayout({
             look empty. A <noscript> stylesheet needs no inline script and so
             does not have to be reconciled with the CSP. */}
         <noscript>
-          <style>{`.reveal{opacity:1 !important;transform:none !important}
-.fade-in-up{animation:none !important;opacity:1 !important;transform:none !important}`}</style>
+          <style>{`.reveal{opacity:1 !important;transform:none !important}`}</style>
         </noscript>
         <SiteShell locale={locale}>{children}</SiteShell>
         <JsonLd data={localBusinessJsonLd(settings, locale)} />

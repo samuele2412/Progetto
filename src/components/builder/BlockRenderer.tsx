@@ -60,10 +60,13 @@ function Cta({
   link,
   locale,
   variant = 'primary',
+  onImage = false,
 }: {
   link: unknown;
   locale: Locale;
   variant?: 'primary' | 'ghost';
+  /** Over a darkened photograph the light-page buttons would disappear. */
+  onImage?: boolean;
 }) {
   const value = link as LinkConfig | undefined;
   const href = str(value?.href).trim();
@@ -73,7 +76,11 @@ function Cta({
   return (
     <a
       href={href}
-      className={cn('btn', variant === 'primary' ? 'btn-primary' : 'btn-ghost')}
+      className={cn(
+        'btn',
+        variant === 'primary' ? 'btn-primary' : 'btn-ghost',
+        onImage && (variant === 'primary' ? '!bg-paper !text-ink hover:!bg-paper-2' : '!border-paper/50 !text-paper hover:!bg-paper/10'),
+      )}
       {...(external ? { target: '_blank', rel: 'noreferrer noopener' } : {})}
     >
       {label}
@@ -118,13 +125,13 @@ function Header({
 function Body({ source, className }: { source: string; className?: string }) {
   if (!source.trim()) return null;
   return (
-    <div className={cn('reveal space-y-4 text-bone-300', className)}>
+    <div className={cn('reveal copy space-y-4', className)}>
       {renderMarkdown(source, {
-        h2: 'display-3 mt-10 text-bone-50 first:mt-0',
-        h3: 'mt-8 font-[family-name:var(--font-display)] text-xl text-bone-50 first:mt-0',
+        h2: 'display-3 mt-10 first:mt-0',
+        h3: 'mt-8 font-[family-name:var(--font-display)] text-xl first:mt-0',
         p: 'leading-relaxed',
-        ul: 'list-disc space-y-2 pl-5 marker:text-brass-500',
-        ol: 'list-decimal space-y-2 pl-5 marker:text-brass-500',
+        ul: 'list-disc space-y-2 pl-5 marker:text-accent',
+        ol: 'list-decimal space-y-2 pl-5 marker:text-accent',
       })}
     </div>
   );
@@ -192,21 +199,29 @@ export function BlockSection({
           )}
           <div className={cn('container-page w-full pb-14 pt-28 md:pb-20', align === 'center' && 'text-center')}>
             <div className={cn('max-w-3xl', align === 'center' && 'mx-auto')}>
-              {tx(c.eyebrow, locale) && <p className="eyebrow fade-in-up">{tx(c.eyebrow, locale)}</p>}
+              {tx(c.eyebrow, locale) && (
+                <p className={cn('eyebrow', hasImage && '!text-brass-light')}>{tx(c.eyebrow, locale)}</p>
+              )}
               {title &&
                 (heading === 'h1' ? (
-                  <h1 className={cn('display-1 fade-in-up mt-4 text-bone-50', hasImage && 'text-shadow-hero')}>{title}</h1>
+                  <h1 className={cn('display-1 mt-4', hasImage ? 'text-shadow-hero !text-paper' : 'text-ink')}>{title}</h1>
                 ) : (
-                  <h2 className={cn('display-1 fade-in-up mt-4 text-bone-50', hasImage && 'text-shadow-hero')}>{title}</h2>
+                  <h2 className={cn('display-1 mt-4', hasImage ? 'text-shadow-hero !text-paper' : 'text-ink')}>{title}</h2>
                 ))}
               {tx(c.intro, locale) && (
-                <p className={cn('lede fade-in-up mt-6 max-w-2xl text-bone-200', align === 'center' && 'mx-auto')}>
+                <p
+                  className={cn(
+                    'lede mt-6 max-w-2xl',
+                    hasImage && '!text-paper/90',
+                    align === 'center' && 'mx-auto',
+                  )}
+                >
                   {tx(c.intro, locale)}
                 </p>
               )}
               <div className={cn('mt-9 flex flex-wrap gap-3', align === 'center' && 'justify-center')}>
-                <Cta link={c.primaryCta} locale={locale} />
-                <Cta link={c.secondaryCta} locale={locale} variant="ghost" />
+                <Cta link={c.primaryCta} locale={locale} onImage={hasImage} />
+                <Cta link={c.secondaryCta} locale={locale} variant="ghost" onImage={hasImage} />
               </div>
             </div>
           </div>
@@ -255,9 +270,9 @@ export function BlockSection({
           {tx(c.eyebrow, locale) && <p className="eyebrow">{tx(c.eyebrow, locale)}</p>}
           {tx(c.title, locale) &&
             (isFirst ? (
-              <h1 className="display-2 mt-3 text-bone-50">{tx(c.title, locale)}</h1>
+              <h1 className="display-2 mt-3 text-ink">{tx(c.title, locale)}</h1>
             ) : (
-              <h2 className="display-2 mt-3 text-bone-50">{tx(c.title, locale)}</h2>
+              <h2 className="display-2 mt-3 text-ink">{tx(c.title, locale)}</h2>
             ))}
           <Body source={tx(c.body, locale)} className="mt-5" />
           {(() => {
@@ -456,20 +471,16 @@ export function BlockSection({
       const title = tx(c.title, locale);
       if (!title) return null;
       return (
-        <section className={sectionClass(background, 'relative overflow-hidden')}>
-          <div
-            aria-hidden
-            className="absolute inset-0 opacity-60"
-            style={{ background: 'radial-gradient(90% 70% at 50% 0%, rgba(201,164,106,0.12), transparent 60%)' }}
-          />
-          <div className="container-page relative text-center">
+        <section className={sectionClass(background)}>
+          <div className="container-page text-center">
+            <div className="rule-brass mx-auto mb-6" />
             {isFirst ? (
-              <h1 className="display-2 reveal mx-auto max-w-2xl text-bone-50">{title}</h1>
+              <h1 className="display-2 reveal mx-auto max-w-2xl text-ink">{title}</h1>
             ) : (
-              <h2 className="display-2 reveal mx-auto max-w-2xl text-bone-50">{title}</h2>
+              <h2 className="display-2 reveal mx-auto max-w-2xl text-ink">{title}</h2>
             )}
             {tx(c.body, locale) && (
-              <p className="reveal mx-auto mt-5 max-w-xl leading-relaxed text-bone-400">{tx(c.body, locale)}</p>
+              <p className="lede reveal mx-auto mt-5 max-w-xl">{tx(c.body, locale)}</p>
             )}
             <div className="reveal mt-9 flex flex-wrap justify-center gap-3">
               <Cta link={c.primaryCta} locale={locale} />
@@ -490,9 +501,9 @@ export function BlockSection({
             <div className={alignClass(align)}>
               {tx(c.title, locale) &&
                 (isFirst ? (
-                  <h1 className="display-2 reveal text-bone-50">{tx(c.title, locale)}</h1>
+                  <h1 className="display-2 reveal text-ink">{tx(c.title, locale)}</h1>
                 ) : (
-                  <h2 className="display-2 reveal text-bone-50">{tx(c.title, locale)}</h2>
+                  <h2 className="display-2 reveal text-ink">{tx(c.title, locale)}</h2>
                 ))}
               <Body source={body} className={cn('mt-6 max-w-3xl', align === 'center' && 'mx-auto')} />
             </div>
@@ -510,9 +521,9 @@ export function BlockSection({
           <div className={containerClass(width)}>
             {tx(c.title, locale) &&
               (isFirst ? (
-                <h1 className="display-2 reveal mb-6 text-bone-50">{tx(c.title, locale)}</h1>
+                <h1 className="display-2 reveal mb-6 text-ink">{tx(c.title, locale)}</h1>
               ) : (
-                <h2 className="display-2 reveal mb-6 text-bone-50">{tx(c.title, locale)}</h2>
+                <h2 className="display-2 reveal mb-6 text-ink">{tx(c.title, locale)}</h2>
               ))}
             {/* Parsed against an allow-list into React elements — see
                 lib/safe-html.ts. Nothing here is raw markup. */}

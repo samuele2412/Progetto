@@ -4,6 +4,7 @@ import { FinalCta } from '@/components/blocks/FinalCta';
 import { PackageCard } from '@/components/blocks/PackageCard';
 import { PageHero } from '@/components/blocks/PageHero';
 import { JsonLd } from '@/components/JsonLd';
+import { CheckIcon, WhatsAppIcon } from '@/components/icons';
 import type { LandingPage } from '@/db/schema';
 import { d } from '@/lib/dictionary';
 import { t, tList, type Locale } from '@/lib/i18n';
@@ -43,37 +44,42 @@ export async function LandingPageView({ locale, landing }: { locale: Locale; lan
         intro={t(landing.heroSubtitle, locale)}
         imagePath={landing.heroImagePath}
       >
-        <div className="fade-in-up mt-8 flex flex-col gap-3 sm:flex-row">
+        <div className="mt-8 flex flex-wrap items-center gap-x-7 gap-y-4">
           <Link
             href={path('request', locale, {
               evento: landing.eventTypeSlug || undefined,
               pacchetto: packageSlug,
             })}
             className="btn btn-primary"
+            data-track="quote"
+            data-track-location="landing"
           >
             {copy.cta.quoteLong}
           </Link>
           {whatsappHref && (
-            <a href={whatsappHref} target="_blank" rel="noopener noreferrer" className="btn btn-ghost">
-              {copy.cta.whatsappLong}
+            <a
+              href={whatsappHref}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="link-more"
+              data-track="whatsapp"
+              data-track-location="landing"
+            >
+              <WhatsAppIcon />
+              <span className="label">{copy.cta.whatsappLong}</span>
             </a>
           )}
         </div>
       </PageHero>
 
       {highlights.length > 0 && (
-        <section className="border-b border-[var(--hairline)] bg-ink-900">
-          <div className="container-page">
-            <ul className="grid gap-px bg-[var(--hairline)] sm:grid-cols-2 lg:grid-cols-4">
+        <section className="border-b border-[var(--hairline)]">
+          <div className="container-page py-8 md:py-10">
+            <ul className="grid gap-x-10 gap-y-4 sm:grid-cols-2 lg:grid-cols-4">
               {highlights.map((item, index) => (
-                <li
-                  key={item}
-                  className={`reveal reveal-delay-${Math.min(index + 1, 4)} flex items-start gap-3 bg-ink-900 px-5 py-6`}
-                >
-                  <svg viewBox="0 0 16 16" className="mt-0.5 h-4 w-4 shrink-0 text-brass-500" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden>
-                    <path d="M3 8.5l3.2 3.2L13 5" strokeLinecap="round" strokeLinejoin="round" />
-                  </svg>
-                  <span className="text-sm leading-relaxed text-bone-200">{item}</span>
+                <li key={item} className={`reveal reveal-delay-${Math.min(index + 1, 4)} flex items-start gap-3`}>
+                  <CheckIcon className="mt-1 h-3.5 w-3.5 text-accent" />
+                  <span className="text-[0.95rem] leading-relaxed text-ink-2">{item}</span>
                 </li>
               ))}
             </ul>
@@ -99,20 +105,19 @@ export async function LandingPageView({ locale, landing }: { locale: Locale; lan
       </section>
 
       {shownFaqs.length > 0 && (
-        <section className="section border-t border-[var(--hairline)] bg-ink-900">
-          <div className="container-page max-w-4xl">
-            <h2 className="display-2 reveal text-bone-50">{t(settings.home.faqTitle, locale)}</h2>
-            <div className="reveal mt-8">
-              <FaqList faqs={shownFaqs} locale={locale} />
+        <section className="section border-t border-[var(--hairline)]">
+          <div className="container-page">
+            <div className="max-w-4xl">
+              <h2 className="display-2 reveal">{t(settings.home.faqTitle, locale)}</h2>
+              <div className="reveal mt-8">
+                <FaqList faqs={shownFaqs} locale={locale} />
+              </div>
+              {faqs.length > shownFaqs.length && (
+                <Link href={path('faq', locale)} className="link-more mt-6">
+                  <span className="label">{copy.cta.seeAll}</span> <span aria-hidden className="arrow">→</span>
+                </Link>
+              )}
             </div>
-            {faqs.length > shownFaqs.length && (
-              <Link
-                href={path('faq', locale)}
-                className="tap-target mt-6 gap-2 text-sm font-medium text-brass-300 transition-colors hover:text-bone-50"
-              >
-                {copy.cta.seeAll} <span aria-hidden>→</span>
-              </Link>
-            )}
           </div>
         </section>
       )}

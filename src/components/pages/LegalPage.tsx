@@ -46,29 +46,31 @@ export async function LegalPage({ locale, kind }: { locale: Locale; kind: 'priva
       <PageHero title={title} compact />
 
       <section className="section">
-        <div className="container-page max-w-3xl">
-          {stillDraft && (
-            <div
-              role="note"
-              className="mb-10 rounded-xl border border-bitter-500/40 bg-bitter-500/10 p-5 text-sm leading-relaxed text-bone-200"
-            >
-              <strong className="block text-bone-50">
-                {locale === 'en' ? 'Draft — not yet in force' : 'Bozza — non ancora valida'}
-              </strong>
-              <p className="mt-2">
-                {locale === 'en'
-                  ? 'This text is a structure to be completed and reviewed by a qualified professional before the site goes live. Every [[…]] marker is a gap that still has to be filled in.'
-                  : 'Questo testo è una traccia da completare e far verificare a un professionista prima della pubblicazione del sito. Ogni segnaposto [[…]] è un punto ancora da compilare.'}
-              </p>
-            </div>
-          )}
+        <div className="container-page">
+          <div className="max-w-3xl">
+            {stillDraft && (
+              <div
+                role="note"
+                className="mb-10 rounded-xl border border-danger/40 bg-danger/10 p-5 text-sm leading-relaxed text-ink-2"
+              >
+                <strong className="block text-ink">
+                  {locale === 'en' ? 'Draft — not yet in force' : 'Bozza — non ancora valida'}
+                </strong>
+                <p className="mt-2">
+                  {locale === 'en'
+                    ? 'This text is a structure to be completed and reviewed by a qualified professional before the site goes live. Every [[…]] marker is a gap that still has to be filled in.'
+                    : 'Questo testo è una traccia da completare e far verificare a un professionista prima della pubblicazione del sito. Ogni segnaposto [[…]] è un punto ancora da compilare.'}
+                </p>
+              </div>
+            )}
 
-          <div className="prose-cordiale">{renderMarkdown(filled)}</div>
+            <div className="prose-cordiale">{renderMarkdown(filled)}</div>
 
-          <p className="mt-12 border-t border-[var(--hairline)] pt-6 text-xs text-bone-500">
-            {locale === 'en' ? 'Last updated' : 'Ultimo aggiornamento'}:{' '}
-            {formatDate(settings.legal.lastUpdated, locale)}
-          </p>
+            <p className="mt-12 border-t border-[var(--hairline)] pt-6 text-xs text-ink-3">
+              {locale === 'en' ? 'Last updated' : 'Ultimo aggiornamento'}:{' '}
+              {formatDate(settings.legal.lastUpdated, locale)}
+            </p>
+          </div>
         </div>
       </section>
     </>

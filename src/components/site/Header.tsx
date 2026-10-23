@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import type { Locale } from '@/lib/i18n';
@@ -30,6 +30,9 @@ export function Header(props: HeaderProps) {
   const [eventsOpen, setEventsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const pathname = usePathname();
+  const headerRef = useRef<HTMLElement>(null);
+  const toggleRef = useRef<HTMLButtonElement>(null);
+  const eventsButtonRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24);
@@ -50,25 +53,50 @@ export function Header(props: HeaderProps) {
     };
   }, [open]);
 
+  // Escape closes whatever is open and puts focus back on the control that
+  // opened it: without that the focus fell to <body> and a keyboard user had
+  // to start the page over from the top.
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') {
+      if (event.key !== 'Escape') return;
+      if (open) {
         setOpen(false);
+        toggleRef.current?.focus();
+      }
+      if (eventsOpen) {
         setEventsOpen(false);
+        eventsButtonRef.current?.focus();
       }
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, []);
+  }, [open, eventsOpen]);
+
+  // While the drawer covers the screen, the page behind it must not take
+  // focus: tabbing past the last menu link used to land on links nobody could
+  // see. `inert` takes everything except the header out of reach at once.
+  useEffect(() => {
+    if (!open) return;
+    const header = headerRef.current;
+    if (!header) return;
+    const behind = Array.from(document.body.children).filter(
+      (element) => element !== header && !element.contains(header),
+    );
+    behind.forEach((element) => element.setAttribute('inert', ''));
+    return () => behind.forEach((element) => element.removeAttribute('inert'));
+  }, [open]);
+
+  const isCurrent = (href: string) => pathname === href || pathname.startsWith(`${href}/`);
 
   const allLinks = [...props.links, ...props.eventLinks];
 
   return (
     <header
+      ref={headerRef}
       className={cn(
         'fixed inset-x-0 top-0 z-50 transition-all duration-300',
         scrolled || open
-          ? 'border-b border-[var(--hairline)] bg-ink-950/92 backdrop-blur-md'
+          ? 'border-b border-[var(--hairline)] bg-paper/90 backdrop-blur-md'
           : 'border-b border-transparent',
       )}
     >
@@ -90,12 +118,12 @@ export function Header(props: HeaderProps) {
           className="group flex min-h-11 flex-col justify-center leading-none"
           aria-label={props.brandName}
         >
-          <span className="font-[family-name:var(--font-display)] text-xl tracking-tight text-bone-50 transition-colors group-hover:text-brass-300 md:text-[1.4rem]">
+          <span className="font-[family-name:var(--font-display)] text-xl tracking-tight text-ink transition-colors group-hover:text-accent-strong md:text-[1.4rem]">
             {props.brandName}
           </span>
           <span
             className={cn(
-              'mt-0.5 hidden overflow-hidden text-[0.7rem] uppercase tracking-[0.2em] text-bone-500 transition-opacity duration-200 sm:block',
+              'mt-0.5 hidden overflow-hidden text-[0.7rem] uppercase tracking-[0.2em] text-ink-3 transition-opacity duration-200 sm:block',
               scrolled && !open && 'sm:hidden',
             )}
           >
@@ -109,7 +137,8 @@ export function Header(props: HeaderProps) {
             <Link
               key={link.href}
               href={link.href}
-              className="text-sm text-bone-400 transition-colors hover:text-bone-50"
+              aria-current={isCurrent(link.href) ? 'page' : undefined}
+              className="text-sm text-ink-2 underline-offset-[0.4em] transition-colors hover:text-ink aria-[current=page]:text-ink aria-[current=page]:underline aria-[current=page]:decoration-brass"
             >
               {link.label}
             </Link>
@@ -120,13 +149,19 @@ export function Header(props: HeaderProps) {
                the menu unreachable on a tablet in landscape, which is wide
                enough to get the desktop navigation but has no pointer. */
             <div
-              className="group relative"
+              className="relative"
               onMouseEnter={() => setEventsOpen(true)}
               onMouseLeave={() => setEventsOpen(false)}
+              // Tabbing out of the list closes it, so it never stays open
+              // behind the next control.
+              onBlur={(event) => {
+                if (!event.currentTarget.contains(event.relatedTarget as Node | null)) setEventsOpen(false);
+              }}
             >
               <button
+                ref={eventsButtonRef}
                 type="button"
-                className="flex min-h-11 items-center gap-1 text-sm text-bone-400 transition-colors hover:text-bone-50"
+                className="flex min-h-11 items-center gap-1 text-sm text-ink-2 transition-colors hover:text-ink"
                 aria-haspopup="true"
                 aria-expanded={eventsOpen}
                 onClick={() => setEventsOpen((open) => !open)}
@@ -145,7 +180,10 @@ export function Header(props: HeaderProps) {
               </button>
               <div
                 className={cn(
-                  'absolute left-1/2 top-full w-72 -translate-x-1/2 pt-4 transition-all duration-200 group-focus-within:visible group-focus-within:opacity-100',
+                  // Opened by state only: it used to open on focus as well,
+                  // which meant Escape could not close it while the button
+                  // still had focus.
+                  'absolute left-1/2 top-full w-72 -translate-x-1/2 pt-4 transition-all duration-200',
                   eventsOpen ? 'visible opacity-100' : 'invisible opacity-0',
                 )}
               >
@@ -154,7 +192,7 @@ export function Header(props: HeaderProps) {
                     <li key={link.href}>
                       <Link
                         href={link.href}
-                        className="flex min-h-11 items-center rounded-lg px-3 text-sm text-bone-200 transition-colors hover:bg-ink-800 hover:text-brass-300"
+                        className="flex min-h-11 items-center rounded-md px-3 text-sm text-ink-2 transition-colors hover:bg-paper-2 hover:text-ink"
                       >
                         {link.label}
                       </Link>
@@ -172,12 +210,13 @@ export function Header(props: HeaderProps) {
             {props.ctaLabel}
           </Link>
           <button
+            ref={toggleRef}
             type="button"
             onClick={() => setOpen((value) => !value)}
             aria-expanded={open}
             aria-controls="mobile-menu"
             aria-label={open ? props.closeLabel : props.menuLabel}
-            className="flex h-11 w-11 items-center justify-center rounded-full border border-[var(--hairline-strong)] text-bone-100 transition-colors hover:border-brass-500 lg:hidden"
+            className="flex h-11 w-11 items-center justify-center rounded-full border border-[var(--hairline-strong)] text-ink transition-colors hover:border-ink lg:hidden"
           >
             <span className="sr-only">{open ? props.closeLabel : props.menuLabel}</span>
             <svg viewBox="0 0 20 20" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden>
@@ -198,14 +237,15 @@ export function Header(props: HeaderProps) {
       <div
         id="mobile-menu"
         hidden={!open}
-        className="h-[calc(100dvh-4rem)] overflow-y-auto border-t border-[var(--hairline)] bg-ink-950 lg:hidden"
+        className="h-[calc(100dvh-4rem)] overflow-y-auto border-t border-[var(--hairline)] bg-paper lg:hidden"
       >
         <nav aria-label="Mobile" className="container-page flex flex-col gap-1 py-6">
           {allLinks.map((link) => (
             <Link
               key={link.href}
               href={link.href}
-              className="border-b border-[var(--hairline)] py-4 font-[family-name:var(--font-display)] text-2xl text-bone-100"
+              aria-current={isCurrent(link.href) ? 'page' : undefined}
+              className="border-b border-[var(--hairline)] py-4 font-[family-name:var(--font-display)] text-[1.65rem] leading-tight text-ink aria-[current=page]:text-accent"
             >
               {link.label}
             </Link>

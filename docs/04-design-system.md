@@ -1,147 +1,128 @@
 # 04 — Design system
 
+> **Ottobre 2026: carta e inchiostro.** Il sito è passato da una palette scura
+> a una chiara. La palette scura era pensata per incorniciare le fotografie
+> degli eventi, che non ci sono ancora; dopo la riscrittura dei testi
+> ([`13-brand-voice.md`](13-brand-voice.md)) il protagonista è Samuele, con le
+> sue parole, e la tipografia porta il design. I token vivono in
+> `src/app/globals.css` sotto `@theme`.
+
 ## 4.1 Principi
 
-Quattro regole che spiegano quasi ogni scelta a valle.
-
-1. **La fotografia è il contenuto, il resto è cornice.** Il cliente compra
-   un'atmosfera. Il layout esiste per far respirare le immagini, non per
-   competere con loro. Ne consegue: palette scura, tipografia sobria, zero
-   decorazioni gratuite.
-2. **Costoso non vuol dire dorato.** Il "luxury finto" (oro lucido, script
-   calligrafici, marmo) segnala esattamente il contrario del premium. Il vero
-   premium si ottiene con **spazio bianco, gerarchia e contrasto**.
-3. **Mobile prima, non mobile anche.** La maggior parte del traffico arriverà da
-   Instagram e TikTok. Ogni componente è progettato a 390 px e poi allargato.
-4. **L'animazione conferma, non intrattiene.** Un reveal in dissolvenza dice
-   "questo sito è curato". Un parallax aggressivo dice "questo sito è una demo".
+1. **La tipografia porta il design, le foto lo accompagnano.** Titoli in
+   Fraunces su carta avorio, molto spazio, poche immagini incorniciate. Una
+   pagina deve sembrare finita anche senza fotografie.
+2. **Costoso non vuol dire dorato.** Il premium si ottiene con spazio bianco,
+   gerarchia e contrasto, non con oro, ombre e decorazioni.
+3. **Un solo segnale per l'azione.** L'unica forma piena e scura della pagina è
+   il pulsante principale: non c'è mai il dubbio su quale conta.
+4. **Mobile prima.** Ogni componente è progettato a 390 px e poi allargato.
+5. **L'animazione conferma, non intrattiene.** Niente si anima nella prima
+   schermata: il titolo è lì subito.
 
 ## 4.2 Colore
 
-Palette scura, calda, con un solo accento. I token vivono in
-`src/app/globals.css` sotto `@theme`.
+I nomi sono ruoli, non tonalità: `ink-3` è "testo secondario" ovunque. Tutti i
+colori di testo superano AA (4,5:1) sia su `paper` sia su `paper-2`.
 
-| Token | Valore | Uso |
-| --- | --- | --- |
-| `ink-950` | `#0a0908` | Fondo pagina. Nero caldo, non `#000`: il nero puro su schermo OLED "buca" e stanca |
-| `ink-900` | `#100e0c` | Sezioni alternate, card |
-| `ink-850` / `ink-800` | `#16130f` / `#1c1814` | Campi form, stati hover |
-| `ink-700` / `ink-600` | `#262019` / `#342c23` | Bordi marcati, barre di stato |
-| `bone-50` | `#faf7f2` | Titoli |
-| `bone-100` | `#f2ece3` | Testo corrente |
-| `bone-400` | `#b3a999` | Testo secondario, lede |
-| `bone-500` | `#8f8577` | Didascalie, note |
-| `brass-500` | `#c9a46a` | **Accento**: CTA primaria, eyebrow, bullet |
-| `brass-400` / `brass-300` | `#d8b87d` / `#e9d3a6` | Hover, prezzi, link nel testo |
-| `bitter-500` | `#c05540` | Solo errori. Mai decorativo |
-| `olive-500` | `#7d8b6a` | Riservato, per grafici futuri |
+| Token | Valore | Uso | Contrasto su paper / paper-2 |
+| --- | --- | --- | --- |
+| `paper` | `#f7f3ec` | Fondo pagina: avorio caldo, non bianco | — |
+| `paper-2` | `#efe9df` | Fasce alterne, pannelli, il modulo | — |
+| `paper-3` | `#e6dfd3` | Hover su `paper-2`, fascia "contrasto" del page builder | — |
+| `field` | `#fffdf9` | Campi dei moduli, card | — |
+| `ink` | `#1c1a17` | Titoli, pulsante principale | 15,7 : 1 |
+| `ink-2` | `#3b3631` | Testo corrente | 10,8 : 1 |
+| `ink-3` | `#645d55` | Testo secondario, didascalie, placeholder | 5,9 / 5,4 : 1 |
+| `accent` | `#7e5a28` | **Ottone brunito**: eyebrow, link, focus, stati attivi | 5,6 / 5,1 : 1 |
+| `accent-strong` | `#5f431d` | Hover e pressione | — |
+| `accent-soft` | `#ebe1cf` | Stati selezionati (chip del modulo), selezione del testo | — |
+| `brass` | `#b08a4f` | Filetti e puntini decorativi. **Mai testo** (2,9 : 1) | — |
+| `brass-light` | `#d8b87d` | Accenti sopra una foto scurita (solo page builder) | — |
+| `danger` | `#a23b2a` | Solo errori | 6 : 1 |
 
-**Perché l'ottone e non l'oro.** `#c9a46a` è desaturato: legge come metallo
-usato, non come cromatura. È anche il colore del rum invecchiato e del vermouth,
-quindi coerente con il prodotto. Un solo accento in tutto il sito significa che
-quando appare, il visitatore sa che è qualcosa su cui si clicca.
+**Perché l'ottone resta.** È la continuità con l'identità di prima: stesso
+metallo, brunito perché su carta deve reggere come testo. Il verde di WhatsApp
+è sparito dai pulsanti: WhatsApp è un'azione secondaria, contornata come le
+altre e riconoscibile dal suo simbolo.
 
-**Contrasto (WCAG 2.1).** Le combinazioni usate sono verificate:
-`bone-100` su `ink-950` ≈ 15:1 (AAA); `bone-400` su `ink-950` ≈ 8,4:1 (AAA);
-`brass-500` su `ink-950` ≈ 7,6:1 (AAA); `ink-950` su `brass-500` (CTA primaria)
-≈ 7,6:1. Il testo più chiaro usato per note (`bone-500`, ≈ 5,4:1) resta sopra
-il minimo AA per il testo normale.
-
-**Il pannello admin è chiaro, per scelta.** Leggere quaranta righe di lead in
-una palette editoriale scura è faticoso. Il pannello è uno strumento, non una
-vetrina: fondo `#f6f5f3`, testo `#1c1917`, isolato dalla classe `.admin-shell`.
+**Il pannello admin** resta con la sua palette da strumento (`.admin-shell`).
 
 ## 4.3 Tipografia
 
 Due famiglie, **autoprodotte** (`public/fonts/`, subset latin e latin-ext).
-Nessuna chiamata a Google Fonts a runtime: un round trip in meno, un CDN in meno
-da dichiarare nella cookie policy, e una build che funziona anche offline.
+Nessuna chiamata a Google Fonts a runtime.
 
 | Ruolo | Font | Perché |
 | --- | --- | --- |
-| Display | **Fraunces** (variabile 300–700) | Serif contemporaneo con un'inflessione un po' "insegna": ha carattere senza essere decorativo. Regge dimensioni molto grandi, che è dove vive nell'hero |
-| Testo | **Inter** (variabile 300–700) | Il riferimento per la leggibilità a corpo piccolo su schermo. Neutro: lascia parlare il display |
-
-Scala tipografica, tutta fluida con `clamp()` — nessun breakpoint da gestire a
-mano:
+| Display | **Fraunces** (variabile 300–700), peso 400 | Serif contemporaneo con carattere: regge i titoli grandi, che sono l'immagine principale del sito |
+| Testo | **Inter** (variabile 300–700) | Leggibile a corpo piccolo, neutro: lascia parlare il display |
 
 | Classe | Dimensione | Uso |
 | --- | --- | --- |
-| `.display-1` | `clamp(2.5rem, 7.5vw, 5rem)` | H1 dell'hero |
-| `.display-2` | `clamp(2rem, 4.6vw, 3.25rem)` | Titoli di sezione |
-| `.display-3` | `clamp(1.5rem, 2.8vw, 2rem)` | Titoli di card |
-| `.lede` | `clamp(1.05rem, 1.6vw, 1.25rem)` | Sottotitoli |
-| `.eyebrow` | `0.75rem`, tracking `0.16em`, maiuscolo | Etichette sopra i titoli |
-| corpo | `1rem` / `1.0625rem`, interlinea 1.6–1.75 | Testo corrente |
+| `.display-1` | `clamp(2.6rem, 6.4vw, 4.75rem)`, interlinea 1,04 | H1 |
+| `.display-2` | `clamp(1.9rem, 4.2vw, 3rem)` | Titoli di sezione |
+| `.display-3` | `clamp(1.35rem, 2.4vw, 1.75rem)` | Titoli di blocco |
+| `.lede` | `clamp(1.0625rem, 1.5vw, 1.25rem)` | Sottotitoli |
+| `.copy` | `1.0625rem`, interlinea 1,7 | Testo corrente nelle sezioni |
+| `.eyebrow` | `0.72rem`, maiuscolo, tracking 0,18em, `accent` | Etichette sopra i titoli |
 
-`text-wrap: balance` sui titoli e `pretty` sui paragrafi: risolve gratis le
-righe orfane, che su un sito fotografico si notano molto.
+`text-wrap: balance` sui titoli e `pretty` sui paragrafi. Righe di testo entro
+circa 65 caratteri (`max-w-xl` / `max-w-2xl`).
 
 ## 4.4 Componenti
 
-Tutti definiti come classi CSS in `@layer components`, non come componenti
-React: il markup resta leggibile e i pesi del bundle non crescono.
+Classi CSS in `@layer components`, non componenti React.
 
-**Bottoni** — `.btn` + variante. Raggio pieno (`999px`), altezza minima 3rem
-(48 px: il target minimo raccomandato per il pollice), transizione di 250 ms.
-- `.btn-primary` — ottone pieno su testo scuro. Una sola per schermata.
-- `.btn-ghost` — bordo sottile, trasparente. Per le azioni secondarie.
-- `.btn-whatsapp` — verde `#1f6f4e`, desaturato rispetto al verde ufficiale
-  perché il verde WhatsApp su fondo scuro è aggressivo.
-
-**Card** — `.card` (fondo `ink-900`, bordo capello, raggio 1rem). Con
-`.card-hover` si aggiunge un sollevamento di 3 px e il bordo vira all'ottone.
-Nessuna ombra pesante: su fondo scuro le ombre non si vedono, il bordo sì.
-
-**Campi** — `.field`. Due dettagli non negoziabili: **`font-size: 1rem`**
-(sotto i 16 px iOS Safari zooma da solo appena si tocca un campo, e la
-sensazione è quella di un sito rotto) e **altezza minima 3rem**.
-
-**Chip** — `.chip`, pilotata dall'input `peer` fratello. È il pattern usato in
-tutto il configuratore: un radio/checkbox nascosto e un'etichetta cliccabile
-grande. Su mobile è molto più veloce di un `<select>`, e resta accessibile
-perché sotto c'è un input vero.
-
-**Bordi** — un solo capello, `--hairline` (`bone-100` al 12%), e la variante al
-22% per gli elementi interattivi. Su fondo scuro un bordo da 1px al 12% legge
-come una linea disegnata, non come un contorno.
+- **Pulsanti** — `.btn` (pillola, altezza minima 48 px).
+  - `.btn-primary`: inchiostro pieno su testo carta. Uno per schermata.
+  - `.btn-ghost`: contorno sottile, per le azioni secondarie.
+  - `.btn-whatsapp`: come `.btn-ghost`, con il simbolo di WhatsApp
+    (`src/components/icons.tsx`).
+- **Link "continua"** — `.link-more`: area di tocco da 44 px, etichetta
+  sottolineata in ottone (`.label`), freccia che si sposta al passaggio
+  (`.arrow`).
+- **Cornice delle foto** — `.frame`: angoli da 0,75rem e un filetto disegnato
+  sopra l'immagine, così una foto chiara su carta ha comunque un bordo.
+- **Card** — `.card`: fondo `field`, filetto, nessuna ombra a riposo. Usata
+  poco: liste e indici con filetti sono preferiti alle griglie di card.
+- **Campi e chip** — `.field`, `.chip`: fondo `field`, bordo al 24%,
+  `font-size: 1rem` (sotto i 16 px iOS zooma), altezza minima 48 px. Chip
+  selezionata: bordo inchiostro e fondo `accent-soft`.
+- **Passaggi** — `StepList`: lista aperta con un filetto sopra ogni passo e il
+  numero in ottone, niente riquadri.
+- **Immagini mancanti** — `Media` mostra un segnaposto tratteggiato; dove una
+  foto è facoltativa (copertina di una pagina evento o di un articolo) la
+  pagina usa `mediaExists()` e la omette del tutto.
 
 ## 4.5 Spaziature e griglia
 
-- Contenitore: `max-width: 78rem`, padding laterale 1,25rem su mobile e 2rem da
-  768 px. **Il gutter minimo non scende mai sotto 16px.**
-- Sezione verticale: `clamp(3.5rem, 9vw, 7.5rem)`. È la variabile che più
-  determina la percezione di "premium": lo spazio costa e si vede.
-- Griglie: 1 colonna su mobile → 2 su tablet → 3-4 su desktop. Le griglie di
-  card usano `gap-px` su fondo `--hairline`, così le separazioni sono linee
-  perfette da 1px invece di bordi doppi.
+- Contenitore: `max-width: 78rem`, margine laterale 1,25rem su mobile e 2rem
+  da 768 px (mai sotto i 16 px).
+- Sezione: `clamp(3rem, 9vw, 7.5rem)` in verticale.
+- Griglia a 12 colonne da `lg` per le composizioni testo + immagine; le pagine
+  interne allineano tutto al bordo sinistro del contenitore, sotto il titolo.
+- Testo e immagini si alternano lungo la pagina: due fotografie non stanno mai
+  una dopo l'altra sul telefono.
 
 ## 4.6 Movimento
 
-Tutto passa da due meccanismi, entrambi economici.
+1. **`.reveal`** — opacità e 12 px di traslazione, 600 ms, attivata da un solo
+   `IntersectionObserver` (`src/components/Reveal.tsx`). Solo sotto la piega.
+2. **Prima schermata ferma.** Il titolo, il sottotitolo e il pulsante
+   dell'apertura non si animano: sono l'elemento più grande della pagina su un
+   telefono e devono comparire subito.
+3. **Microinterazioni** — 200 ms sui colori, la freccia dei link si sposta di
+   3 px.
 
-1. **`.reveal`** — opacità 0 → 1 e traslazione di 18px, attivata da un unico
-   `IntersectionObserver` (`src/components/Reveal.tsx`) che aggiunge
-   `.is-visible`. Un solo observer per pagina, non un wrapper per elemento. Gli
-   elementi già visibili al caricamento vengono rivelati subito, quindi l'hero
-   non lampeggia mai vuoto.
-2. **`.fade-in-up`** — animazione CSS immediata, solo per l'hero e i titoli di
-   pagina, con `reveal-delay-1…4` per lo sfalsamento.
-
-Easing unico: `cubic-bezier(0.22, 1, 0.36, 1)` — parte deciso e si posa. Durate
-fra 250 ms (interazioni) e 700 ms (reveal).
-
-**`prefers-reduced-motion: reduce` azzera tutto**, e i `.reveal` diventano
-visibili immediatamente: nessun contenuto è raggiungibile solo attraverso
-un'animazione.
-
-Niente parallax sull'hero: su mobile costa jank e non aggiunge nulla.
+`prefers-reduced-motion: reduce` azzera tutto. Niente parallax, niente
+animazioni continue.
 
 ## 4.7 Accessibilità
 
 Requisiti trattati come vincoli di build, non come rifiniture.
 
-- **Focus** — `:focus-visible` con outline ottone da 2px e offset di 3px, su
+- **Focus** — `:focus-visible` con outline `accent` da 2px e offset di 3px, su
   ogni elemento interattivo, mai rimosso.
 - **Skip link** — primo elemento del DOM, visibile al focus.
 - **HTML semantico** — `header`/`main`/`footer`/`nav`/`article`/`figure`; un solo
@@ -156,6 +137,13 @@ Requisiti trattati come vincoli di build, non come rifiniture.
 - **Barra CTA mobile** — quando è nascosta gli elementi sono `tabIndex={-1}` e
   la barra è `aria-hidden`: non si finisce dentro un elemento invisibile
   tabulando.
+- **Menu** — `Esc` chiude il menu "Eventi" e quello del telefono e riporta il
+  focus sul pulsante che li ha aperti; il menu "Eventi" si apre solo con un
+  clic o `Invio`, e si chiude uscendone col `Tab`. Con il menu del telefono
+  aperto il resto della pagina è `inert`: il `Tab` non finisce su link coperti.
+- **Verifica** — axe con le regole WCAG 2.2 AA su 15 pagine, telefono e
+  desktop: zero violazioni (ottobre 2026). La navigazione da tastiera dei menu
+  è provata a mano; restano da provare con uno screen reader vero.
 
 ## 4.8 Performance
 
@@ -167,7 +155,11 @@ Scelte fatte guardando i Core Web Vitals, non i benchmark.
 - **Font autoprodotti** con `font-display: swap` e `<link rel="preload">` sui
   due subset latin effettivamente usati above the fold.
 - **Immagini** via `next/image` con AVIF e WebP, `sizes` dichiarato su ogni
-  istanza, `priority` **solo** sull'immagine dell'hero (è l'LCP).
+  istanza, `priority` e `fetchPriority="high"` **solo** sull'immagine
+  dell'apertura: con `priority` da solo il browser la scaricava a priorità
+  bassa, dopo i font.
+- **Testo prima delle immagini.** Nelle pagine interne l'elemento più grande
+  è il titolo, che compare con il primo disegno della pagina.
 - **Client component solo dove servono**: header (menu), configuratore, editor
   admin, reveal. Tutto il resto è server component: zero JS spedito.
 - **CSS unico** generato da Tailwind v4, senza runtime.

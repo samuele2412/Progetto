@@ -33,7 +33,7 @@ export function SectionHeader({
       {eyebrow && <p className="eyebrow">{eyebrow}</p>}
       {/* A section built in the panel can have an intro and no title; an empty
           heading element is worse than none, so it is simply not rendered. */}
-      {title && <Heading className={cn('display-2 text-bone-50', eyebrow && 'mt-3')}>{title}</Heading>}
+      {title && <Heading className={cn('display-2 text-ink', eyebrow && 'mt-3')}>{title}</Heading>}
       {intro && <p className="lede mt-5">{intro}</p>}
     </div>
   );

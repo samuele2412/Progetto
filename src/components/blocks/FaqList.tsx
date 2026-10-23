@@ -25,23 +25,23 @@ export function FaqList({
   const Heading = headingLevel === 2 ? 'h2' : 'h3';
 
   return (
-    <div className="divide-y divide-[var(--hairline)] border-y border-[var(--hairline)]">
+    <div className="divide-y divide-[var(--hairline)] border-y border-[var(--hairline-strong)]">
       {faqs.map((faq) => (
         <details key={faq.id} className="group py-5">
           <summary className="flex min-h-11 cursor-pointer list-none items-start justify-between gap-6 text-left">
-            <Heading className="font-[family-name:var(--font-display)] text-lg leading-snug text-bone-50 transition-colors group-hover:text-brass-300 md:text-xl">
+            <Heading className="font-[family-name:var(--font-display)] text-lg leading-snug text-ink transition-colors group-hover:text-accent-strong md:text-xl">
               {t(faq.question, locale)}
             </Heading>
             <span
               aria-hidden
               className="mt-1 flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-[var(--hairline-strong)] transition-transform duration-300 group-open:rotate-45"
             >
-              <svg viewBox="0 0 14 14" className="h-3.5 w-3.5 text-brass-400" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden>
+              <svg viewBox="0 0 14 14" className="h-3.5 w-3.5 text-accent" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden>
                 <path d="M7 2v10M2 7h10" strokeLinecap="round" />
               </svg>
             </span>
           </summary>
-          <div className="mt-3 max-w-3xl whitespace-pre-line text-[0.95rem] leading-relaxed text-bone-400">
+          <div className="mt-3 max-w-3xl whitespace-pre-line leading-relaxed text-ink-2">
             {t(faq.answer, locale)}
           </div>
         </details>

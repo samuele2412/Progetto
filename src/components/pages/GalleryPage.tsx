@@ -20,7 +20,7 @@ export async function GalleryPage({ locale }: { locale: Locale }) {
       <section className="section">
         <div className="container-page">
           {items.length === 0 ? (
-            <p className="text-sm text-bone-500">
+            <p className="text-sm text-ink-3">
               {locale === 'en'
                 ? 'Photos from my events will appear here.'
                 : 'Qui arriveranno le foto delle mie serate.'}
@@ -41,7 +41,7 @@ export async function GalleryPage({ locale }: { locale: Locale }) {
                     />
                   </div>
                   {t(item.caption, locale) && (
-                    <figcaption className="px-1 pt-2 text-xs text-bone-500">{t(item.caption, locale)}</figcaption>
+                    <figcaption className="px-1 pt-2 text-xs text-ink-3">{t(item.caption, locale)}</figcaption>
                   )}
                 </figure>
               ))}

@@ -219,6 +219,10 @@ async function notify(id: number, reference: string, data: Parsed) {
     }),
   );
 
+  // No address, no confirmation: the email is optional and the reply goes by
+  // phone or WhatsApp.
+  if (!data.email) return;
+
   // Capped per recipient: the form must not become a way of mailing a stranger
   // repeatedly just by rotating IP addresses.
   if (!limitAcknowledgement(hashIp(`ack:${data.email}`)).allowed) return;

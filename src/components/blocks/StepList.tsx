@@ -1,5 +1,10 @@
 export type Step = { title: string; body: string };
 
+/**
+ * Numbered steps as an open list: a rule above each one, the number in the
+ * accent, no boxes. Boxed cards made three short sentences look like a
+ * product comparison.
+ */
 export function StepList({ steps, headingLevel = 3 }: {
   steps: Step[];
   /**
@@ -11,21 +16,21 @@ export function StepList({ steps, headingLevel = 3 }: {
   headingLevel?: 2 | 3;
 }) {
   const Heading = headingLevel === 2 ? 'h2' : 'h3';
-  // Three steps in a four-column grid left an empty hairline cell at the end
-  // of the row, which reads as a missing step.
+  // Three steps share a row; any other number wraps two by two first, so no
+  // row ends with an empty column that reads as a missing step.
   const columns = steps.length === 3 ? 'md:grid-cols-3' : 'md:grid-cols-2 lg:grid-cols-4';
   return (
-    <ol className={`grid gap-px overflow-hidden rounded-[var(--radius-card)] border border-[var(--hairline)] bg-[var(--hairline)] ${columns}`}>
+    <ol className={`grid gap-x-10 gap-y-8 ${columns}`}>
       {steps.map((step, index) => (
         <li
           key={`${index}-${step.title}`}
-          className={`reveal reveal-delay-${Math.min(index + 1, 4)} flex flex-col bg-ink-900 p-5 sm:p-6 md:p-7`}
+          className={`reveal reveal-delay-${Math.min(index + 1, 4)} border-t border-[var(--hairline-strong)] pt-5`}
         >
-          <span className="font-[family-name:var(--font-display)] text-3xl text-brass-500/70">
+          <span className="text-sm font-medium tabular-nums text-accent">
             {String(index + 1).padStart(2, '0')}
           </span>
-          <Heading className="mt-3 font-[family-name:var(--font-display)] text-lg text-bone-50 sm:mt-4">{step.title}</Heading>
-          <p className="mt-2 text-sm leading-relaxed text-bone-400">{step.body}</p>
+          <Heading className="mt-3 font-[family-name:var(--font-display)] text-xl">{step.title}</Heading>
+          <p className="mt-2 leading-relaxed text-ink-2">{step.body}</p>
         </li>
       ))}
     </ol>

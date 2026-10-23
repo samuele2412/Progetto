@@ -63,7 +63,7 @@ export function LanguageSwitcher({
     <div className={cn('flex items-center gap-1 text-xs', className)}>
       {locales.map((target, index) => (
         <span key={target} className="flex items-center gap-1">
-          {index > 0 && <span aria-hidden className="text-bone-500/50">/</span>}
+          {index > 0 && <span aria-hidden className="text-ink-3/50">/</span>}
           <Link
             href={translate(target)}
             hrefLang={target}
@@ -75,7 +75,7 @@ export function LanguageSwitcher({
             aria-current={target === locale ? 'true' : undefined}
             className={cn(
               'tap-target rounded px-2 py-2 tracking-wider transition-colors',
-              target === locale ? 'text-brass-400' : 'text-bone-500 hover:text-bone-100',
+              target === locale ? 'text-accent' : 'text-ink-3 hover:text-ink',
             )}
           >
             {localeShort[target]}

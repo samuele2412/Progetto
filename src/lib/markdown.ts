@@ -113,7 +113,7 @@ function inline(text: string, keyPrefix: string): ReactNode[] {
             {
               key: `${keyPrefix}-a${i}`,
               href,
-              className: 'underline underline-offset-4 transition-colors hover:text-brass-300',
+              className: 'underline underline-offset-4 transition-colors hover:text-accent',
               ...(external ? { target: '_blank', rel: 'noreferrer noopener' } : {}),
             },
             label,

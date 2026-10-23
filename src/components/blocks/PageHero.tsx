@@ -1,6 +1,15 @@
-import { Media } from '@/components/Media';
+import { Media, mediaExists } from '@/components/Media';
 import { cn } from '@/lib/utils';
 
+/**
+ * The opening of every inner page: type on paper, then — only when the file
+ * really exists — a framed photograph under it.
+ *
+ * It used to put the title over a full-bleed image. Without a photograph that
+ * meant a placeholder box in the most visible spot of the page (and the
+ * placeholder's caption became the page's largest paint), so a page whose
+ * photo has not been taken yet now simply has none.
+ */
 export function PageHero({
   eyebrow,
   title,
@@ -16,43 +25,22 @@ export function PageHero({
   children?: React.ReactNode;
   compact?: boolean;
 }) {
-  const hasImage = Boolean(imagePath);
+  const hasImage = mediaExists(imagePath);
 
   return (
-    <section
-      className={cn(
-        'relative isolate overflow-hidden border-b border-[var(--hairline)]',
-        hasImage ? 'min-h-[52svh] md:min-h-[58svh]' : '',
-      )}
-    >
-      {hasImage && (
-        <div className="absolute inset-0 -z-10">
-          <Media src={imagePath!} alt={title} priority sizes="100vw" variant="background" placeholderLabel={title} />
-          <div
-            aria-hidden
-            className="absolute inset-0"
-            style={{
-              background:
-                'linear-gradient(to top, rgba(10,9,8,0.97) 10%, rgba(10,9,8,0.75) 55%, rgba(10,9,8,0.5) 100%)',
-            }}
-          />
-        </div>
-      )}
-
-      <div
-        className={cn(
-          'container-page flex flex-col justify-end',
-          hasImage ? 'min-h-[52svh] pb-14 pt-24 md:min-h-[58svh] md:pb-20' : compact ? 'py-14 md:py-16' : 'py-16 md:py-24',
-        )}
-      >
+    <section className="border-b border-[var(--hairline)]">
+      <div className={cn('container-page', compact ? 'pb-12 pt-10 md:pb-16 md:pt-16' : 'pb-14 pt-12 md:pb-20 md:pt-20')}>
         <div className="max-w-3xl">
-          {eyebrow && <p className="eyebrow fade-in-up">{eyebrow}</p>}
-          <h1 className={cn('display-1 fade-in-up text-bone-50', eyebrow && 'mt-4', hasImage && 'text-shadow-hero')}>
-            {title}
-          </h1>
-          {intro && <p className="lede fade-in-up mt-6 max-w-2xl text-bone-200">{intro}</p>}
+          {eyebrow && <p className="eyebrow">{eyebrow}</p>}
+          <h1 className={cn('display-1', eyebrow && 'mt-4')}>{title}</h1>
+          {intro && <p className="lede mt-6 max-w-2xl">{intro}</p>}
           {children}
         </div>
+        {hasImage && (
+          <div className="frame mt-10 aspect-[16/10] md:mt-14 md:aspect-[21/9]">
+            <Media src={imagePath!} alt="" priority sizes="(min-width: 1280px) 1200px, 100vw" />
+          </div>
+        )}
       </div>
     </section>
   );

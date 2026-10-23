@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { env } from './env';
 import { htmlLang, locales, ogLocale, type Locale } from './i18n';
+import { mediaExists } from './media-files';
 import type { SiteSettings } from '@/content/settings';
 
 /** Absolute URL for a root-relative path. */
@@ -54,7 +55,11 @@ export function buildMetadata(options: {
   /** Overrides the generated canonical. Empty means "use this page's URL". */
   canonicalUrl?: string;
 }): Metadata {
-  const image = absoluteUrl(options.imagePath || options.settings.seo.ogImagePath);
+  // A page's own image only when the file exists: landing heroes and journal
+  // covers are stored before the photographs are, and a card pointing at a
+  // 404 shows no picture at all where it is shared.
+  const own = options.imagePath && mediaExists(options.imagePath) ? options.imagePath : '';
+  const image = absoluteUrl(own || options.settings.seo.ogImagePath);
   const canonicalPath = options.pathsByLocale[options.locale];
   const social = {
     title: options.ogTitle?.trim() || options.title,

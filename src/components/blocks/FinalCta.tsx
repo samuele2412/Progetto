@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { WhatsAppIcon } from '@/components/icons';
 import { d } from '@/lib/dictionary';
 import { t, type Locale } from '@/lib/i18n';
 import { path } from '@/lib/routes';
@@ -35,37 +36,39 @@ export async function FinalCta({
   const periods = t(settings.contact.periods, locale);
 
   return (
-    <section className="section relative overflow-hidden border-t border-[var(--hairline)] bg-ink-900">
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-0 opacity-70"
-        style={{
-          background:
-            'radial-gradient(70% 60% at 50% 0%, rgba(201,164,106,0.14), transparent 65%)',
-        }}
-      />
-      <div className="container-page relative text-center">
+    <section className="section border-t border-[var(--hairline)] bg-paper-2">
+      <div className="container-page text-center">
         <div className="reveal mx-auto max-w-2xl">
           <div className="rule-brass mx-auto" />
-          <h2 className="display-2 mt-6 text-bone-50">{t(settings.home.finalCtaTitle, locale)}</h2>
-          {!brief && <p className="lede mt-5">{t(settings.home.finalCtaBody, locale)}</p>}
+          <h2 className="display-2 mt-6">{t(settings.home.finalCtaTitle, locale)}</h2>
+          {!brief && <p className="lede mx-auto mt-5 max-w-xl">{t(settings.home.finalCtaBody, locale)}</p>}
           <div className="mt-9 flex flex-col justify-center gap-3 sm:flex-row">
             <Link
               href={path('request', locale, { pacchetto: packageSlug, evento: eventTypeSlug })}
               className="btn btn-primary"
+              data-track="quote"
+              data-track-location="final"
             >
               {copy.cta.quoteLong}
             </Link>
             {whatsappHref && (
-              <a href={whatsappHref} target="_blank" rel="noopener noreferrer" className="btn btn-ghost">
+              <a
+                href={whatsappHref}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn btn-whatsapp"
+                data-track="whatsapp"
+                data-track-location="final"
+              >
+                <WhatsAppIcon />
                 {copy.cta.whatsappLong}
               </a>
             )}
           </div>
           {(note || periods) && (
-            <div className="mt-7 space-y-1.5 text-sm text-bone-400">
+            <div className="mt-7 space-y-1.5 text-sm text-ink-3">
               {note && <p>{note}</p>}
-              {periods && <p className="text-bone-200">{periods}</p>}
+              {periods && <p className="font-medium text-ink">{periods}</p>}
             </div>
           )}
         </div>

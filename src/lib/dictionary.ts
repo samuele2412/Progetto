@@ -80,7 +80,8 @@ export const dictionary = {
     sending: { it: 'Invio in corso…', en: 'Sending…' },
 
     stepEvent: { it: 'La festa', en: 'The party' },
-    stepDetails: { it: 'I dettagli', en: 'The details' },
+    stepDetails: { it: 'I dettagli (facoltativi)', en: 'The details (optional)' },
+    nextTitle: { it: 'Cosa succede dopo', en: 'What happens next' },
     stepContact: { it: 'I tuoi contatti', en: 'Your details' },
 
     eventType: { it: 'Che tipo di evento è?', en: 'What kind of event is it?' },
@@ -110,6 +111,10 @@ export const dictionary = {
     name: { it: 'Nome e cognome', en: 'Full name' },
     phone: { it: 'Telefono', en: 'Phone' },
     email: { it: 'Email', en: 'Email' },
+    emailHint: {
+      it: 'Ti mando una conferma della richiesta. Ti rispondo comunque al telefono o su WhatsApp.',
+      en: 'I’ll send you a confirmation of your request. I’ll reply by phone or WhatsApp either way.',
+    },
     prefersWhatsapp: { it: 'Preferisco essere contattato su WhatsApp', en: 'I would rather be contacted on WhatsApp' },
     consent: {
       it: 'Ho letto l’informativa privacy e acconsento al trattamento dei miei dati per essere ricontattato.',

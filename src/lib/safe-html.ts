@@ -228,20 +228,20 @@ function normalise(nodes: HtmlNode[]): HtmlNode[] {
  * site's typography instead of bringing its own.
  */
 const CLASSES: Record<string, string> = {
-  p: 'mt-4 leading-relaxed text-bone-300 first:mt-0',
-  h2: 'display-3 mt-10 text-bone-50 first:mt-0',
-  h3: 'mt-8 font-[family-name:var(--font-display)] text-xl text-bone-50 first:mt-0',
-  h4: 'mt-6 font-[family-name:var(--font-display)] text-lg text-bone-50 first:mt-0',
-  ul: 'mt-4 list-disc space-y-2 pl-5 text-bone-300 marker:text-brass-500',
-  ol: 'mt-4 list-decimal space-y-2 pl-5 text-bone-300 marker:text-brass-500',
+  p: 'mt-4 leading-relaxed text-ink-2 first:mt-0',
+  h2: 'display-3 mt-10 text-ink first:mt-0',
+  h3: 'mt-8 font-[family-name:var(--font-display)] text-xl text-ink first:mt-0',
+  h4: 'mt-6 font-[family-name:var(--font-display)] text-lg text-ink first:mt-0',
+  ul: 'mt-4 list-disc space-y-2 pl-5 text-ink-2 marker:text-accent',
+  ol: 'mt-4 list-decimal space-y-2 pl-5 text-ink-2 marker:text-accent',
   li: 'leading-relaxed',
-  blockquote: 'mt-6 border-l-2 border-brass-500/60 pl-5 text-bone-200 italic',
-  code: 'rounded bg-ink-800 px-1.5 py-0.5 text-[0.9em] text-brass-300',
-  strong: 'font-semibold text-bone-100',
-  a: 'underline underline-offset-4 transition-colors hover:text-brass-300',
+  blockquote: 'mt-6 border-l-2 border-accent/60 pl-5 text-ink-2 italic',
+  code: 'rounded bg-paper-2 px-1.5 py-0.5 text-[0.9em] text-accent',
+  strong: 'font-semibold text-ink',
+  a: 'underline underline-offset-4 transition-colors hover:text-accent',
   table: 'mt-6 w-full border-collapse text-left text-sm',
-  th: 'border-b border-[var(--hairline-strong)] px-3 py-2 font-medium text-bone-100',
-  td: 'border-b border-[var(--hairline)] px-3 py-2 text-bone-300',
+  th: 'border-b border-[var(--hairline-strong)] px-3 py-2 font-medium text-ink',
+  td: 'border-b border-[var(--hairline)] px-3 py-2 text-ink-2',
   hr: 'my-8 border-[var(--hairline)]',
 };
 
