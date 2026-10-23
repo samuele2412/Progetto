@@ -41,9 +41,13 @@ export function Footer(props: FooterProps) {
             a second, longer menu. */}
         <div className="grid grid-cols-2 gap-x-6 gap-y-10 md:grid-cols-[1.4fr_1fr_1fr_1fr] md:gap-12">
           <div className="col-span-2 md:col-span-1">
-            <p className="font-[family-name:var(--font-display)] text-2xl text-ink">{props.brandName}</p>
-            <p className="mt-1 text-[0.65rem] uppercase tracking-[0.2em] text-ink-3">{props.descriptor}</p>
-            <p className="mt-5 max-w-xs text-sm leading-relaxed text-ink-2">{props.claim}</p>
+            {/* The wordmark set large, as on a menu's back cover. */}
+            <p className="font-[family-name:var(--font-display)] text-[2.1rem] leading-none tracking-tight text-ink md:text-[2.6rem]">
+              {props.brandName}
+            </p>
+            <p className="mt-3 text-[0.65rem] uppercase tracking-[0.2em] text-ink-3">{props.descriptor}</p>
+            <div className="rule-brass mt-6" />
+            <p className="mt-6 max-w-xs text-sm leading-relaxed text-ink-2">{props.claim}</p>
             <p className="mt-3 text-sm text-ink-3">{props.serviceArea}</p>
           </div>
 

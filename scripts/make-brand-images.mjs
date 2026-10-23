@@ -37,9 +37,9 @@ const DESCRIPTOR = 'Bartender per feste private · Roma e provincia';
 // The hero headline, so a shared link says the same thing the home page does.
 const CLAIM = 'Sono Samuele. Vengo a fare da bere alla tua festa.';
 
-// Paper and ink, like the site since the light redesign: the photograph sits
-// in its own frame on the right instead of under a dark veil, so the card
-// reads the same as the page it links to.
+// Night and brass, like the site's default theme and its home page: the
+// photograph under the whole card, darkened on the left where the words are,
+// so a shared link looks like the page it opens.
 const card = /* html */ `
 <!doctype html>
 <html lang="it"><head><meta charset="utf-8">
@@ -47,24 +47,27 @@ const card = /* html */ `
   @font-face { font-family: 'Fraunces'; src: url('${BASE}/fonts/fraunces-latin.woff2') format('woff2'); font-weight: 300 700; }
   @font-face { font-family: 'InterVar'; src: url('${BASE}/fonts/inter-latin.woff2') format('woff2'); font-weight: 300 700; }
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  body { width: 1200px; height: 630px; overflow: hidden; background: #f7f3ec; }
+  body { width: 1200px; height: 630px; overflow: hidden; background: #0e0c0a; }
   .card { position: relative; width: 1200px; height: 630px; }
-  .photo { position: absolute; top: 48px; right: 48px; bottom: 48px; width: 420px; border-radius: 14px;
-    overflow: hidden; box-shadow: inset 0 0 0 1px rgba(28,26,23,0.12); }
+  .photo { position: absolute; inset: 0; }
   .photo img { width: 100%; height: 100%; object-fit: cover; object-position: 62% 50%; display: block; }
-  .copy { position: absolute; top: 0; bottom: 0; left: 0; width: 720px; padding: 64px 72px;
+  .veil { position: absolute; inset: 0; background:
+    linear-gradient(100deg, rgba(14,12,10,0.95) 0%, rgba(14,12,10,0.84) 42%, rgba(14,12,10,0.34) 74%, rgba(14,12,10,0.14) 100%),
+    linear-gradient(to top, rgba(14,12,10,0.55) 0%, rgba(14,12,10,0) 45%); }
+  .copy { position: absolute; top: 0; bottom: 0; left: 0; width: 760px; padding: 64px 72px;
     display: flex; flex-direction: column; justify-content: space-between; }
-  .word { font-family: 'Fraunces', serif; font-size: 44px; color: #1c1a17; letter-spacing: -0.01em; }
+  .word { font-family: 'Fraunces', serif; font-size: 44px; color: #f6f1e8; letter-spacing: -0.01em; }
   .desc { font-family: 'InterVar', sans-serif; font-size: 15px; letter-spacing: 0.2em;
-    text-transform: uppercase; color: #7e5a28; margin-top: 10px; font-weight: 500; }
-  .claim { font-family: 'Fraunces', serif; font-size: 58px; line-height: 1.06; color: #1c1a17;
-    letter-spacing: -0.02em; max-width: 590px; text-wrap: balance; }
-  .rule { width: 64px; height: 2px; background: #b08a4f; margin-bottom: 28px; }
-  .foot { font-family: 'InterVar', sans-serif; font-size: 20px; color: #3b3631; }
-  .foot b { color: #7e5a28; font-weight: 600; }
+    text-transform: uppercase; color: #d8b87d; margin-top: 10px; font-weight: 500; }
+  .claim { font-family: 'Fraunces', serif; font-size: 60px; line-height: 1.05; color: #f6f1e8;
+    letter-spacing: -0.02em; max-width: 610px; text-wrap: balance; }
+  .rule { width: 64px; height: 2px; background: #c9a46a; margin-bottom: 28px; }
+  .foot { font-family: 'InterVar', sans-serif; font-size: 20px; color: rgba(246,241,232,0.82); }
+  .foot b { color: #d8b87d; font-weight: 600; }
 </style></head>
 <body><div class="card">
   <div class="photo"><img src="${BASE}/images/stock/hero-bancone.webp" alt=""></div>
+  <div class="veil"></div>
   <div class="copy">
     <div><div class="word">${BRAND}</div><div class="desc">${DESCRIPTOR}</div></div>
     <div><div class="rule"></div><div class="claim">${CLAIM}</div></div>

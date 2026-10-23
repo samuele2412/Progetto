@@ -48,17 +48,18 @@
 /* ==========================================================================
    Design tokens — see docs/04-design-system.md.
 
-   Paper and ink, with one accent. The site used to be a dark "night bar"
-   palette built to frame event photography; there is none yet, and since the
-   copy was rewritten the protagonist is Samuele's own words. A light page
-   reads better at every age, in daylight, while a party is being planned —
-   and it lets type, space and the few real images carry the design.
+   Paper and ink, with one accent, in two themes: the bar at night (dark, the
+   default) and the same page by day (light). The visitor switches with the
+   sun and moon in the header; the choice is a first-party cookie the server
+   reads, so the page arrives already in the right colours (src/lib/theme.ts).
 
    Colour names are roles, not shades: `ink-3` is "secondary text" wherever it
-   is used, so a future change of palette is a change here, not a search and
-   replace through the components. Every text colour below clears WCAG AA on
-   both `paper` and `paper-2`; `brass` is decorative only and never carries
-   text. The admin panel keeps its own tool palette (.admin-shell).
+   is used, so a theme is a set of values here, not a search and replace
+   through the components. Every text colour clears WCAG AA on `paper`,
+   `paper-2` and `paper-3` in both themes; `brass` is decorative only. `cream`
+   and `night` never change: they are for copy set over a darkened photograph,
+   which is dark whatever the theme. The admin panel keeps its own tool
+   palette (.admin-shell).
    ========================================================================== */
 
 @theme {
@@ -82,6 +83,10 @@
 
   --color-danger: #a23b2a;        /* errors only — 6:1 */
 
+  /* Constant in both themes: copy and shapes over a darkened photograph. */
+  --color-cream: #f6f1e8;
+  --color-night: #0e0c0a;
+
   --font-display: 'Fraunces', ui-serif, Georgia, 'Times New Roman', serif;
   --font-sans: 'InterVar', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
 
@@ -102,8 +107,86 @@
 @layer base {
   :root {
     color-scheme: light;
+    /* Declared on the root, so they follow whichever theme the root is in. */
     --hairline: color-mix(in srgb, var(--color-ink) 12%, transparent);
     --hairline-strong: color-mix(in srgb, var(--color-ink) 24%, transparent);
+    /* Text fields need a 3:1 edge (WCAG 1.4.11): an empty input is otherwise
+       only a slightly lighter rectangle. */
+    --field-border: color-mix(in srgb, var(--color-ink) 50%, transparent);
+
+    /* The primary button: the one solid shape of the page. Ink by day, brass
+       by night and over photographs. */
+    --cta: #1c1a17;
+    --cta-hover: #34302a;
+    --cta-text: #f7f3ec;
+    --cta-shadow: 0 14px 30px -20px rgb(28 26 23 / 0.6);
+
+    --selection: var(--color-accent-soft);
+    --selection-text: var(--color-ink);
+    /* The warm light some bands are lit by. */
+    --glow: rgb(176 138 79 / 0.1);
+  }
+
+  /*
+   * The bar at night — the palette the site was born with, rebuilt on the same
+   * roles: near-black with a warm cast, bone-white type, brass that can carry
+   * text. Contrast on paper / paper-2 / paper-3:
+   *   ink 16.8 / 15.9 / 14.7 · ink-2 12.8 / 12.1 / 11.2 · ink-3 7.1 / 6.8 / 6.3
+   *   accent 9.5 / 9.0 / 8.3 · danger 8.1 / 7.7 / 7.1
+   */
+  :root[data-theme='dark'] {
+    color-scheme: dark;
+    --color-paper: #0e0c0a;
+    --color-paper-2: #161310;
+    --color-paper-3: #1f1b16;
+    --color-field: #1a1612;
+
+    --color-ink: #f3ede3;
+    --color-ink-2: #d9d0c2;
+    --color-ink-3: #a59b8c;
+
+    --color-accent: #d2b07a;
+    --color-accent-strong: #e8cf9e;
+    --color-accent-soft: #2b2319;
+    --color-brass: #a8874f;
+    --color-danger: #e8907c;
+
+    --field-border: color-mix(in srgb, var(--color-ink) 40%, transparent);
+
+    --cta: #c9a46a;
+    --cta-hover: #d8b87d;
+    --cta-text: #0e0c0a;
+    --cta-shadow: 0 12px 32px -16px rgb(201 164 106 / 0.5);
+
+    --shadow-lift: 0 24px 60px -28px rgb(0 0 0 / 0.8);
+    --shadow-soft: 0 2px 20px -8px rgb(0 0 0 / 0.6);
+
+    --selection: #c9a46a;
+    --selection-text: #0e0c0a;
+    --glow: rgb(201 164 106 / 0.11);
+  }
+
+  /*
+   * Copy over a darkened photograph — the home hero, and the header while it
+   * floats over it. The same roles, re-pointed at light values, so everything
+   * inside (headings, the lede, links, the primary button, focus rings) needs
+   * no special case. The hairlines are restated because custom properties
+   * inherit computed: the root's are already resolved against its own ink.
+   */
+  .on-image {
+    --color-ink: var(--color-cream);
+    --color-ink-2: rgb(246 241 232 / 0.88);
+    --color-ink-3: rgb(246 241 232 / 0.72);
+    --color-accent: #d8b87d;
+    --color-accent-strong: #ecd4a4;
+    --color-brass: #c9a46a;
+    --hairline: rgb(246 241 232 / 0.16);
+    --hairline-strong: rgb(246 241 232 / 0.34);
+    --cta: #c9a46a;
+    --cta-hover: #d8b87d;
+    --cta-text: var(--color-night);
+    --cta-shadow: 0 12px 32px -16px rgb(201 164 106 / 0.55);
+    color: var(--color-ink-2);
   }
 
   * {
@@ -137,8 +220,8 @@
   p { text-wrap: pretty; }
 
   ::selection {
-    background: var(--color-accent-soft);
-    color: var(--color-ink);
+    background: var(--selection);
+    color: var(--selection-text);
   }
 
   /* Visible, consistent focus for keyboard users everywhere. */
@@ -242,6 +325,29 @@
     .link-more { min-height: 1.75rem; }
   }
 
+  /* Header links: a brass rule draws in from the left under the hovered link
+     and stays under the current page. */
+  .nav-link {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    min-height: 2.75rem;
+  }
+  .nav-link::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0.55rem;
+    height: 1px;
+    background: var(--color-brass);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.35s var(--ease-out-soft);
+  }
+  .nav-link:hover::after,
+  .nav-link[aria-current='page']::after { transform: scaleX(1); }
+
   /* --- Buttons ---------------------------------------------------------- */
   .btn {
     display: inline-flex;
@@ -255,20 +361,25 @@
     line-height: 1;
     text-align: center;
     cursor: pointer;
-    transition: transform 0.2s var(--ease-out-soft), background-color 0.2s, border-color 0.2s, color 0.2s;
+    transition: transform 0.2s var(--ease-out-soft), background-color 0.2s, border-color 0.2s, color 0.2s, box-shadow 0.2s;
     /* Comfortable thumb target on phones. */
     min-height: 3rem;
   }
   .btn:active { transform: translateY(1px); }
   .btn:disabled { opacity: 0.55; cursor: not-allowed; }
 
-  /* The one solid dark shape on a light page: there is never a doubt about
-     which button matters. */
+  /* The one solid shape on the page — ink by day, brass by night — so there
+     is never a doubt about which button matters. */
   .btn-primary {
-    background: var(--color-ink);
-    color: var(--color-paper);
+    background: var(--cta);
+    color: var(--cta-text);
+    box-shadow: var(--cta-shadow);
   }
-  .btn-primary:hover { background: #34302a; }
+  .btn-primary:hover {
+    background: var(--cta-hover);
+    transform: translateY(-1px);
+  }
+  .btn-primary:active { transform: translateY(1px); }
 
   .btn-ghost {
     background: transparent;
@@ -355,7 +466,7 @@
   .field {
     width: 100%;
     background: var(--color-field);
-    border: 1px solid var(--hairline-strong);
+    border: 1px solid var(--field-border);
     border-radius: var(--radius-sm);
     padding: 0.875rem 1rem;
     /* 16px keeps iOS Safari from zooming when a field is focused. */
@@ -365,7 +476,7 @@
     min-height: 3rem;
   }
   .field::placeholder { color: var(--color-ink-3); }
-  .field:hover { border-color: color-mix(in srgb, var(--color-ink) 40%, transparent); }
+  .field:hover { border-color: color-mix(in srgb, var(--color-ink) 70%, transparent); }
   .field:focus { border-color: var(--color-ink); }
   .field[aria-invalid='true'] { border-color: var(--color-danger); }
 
@@ -464,6 +575,95 @@
     height: 1px;
     background: var(--color-brass);
   }
+
+  /* An eyebrow led by a short rule, the way a chapter is marked in print. The
+     rule is generated content with no text, so it is not read out. */
+  .eyebrow-ruled::before {
+    content: '';
+    display: inline-block;
+    width: 1.75rem;
+    height: 1px;
+    margin-right: 0.75rem;
+    vertical-align: 0.32em;
+    background: currentColor;
+    opacity: 0.7;
+  }
+
+  /* Bands lit from one side, like a counter under a lamp: barely there by
+     day, warm at night. Only a background-image, so it sits on top of
+     whatever background colour the band already has. */
+  .lit { background-image: radial-gradient(80% 140% at 0% 0%, var(--glow), transparent 62%); }
+  .lit-center { background-image: radial-gradient(60% 120% at 50% 0%, var(--glow), transparent 70%); }
+
+  /* Film grain over a photograph: a fine dot screen, blended so it reads as
+     texture rather than as a pattern. Put it on an empty positioned layer. */
+  .grain::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.6;
+    background-image: radial-gradient(rgb(246 241 232 / 0.07) 1px, transparent 1px);
+    background-size: 3px 3px;
+    mix-blend-mode: overlay;
+  }
+
+  /* "A photograph goes here": a quiet hatch in the theme's own hairline. */
+  .placeholder-hatch {
+    background-image: repeating-linear-gradient(135deg, var(--hairline) 0 1px, transparent 1px 11px);
+  }
+
+  /* --- Home hero -------------------------------------------------------- */
+  /* A photograph under the whole first screen, with the header floating over
+     it. On a phone the height is capped and the copy decides the rest: the
+     full-viewport version left a third of a tall screen as empty gradient
+     above the first word, and what remains now shows the next section. */
+  .hero { min-height: min(86svh, 40rem); }
+  @media (min-width: 768px) {
+    .hero { min-height: min(92svh, 56rem); }
+  }
+
+  .display-hero {
+    font-size: clamp(2.75rem, 7.4vw, 5.6rem);
+    line-height: 1.02;
+    letter-spacing: -0.028em;
+  }
+
+  /* Tuned on the real photograph. Darkest where the copy is (the bottom on a
+     phone, the left from a laptop up), a band at the top for the header, and
+     the glass on the right let through. The copy clears AA on the darkest
+     stops; the lighter ones only ever have the photograph under them. */
+  .hero-scrim {
+    background:
+      linear-gradient(to bottom, rgb(14 12 10 / 0.7) 0%, rgb(14 12 10 / 0) 22%),
+      linear-gradient(to top, rgb(14 12 10 / 0.96) 6%, rgb(14 12 10 / 0.88) 34%, rgb(14 12 10 / 0.77) 62%, rgb(14 12 10 / 0.64) 100%);
+  }
+  @media (min-width: 1024px) {
+    .hero-scrim {
+      background:
+        linear-gradient(to bottom, rgb(14 12 10 / 0.86) 0%, rgb(14 12 10 / 0.62) 9%, rgb(14 12 10 / 0) 26%),
+        linear-gradient(100deg, rgb(14 12 10 / 0.92) 0%, rgb(14 12 10 / 0.78) 38%, rgb(14 12 10 / 0.3) 68%, rgb(14 12 10 / 0.12) 100%),
+        linear-gradient(to top, rgb(14 12 10 / 0.6) 0%, rgb(14 12 10 / 0) 45%);
+    }
+  }
+
+  /* --- Theme switch ----------------------------------------------------- */
+  /* A sun and a crescent drawn in the same line as the menu icon. The one on
+     show is the current theme; switching turns one away and the other in. */
+  .theme-toggle .sun,
+  .theme-toggle .moon {
+    transform-origin: 12px 12px;
+    transition: transform 0.6s var(--ease-out-soft), opacity 0.3s ease;
+  }
+  .theme-toggle .moon { opacity: 0; transform: rotate(-70deg) scale(0.5); }
+  [data-theme='dark'] .theme-toggle .sun { opacity: 0; transform: rotate(90deg) scale(0.5); }
+  [data-theme='dark'] .theme-toggle .moon { opacity: 1; transform: none; }
+  :root:not([data-theme='dark']) .theme-toggle:hover .sun { transform: rotate(45deg); }
+  [data-theme='dark'] .theme-toggle:hover .moon { transform: rotate(-14deg); }
+
+  /* Photographs in a link come forward a little on hover. */
+  .frame img { transition: transform 0.9s var(--ease-out-soft); }
+  a:hover .frame img { transform: scale(1.03); }
 }
 
 /* ==========================================================================
@@ -489,8 +689,28 @@
   .no-scrollbar::-webkit-scrollbar { display: none; }
   .no-scrollbar { scrollbar-width: none; }
 
-  /* Copy set over a darkened photograph (page builder hero only). */
+  /* Copy set over a darkened photograph. */
   .text-shadow-hero { text-shadow: 0 2px 30px rgb(0 0 0 / 0.45); }
+
+  /* A phone held sideways has ~390px of height: the hero gives up its minimum
+     and tightens until the button sits above the fold. Here rather than in
+     @layer components because the elements carry pt-/mt- utilities, and in
+     Tailwind v4 layer order beats specificity. */
+  @media (max-height: 560px) and (orientation: landscape) {
+    .hero { min-height: 0; }
+    .hero .hero-content { padding-top: 5.5rem; padding-bottom: 1.75rem; }
+    .hero .display-hero { font-size: 2.1rem; }
+    .hero .lede { margin-top: 0.75rem; font-size: 0.95rem; }
+    .hero .hero-actions { margin-top: 1.25rem; }
+  }
+}
+
+/* The theme switch opens the new theme as a circle from the button (see
+   ThemeToggle). The default cross-fade is switched off so only that shows. */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
 }
 
 @media (prefers-reduced-motion: reduce) {

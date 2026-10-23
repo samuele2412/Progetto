@@ -126,6 +126,7 @@ Questo sito non utilizza cookie di profilazione, non installa pixel pubblicitari
 
 ## Cosa viene effettivamente salvato sul tuo dispositivo
 
+- **Preferenza chiaro/scuro** (cordiale_theme) — salvata solo se usi il pulsante con il sole e la luna per cambiare l'aspetto del sito, così le pagine successive si aprono come le hai scelte. Contiene soltanto la parola «light» o «dark», dura un anno e non serve a riconoscerti. Se lo cancelli, il sito torna al tema scuro.
 - **Cookie tecnico di sessione dell'area riservata** (__Host-cordiale_session) — presente solo se sei l'amministratore del sito e hai effettuato l'accesso al pannello. Scade alla chiusura della sessione. Non riguarda i visitatori.
 - **Nessun altro cookie** viene impostato dal sito nella navigazione ordinaria.
 
@@ -149,6 +150,7 @@ This site uses no profiling cookies, installs no advertising pixels and shares n
 
 ## What is actually stored on your device
 
+- **Light/dark preference** (cordiale_theme) — saved only if you use the sun and moon button to change how the site looks, so the next pages open the way you chose. It holds only the word “light” or “dark”, lasts one year and is not used to recognise you. If you delete it, the site goes back to the dark theme.
 - **A technical session cookie for the admin area** (__Host-cordiale_session) — present only if you are the site administrator and have signed in. It expires with the session and does not concern visitors.
 - **No other cookie** is set by the site during ordinary browsing.
 

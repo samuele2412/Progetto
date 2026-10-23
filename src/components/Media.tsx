@@ -61,16 +61,10 @@ export function Media({
         role="img"
         aria-label={alt}
       >
-        {/* A quiet paper tone with a fine diagonal hatch: reads as "a photo
-            goes here", not as a broken image or a design element. */}
-        <div
-          aria-hidden
-          className="absolute inset-0 opacity-60"
-          style={{
-            backgroundImage:
-              'repeating-linear-gradient(135deg, rgba(28,26,23,0.045) 0 1px, transparent 1px 11px)',
-          }}
-        />
+        {/* A quiet tone with a fine diagonal hatch in the theme's hairline:
+            reads as "a photo goes here", not as a broken image or a design
+            element, by day and by night. */}
+        <div aria-hidden className="placeholder-hatch absolute inset-0 opacity-70" />
         <div
           className={cn(
             'relative z-10',

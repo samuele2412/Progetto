@@ -98,11 +98,19 @@ motivo pratico in più per la scelta descritta in `docs/10`.
 
 ## 9.6 Cookie: perché non c'è un banner
 
-Il sito, così com'è, **non installa alcun cookie sui visitatori**:
+Il sito, così com'è, **non installa cookie sui visitatori se non sono loro a
+chiederlo**:
 
 - I font sono serviti dal proprio server, non da Google Fonts
 - Non ci sono pixel pubblicitari, embed di social, mappe incorporate o chat
-- L'unico cookie è `cordiale_session`, tecnico, presente **solo** per
+- `cordiale_theme` ricorda il tema chiaro o scuro, ed esiste **solo** se il
+  visitatore usa il pulsante con il sole e la luna. Contiene la parola `light`
+  o `dark`, dura un anno, non identifica nessuno e non viene letto da terzi:
+  è una funzione chiesta esplicitamente da chi naviga, quindi rientra fra i
+  cookie tecnici senza consenso. È elencato nella cookie policy
+  (`src/content/legal.ts`); se il testo è stato personalizzato dal pannello,
+  va aggiunto anche lì
+- L'altro cookie è `cordiale_session`, tecnico, presente **solo** per
   l'amministratore che ha effettuato l'accesso al pannello
 - Cloudflare può impostare cookie tecnici di sicurezza: rientrano fra quelli
   strettamente necessari

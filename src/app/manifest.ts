@@ -1,13 +1,14 @@
 import type { MetadataRoute } from 'next';
 import { defaultSettings } from '@/content/settings';
+import { defaultTheme, themeColor } from '@/lib/theme';
 
 /**
  * Web app manifest.
  *
  * Not a PWA — there is no service worker and nothing to install. It exists so
  * that a visitor who adds the site to a phone's home screen gets the wordmark,
- * the right name and the paper background instead of a screenshot and a URL, and
- * so Android uses the brand colour for the address bar.
+ * the right name and the night background of the default theme instead of a
+ * screenshot and a URL, and so Android uses the brand colour for the address bar.
  *
  * Deliberately reads the *default* brand name rather than the database: a
  * manifest is fetched once and cached hard by the OS, so it should not change
@@ -21,8 +22,8 @@ export default function manifest(): MetadataRoute.Manifest {
     start_url: '/it',
     scope: '/',
     display: 'browser',
-    background_color: '#f7f3ec',
-    theme_color: '#f7f3ec',
+    background_color: themeColor[defaultTheme],
+    theme_color: themeColor[defaultTheme],
     lang: 'it-IT',
     icons: [
       { src: '/icon.svg', sizes: 'any', type: 'image/svg+xml' },

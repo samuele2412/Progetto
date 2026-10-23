@@ -21,6 +21,10 @@ export const dictionary = {
     menu: { it: 'Apri il menu', en: 'Open menu' },
     close: { it: 'Chiudi il menu', en: 'Close menu' },
     quickActions: { it: 'Azioni rapide', en: 'Quick actions' },
+    // The switch is named by what it turns on; aria-pressed says whether it is.
+    darkTheme: { it: 'Tema scuro', en: 'Dark theme' },
+    toLightTheme: { it: 'Passa al tema chiaro', en: 'Switch to the light theme' },
+    toDarkTheme: { it: 'Passa al tema scuro', en: 'Switch to the dark theme' },
   },
   cta: {
     quote: { it: 'Chiedimi un preventivo', en: 'Ask me for a quote' },

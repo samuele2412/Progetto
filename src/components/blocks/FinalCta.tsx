@@ -36,7 +36,7 @@ export async function FinalCta({
   const periods = t(settings.contact.periods, locale);
 
   return (
-    <section className="section border-t border-[var(--hairline)] bg-paper-2">
+    <section className="section lit-center border-t border-[var(--hairline)] bg-paper-2">
       <div className="container-page text-center">
         <div className="reveal mx-auto max-w-2xl">
           <div className="rule-brass mx-auto" />

@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import '@/app/globals.css';
+import { defaultTheme } from '@/lib/theme';
 
 /**
  * Last-resort 404.
@@ -16,7 +17,8 @@ import '@/app/globals.css';
  */
 export default function RootNotFound() {
   return (
-    <html lang="it">
+    // Dark, the default: this last-resort page does not read the visitor's choice.
+    <html lang="it" data-theme={defaultTheme}>
       {/* Written out rather than exported as `metadata`: Next only merges a
           metadata export from a layout or a page, and the root layout here is a
           pass-through with no <head> of its own, so the file has to carry it. */}

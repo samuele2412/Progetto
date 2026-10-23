@@ -28,10 +28,10 @@ export function PageHero({
   const hasImage = mediaExists(imagePath);
 
   return (
-    <section className="border-b border-[var(--hairline)]">
+    <section className="lit border-b border-[var(--hairline)]">
       <div className={cn('container-page', compact ? 'pb-12 pt-10 md:pb-16 md:pt-16' : 'pb-14 pt-12 md:pb-20 md:pt-20')}>
         <div className="max-w-3xl">
-          {eyebrow && <p className="eyebrow">{eyebrow}</p>}
+          {eyebrow && <p className="eyebrow eyebrow-ruled">{eyebrow}</p>}
           <h1 className={cn('display-1', eyebrow && 'mt-4')}>{title}</h1>
           {intro && <p className="lede mt-6 max-w-2xl">{intro}</p>}
           {children}

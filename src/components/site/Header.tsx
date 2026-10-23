@@ -4,8 +4,10 @@ import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import type { Locale } from '@/lib/i18n';
+import type { Theme } from '@/lib/theme';
 import { cn } from '@/lib/utils';
 import { LanguageSwitcher, type SlugPair } from './LanguageSwitcher';
+import { ThemeToggle } from './ThemeToggle';
 
 export type NavLink = { label: string; href: string };
 
@@ -23,6 +25,8 @@ export type HeaderProps = {
   slugPairs: SlugPair[];
   menuLabel: string;
   closeLabel: string;
+  theme: Theme;
+  themeLabels: { label: string; toLight: string; toDark: string };
 };
 
 export function Header(props: HeaderProps) {
@@ -90,14 +94,20 @@ export function Header(props: HeaderProps) {
 
   const allLinks = [...props.links, ...props.eventLinks];
 
+  // On the home page the header floats over the hero photograph until the
+  // visitor scrolls or opens a menu: transparent, with the light type the
+  // photograph needs (.on-image). Anything open turns it back into the bar.
+  const overImage = pathname === props.homeHref && !scrolled && !open && !eventsOpen;
+
   return (
     <header
       ref={headerRef}
       className={cn(
         'fixed inset-x-0 top-0 z-50 transition-all duration-300',
-        scrolled || open
-          ? 'border-b border-[var(--hairline)] bg-paper/90 backdrop-blur-md'
+        scrolled || open || eventsOpen
+          ? 'border-b border-[var(--hairline)] bg-paper/85 backdrop-blur-md'
           : 'border-b border-transparent',
+        overImage && 'on-image',
       )}
     >
       {/*
@@ -138,7 +148,7 @@ export function Header(props: HeaderProps) {
               key={link.href}
               href={link.href}
               aria-current={isCurrent(link.href) ? 'page' : undefined}
-              className="text-sm text-ink-2 underline-offset-[0.4em] transition-colors hover:text-ink aria-[current=page]:text-ink aria-[current=page]:underline aria-[current=page]:decoration-brass"
+              className="nav-link text-sm text-ink-2 transition-colors hover:text-ink aria-[current=page]:text-ink"
             >
               {link.label}
             </Link>
@@ -204,8 +214,14 @@ export function Header(props: HeaderProps) {
           )}
         </nav>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 sm:gap-3">
           <LanguageSwitcher locale={props.locale} slugPairs={props.slugPairs} className="hidden sm:flex" />
+          <ThemeToggle
+            initialTheme={props.theme}
+            label={props.themeLabels.label}
+            toLight={props.themeLabels.toLight}
+            toDark={props.themeLabels.toDark}
+          />
           <Link
             href={props.ctaHref}
             className="btn btn-primary hidden !min-h-11 !px-5 !py-2.5 text-sm lg:inline-flex"

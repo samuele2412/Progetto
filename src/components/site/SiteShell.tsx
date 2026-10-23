@@ -7,6 +7,7 @@ import { getPublishedPages } from '@/lib/cms';
 import { getLandingPages, getNavigationLandings, getPosts } from '@/lib/queries';
 import { landingNavLabel, landingPath, path } from '@/lib/routes';
 import { getSettings } from '@/lib/settings';
+import type { Theme } from '@/lib/theme';
 import { telLink, whatsappLink } from '@/lib/utils';
 import { Footer } from './Footer';
 import { Header } from './Header';
@@ -19,7 +20,16 @@ import type { SlugPair } from './LanguageSwitcher';
  * mobile CTA and the scroll-reveal observer. Doing it here (rather than in the
  * layout) keeps all the settings and navigation reads in one place.
  */
-export async function SiteShell({ locale, children }: { locale: Locale; children: ReactNode }) {
+export async function SiteShell({
+  locale,
+  theme,
+  children,
+}: {
+  locale: Locale;
+  /** The theme the page was rendered in, read from the visitor's cookie. */
+  theme: Theme;
+  children: ReactNode;
+}) {
   // Two different lists on purpose: the menu shows only the landings marked for
   // navigation, but the language switcher needs the slug pair of *every* page,
   // otherwise switching language on a PPC-only landing dropped you on the home.
@@ -82,6 +92,12 @@ export async function SiteShell({ locale, children }: { locale: Locale; children
         slugPairs={slugPairs}
         menuLabel={copy.nav.menu}
         closeLabel={copy.nav.close}
+        theme={theme}
+        themeLabels={{
+          label: copy.nav.darkTheme,
+          toLight: copy.nav.toLightTheme,
+          toDark: copy.nav.toDarkTheme,
+        }}
       />
 
       {/* tabIndex={-1} is what makes the skip link actually work: without it the

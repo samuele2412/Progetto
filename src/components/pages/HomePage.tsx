@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { Media } from '@/components/Media';
+import { Media, mediaExists } from '@/components/Media';
 import { FinalCta } from '@/components/blocks/FinalCta';
 import { JsonLd } from '@/components/JsonLd';
 import { WhatsAppIcon } from '@/components/icons';
@@ -20,11 +20,11 @@ import { whatsappLink } from '@/lib/utils';
  *   4. the one thing that is his        (method)
  *   5. how to get in touch              (FinalCta)
  *
- * Type leads, photographs follow. The headline is the first thing painted and
- * the largest element on a phone, so the page is readable before any image
- * has arrived; text and images alternate down the page so two photographs
- * never sit back to back. See docs/04-design-system.md and
- * docs/13-brand-voice.md for why each section is here and what it may say.
+ * The hero is the one full-bleed photograph, with the headline over it on a
+ * night-coloured band, so the page is readable before the image arrives;
+ * below it text and images alternate so two photographs never sit back to
+ * back. See docs/04-design-system.md and docs/13-brand-voice.md for why each
+ * section is here and what it may say.
  */
 export async function HomePage({ locale }: { locale: Locale }) {
   const [settings, cocktails, landings] = await Promise.all([
@@ -34,6 +34,8 @@ export async function HomePage({ locale }: { locale: Locale }) {
   ]);
   const copy = d(locale);
   const whatsappHref = whatsappLink(settings.contact.whatsapp, t(settings.contact.whatsappMessage, locale));
+  // A missing file would put the light placeholder under light type.
+  const heroImage = mediaExists(settings.hero.imagePath) ? settings.hero.imagePath : '';
 
   const featured = cocktails.slice(0, 3);
   const eventLinks = landings.map((landing) => ({
@@ -44,21 +46,58 @@ export async function HomePage({ locale }: { locale: Locale }) {
   return (
     <>
       {/* ================= 1. HERO ================= */}
-      <section>
-        <div className="container-page grid gap-10 pb-14 pt-8 sm:pt-12 md:pb-20 lg:grid-cols-12 lg:items-end lg:gap-14 lg:pb-24 lg:pt-16">
-          <div className="lg:col-span-6 lg:pb-6">
+      {/* The photograph under the whole first screen, the header floating over
+          it (-mt pulls the section up under the fixed bar). The band is night
+          whatever the theme, so the copy is always light on dark — and with no
+          photograph yet it is still a finished, dark opening. */}
+      <section className="hero on-image relative isolate -mt-16 flex items-end overflow-hidden bg-night md:-mt-20">
+        {/* Background only: nothing in it should catch a click or a tap. */}
+        <div className="pointer-events-none absolute inset-0 -z-10">
+          {settings.hero.videoPath ? (
+            <video
+              className="absolute inset-0 h-full w-full object-cover"
+              autoPlay
+              muted
+              loop
+              playsInline
+              // Without a hint the browser downloads the whole file before
+              // it knows whether the poster alone would have done.
+              preload="metadata"
+              poster={settings.hero.imagePath || undefined}
+            >
+              <source src={settings.hero.videoPath} type="video/mp4" />
+            </video>
+          ) : (
+            heroImage && (
+              <Media
+                src={heroImage}
+                alt=""
+                priority
+                sizes="100vw"
+                variant="background"
+                // The glass sits right of centre: keep it in view on a phone.
+                imageClassName="object-[62%_50%]"
+              />
+            )
+          )}
+          <div aria-hidden className="hero-scrim absolute inset-0" />
+          <div aria-hidden className="grain absolute inset-0" />
+        </div>
+
+        <div className="hero-content container-page w-full pb-14 pt-32 md:pb-20 md:pt-40 lg:pb-24">
+          <div className="max-w-2xl lg:max-w-3xl">
             {/* The kicker sits inside the h1 on purpose: the headline is a
                 person talking ("Sono Samuele…") and carries no search terms,
                 so what he does and where is read as part of the heading. */}
             <h1>
-              <span className="eyebrow block">{t(settings.hero.eyebrow, locale)}</span>
+              <span className="eyebrow eyebrow-ruled block">{t(settings.hero.eyebrow, locale)}</span>
               {/* Invisible between two blocks, but without it the heading's
                   text reads "…Roma e provinciaSono Samuele" to a crawler. */}{' '}
-              <span className="display-1 mt-5 block text-ink">{t(settings.hero.title, locale)}</span>
+              <span className="display-hero text-shadow-hero mt-5 block">{t(settings.hero.title, locale)}</span>
             </h1>
             <p className="lede mt-6 max-w-xl">{t(settings.hero.subtitle, locale)}</p>
 
-            <div className="mt-8 flex flex-wrap items-center gap-x-7 gap-y-4">
+            <div className="hero-actions mt-9 flex flex-wrap items-center gap-x-7 gap-y-4">
               <Link
                 href={path('request', locale)}
                 className="btn btn-primary"
@@ -84,37 +123,6 @@ export async function HomePage({ locale }: { locale: Locale }) {
               )}
             </div>
           </div>
-
-          <div className="lg:col-span-6">
-            {/* 4:3 everywhere: the stock photograph is 16:9, and a portrait crop
-                kept only the blurred lights and cut the glass in half. */}
-            <div className="frame aspect-[4/3]">
-              {settings.hero.videoPath ? (
-                <video
-                  className="absolute inset-0 h-full w-full object-cover"
-                  autoPlay
-                  muted
-                  loop
-                  playsInline
-                  // Without a hint the browser downloads the whole file before
-                  // it knows whether the poster alone would have done.
-                  preload="metadata"
-                  poster={settings.hero.imagePath || undefined}
-                >
-                  <source src={settings.hero.videoPath} type="video/mp4" />
-                </video>
-              ) : (
-                <Media
-                  src={settings.hero.imagePath}
-                  alt=""
-                  priority
-                  sizes="(min-width: 1024px) 50vw, 100vw"
-                  imageClassName="object-[62%_50%]"
-                  placeholderLabel={locale === 'en' ? 'Photo' : 'Foto'}
-                />
-              )}
-            </div>
-          </div>
         </div>
       </section>
 
@@ -123,7 +131,7 @@ export async function HomePage({ locale }: { locale: Locale }) {
         <div className="container-page grid items-center gap-10 lg:grid-cols-12 lg:gap-16">
           {/* Text first on a phone: the hero has just ended on a photograph. */}
           <div className="reveal lg:order-2 lg:col-span-7">
-            <p className="eyebrow">{t(settings.intro.eyebrow, locale)}</p>
+            <p className="eyebrow eyebrow-ruled">{t(settings.intro.eyebrow, locale)}</p>
             <h2 className="display-2 mt-4">{t(settings.intro.title, locale)}</h2>
             <p className="copy mt-6 max-w-xl">{t(settings.intro.body, locale)}</p>
             <Link href={path('about', locale)} className="link-more mt-6">
@@ -180,7 +188,7 @@ export async function HomePage({ locale }: { locale: Locale }) {
       <section className="section">
         <div className="container-page">
           <div className="reveal max-w-4xl">
-            <p className="eyebrow">{t(settings.method.eyebrow, locale)}</p>
+            <p className="eyebrow eyebrow-ruled">{t(settings.method.eyebrow, locale)}</p>
             {/* His own sentence, set as what it is: something he says. The
                 quotation mark is drawn, not typed, so it is not read out. */}
             <span

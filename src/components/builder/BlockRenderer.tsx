@@ -55,18 +55,18 @@ function str(value: unknown): string {
 
 type LinkConfig = { label?: Loc; href?: string };
 
-/** A configured button, or null when the owner left it empty. */
+/**
+ * A configured button, or null when the owner left it empty. Over a
+ * photograph the hero section's `.on-image` re-colours it: no variant needed.
+ */
 function Cta({
   link,
   locale,
   variant = 'primary',
-  onImage = false,
 }: {
   link: unknown;
   locale: Locale;
   variant?: 'primary' | 'ghost';
-  /** Over a darkened photograph the light-page buttons would disappear. */
-  onImage?: boolean;
 }) {
   const value = link as LinkConfig | undefined;
   const href = str(value?.href).trim();
@@ -76,11 +76,7 @@ function Cta({
   return (
     <a
       href={href}
-      className={cn(
-        'btn',
-        variant === 'primary' ? 'btn-primary' : 'btn-ghost',
-        onImage && (variant === 'primary' ? '!bg-paper !text-ink hover:!bg-paper-2' : '!border-paper/50 !text-paper hover:!bg-paper/10'),
-      )}
+      className={cn('btn', variant === 'primary' ? 'btn-primary' : 'btn-ghost')}
       {...(external ? { target: '_blank', rel: 'noreferrer noopener' } : {})}
     >
       {label}
@@ -182,6 +178,9 @@ export function BlockSection({
           className={cn(
             'relative isolate flex items-end overflow-hidden border-b border-[var(--hairline)]',
             heroHeightClass(str(c.height) || 'medium'),
+            // Light type and brass button over the darkened photograph, in
+            // either theme: the overlay is always night.
+            hasImage && 'on-image bg-night',
           )}
         >
           {hasImage && (
@@ -200,19 +199,18 @@ export function BlockSection({
           <div className={cn('container-page w-full pb-14 pt-28 md:pb-20', align === 'center' && 'text-center')}>
             <div className={cn('max-w-3xl', align === 'center' && 'mx-auto')}>
               {tx(c.eyebrow, locale) && (
-                <p className={cn('eyebrow', hasImage && '!text-brass-light')}>{tx(c.eyebrow, locale)}</p>
+                <p className="eyebrow">{tx(c.eyebrow, locale)}</p>
               )}
               {title &&
                 (heading === 'h1' ? (
-                  <h1 className={cn('display-1 mt-4', hasImage ? 'text-shadow-hero !text-paper' : 'text-ink')}>{title}</h1>
+                  <h1 className={cn('display-1 mt-4', hasImage && 'text-shadow-hero')}>{title}</h1>
                 ) : (
-                  <h2 className={cn('display-1 mt-4', hasImage ? 'text-shadow-hero !text-paper' : 'text-ink')}>{title}</h2>
+                  <h2 className={cn('display-1 mt-4', hasImage && 'text-shadow-hero')}>{title}</h2>
                 ))}
               {tx(c.intro, locale) && (
                 <p
                   className={cn(
                     'lede mt-6 max-w-2xl',
-                    hasImage && '!text-paper/90',
                     align === 'center' && 'mx-auto',
                   )}
                 >
@@ -220,8 +218,8 @@ export function BlockSection({
                 </p>
               )}
               <div className={cn('mt-9 flex flex-wrap gap-3', align === 'center' && 'justify-center')}>
-                <Cta link={c.primaryCta} locale={locale} onImage={hasImage} />
-                <Cta link={c.secondaryCta} locale={locale} variant="ghost" onImage={hasImage} />
+                <Cta link={c.primaryCta} locale={locale} />
+                <Cta link={c.secondaryCta} locale={locale} variant="ghost" />
               </div>
             </div>
           </div>

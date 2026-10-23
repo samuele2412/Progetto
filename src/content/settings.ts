@@ -415,7 +415,8 @@ export const defaultSettings: SiteSettings = {
     dataController: 'LEGAL_NAME_HERE',
     controllerAddress: 'ADDRESS_HERE',
     privacyEmail: 'EMAIL_HERE',
-    lastUpdated: '2026-01-01',
+    // The cookie policy gained the light/dark preference on this date.
+    lastUpdated: '2026-10-23',
     privacyBody: { it: '', en: '' },
     cookieBody: { it: '', en: '' },
   },

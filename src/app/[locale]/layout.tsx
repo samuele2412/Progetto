@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from 'next';
+import { cookies } from 'next/headers';
 import { notFound } from 'next/navigation';
 import type { ReactNode } from 'react';
 import '@/app/globals.css';
@@ -8,18 +9,27 @@ import { Analytics } from '@/components/site/Analytics';
 import { htmlLang, isLocale, locales, t } from '@/lib/i18n';
 import { buildMetadata, localBusinessJsonLd, webSiteJsonLd } from '@/lib/seo';
 import { getSettings } from '@/lib/settings';
+import { THEME_COOKIE, parseTheme, themeColor } from '@/lib/theme';
 
 export function generateStaticParams() {
   return locales.map((locale) => ({ locale }));
 }
 
-export const viewport: Viewport = {
-  themeColor: '#f7f3ec',
-  colorScheme: 'dark',
-  width: 'device-width',
-  initialScale: 1,
-  viewportFit: 'cover',
-};
+async function readTheme() {
+  return parseTheme((await cookies()).get(THEME_COOKIE)?.value);
+}
+
+/** The browser bar and the canvas behind the page follow the visitor's theme. */
+export async function generateViewport(): Promise<Viewport> {
+  const theme = await readTheme();
+  return {
+    themeColor: themeColor[theme],
+    colorScheme: theme,
+    width: 'device-width',
+    initialScale: 1,
+    viewportFit: 'cover',
+  };
+}
 
 export async function generateMetadata({
   params,
@@ -63,10 +73,10 @@ export default async function LocaleLayout({
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
 
-  const settings = await getSettings();
+  const [settings, theme] = await Promise.all([getSettings(), readTheme()]);
 
   return (
-    <html lang={htmlLang[locale]}>
+    <html lang={htmlLang[locale]} data-theme={theme}>
       <head>
         {/* The two subsets actually used above the fold. */}
         <link rel="preload" href="/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
@@ -80,7 +90,9 @@ export default async function LocaleLayout({
         <noscript>
           <style>{`.reveal{opacity:1 !important;transform:none !important}`}</style>
         </noscript>
-        <SiteShell locale={locale}>{children}</SiteShell>
+        <SiteShell locale={locale} theme={theme}>
+          {children}
+        </SiteShell>
         <JsonLd data={localBusinessJsonLd(settings, locale)} />
         <JsonLd data={webSiteJsonLd(settings)} />
         <Analytics />
