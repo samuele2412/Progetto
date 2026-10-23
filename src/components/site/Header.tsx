@@ -206,7 +206,12 @@ export function Header(props: HeaderProps) {
 
         <div className="flex items-center gap-3">
           <LanguageSwitcher locale={props.locale} slugPairs={props.slugPairs} className="hidden sm:flex" />
-          <Link href={props.ctaHref} className="btn btn-primary hidden !min-h-11 !px-5 !py-2.5 text-sm lg:inline-flex">
+          <Link
+            href={props.ctaHref}
+            className="btn btn-primary hidden !min-h-11 !px-5 !py-2.5 text-sm lg:inline-flex"
+            data-track="quote"
+            data-track-location="header"
+          >
             {props.ctaLabel}
           </Link>
           <button
@@ -253,7 +258,7 @@ export function Header(props: HeaderProps) {
           <div className="mt-6 flex items-center justify-between">
             <LanguageSwitcher locale={props.locale} slugPairs={props.slugPairs} />
           </div>
-          <Link href={props.ctaHref} className="btn btn-primary mt-4 w-full">
+          <Link href={props.ctaHref} className="btn btn-primary mt-4 w-full" data-track="quote" data-track-location="menu">
             {props.ctaLabel}
           </Link>
         </nav>

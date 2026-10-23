@@ -116,7 +116,7 @@ personali: niente nomi, numeri o indirizzi.
 
 | Evento | Quando | Dati |
 | --- | --- | --- |
-| `quote-click` | Clic su un pulsante "Chiedimi un preventivo" | `location` (hero, final, landing, partners…), `page` |
+| `quote-click` | Clic su un link alla pagina di richiesta | `location` (header, menu, mobile-bar, hero, final, landing, package, partners, footer; `other` se non indicato), `page` |
 | `whatsapp-click` | Clic su un link WhatsApp | `location`, `page` |
 | `phone-click` / `email-click` | Clic su un numero o un indirizzo | `location`, `page` |
 | `form-start` | Prima risposta data nel modulo | — |
@@ -128,7 +128,9 @@ I clic sono intenzioni, non contatti: il contatto ricevuto è
 `form-submit-success`, e la fonte di verità resta il database (un ad-blocker
 può fermare un evento, non un INSERT). Il codice: `src/lib/track.ts`,
 `src/components/site/ConversionTracking.tsx` (un solo ascoltatore per tutti i
-link, attivati con `data-track` e `data-track-location`) e `RequestForm.tsx`.
+link: riconosce da sé quelli verso la pagina di richiesta, WhatsApp, i numeri e
+gli indirizzi, compresi i pulsanti creati dal pannello; `data-track-location`
+dice da quale punto della pagina arriva il clic) e `RequestForm.tsx`.
 
 **Gli indicatori da guardare ogni mese**
 

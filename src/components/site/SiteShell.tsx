@@ -142,7 +142,7 @@ export async function SiteShell({ locale, children }: { locale: Locale; children
 
       <Reveal />
       {/* Only shipped when there is somewhere to send the events. */}
-      {analyticsEnabled && <ConversionTracking />}
+      {analyticsEnabled && <ConversionTracking quotePaths={[path('request', 'it'), path('request', 'en')]} />}
     </>
   );
 }

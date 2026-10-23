@@ -112,6 +112,8 @@ export function PackageCard({
       <Link
         href={path('request', locale, { pacchetto: pkg.slug })}
         className={cn('btn mt-5 w-full sm:mt-6', pkg.highlighted ? 'btn-primary' : 'btn-ghost')}
+        data-track="quote"
+        data-track-location="package"
       >
         {copy.packages.choose}
       </Link>

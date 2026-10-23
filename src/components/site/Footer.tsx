@@ -66,13 +66,22 @@ export function Footer(props: FooterProps) {
             <p className="eyebrow">{props.labels.contact}</p>
             <ul className="mt-4 space-y-1 text-sm">
               <li>
-                <Link href={props.quoteHref} className="tap-target text-ink-2 transition-colors hover:text-ink">
+                <Link
+                  href={props.quoteHref}
+                  className="tap-target text-ink-2 transition-colors hover:text-ink"
+                  data-track="quote"
+                  data-track-location="footer"
+                >
                   {props.quoteLabel}
                 </Link>
               </li>
               {!isPlaceholder(props.phone) && (
                 <li>
-                  <a href={props.phoneHref} className="tap-target text-ink-2 transition-colors hover:text-ink">
+                  <a
+                    href={props.phoneHref}
+                    className="tap-target text-ink-2 transition-colors hover:text-ink"
+                    data-track-location="footer"
+                  >
                     {props.phone}
                   </a>
                 </li>
@@ -84,6 +93,7 @@ export function Footer(props: FooterProps) {
                     target="_blank"
                     rel="noopener noreferrer"
                     className="tap-target text-ink-2 transition-colors hover:text-ink"
+                    data-track-location="footer"
                   >
                     WhatsApp
                   </a>
@@ -91,7 +101,11 @@ export function Footer(props: FooterProps) {
               )}
               {!isPlaceholder(props.email) && (
                 <li>
-                  <a href={`mailto:${props.email}`} className="tap-target break-all text-ink-2 transition-colors hover:text-ink">
+                  <a
+                    href={`mailto:${props.email}`}
+                    className="tap-target break-all text-ink-2 transition-colors hover:text-ink"
+                    data-track-location="footer"
+                  >
                     {props.email}
                   </a>
                 </li>

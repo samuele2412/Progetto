@@ -66,12 +66,20 @@ export function MobileActionBar({
           rel="noopener noreferrer"
           className="btn btn-whatsapp flex-1 !px-3 text-sm"
           tabIndex={visible ? 0 : -1}
+          data-track="whatsapp"
+          data-track-location="mobile-bar"
         >
           <WhatsAppIcon />
           {whatsappLabel}
         </a>
         )}
-        <Link href={quoteHref} className="btn btn-primary flex-1 !px-3 text-sm" tabIndex={visible ? 0 : -1}>
+        <Link
+          href={quoteHref}
+          className="btn btn-primary flex-1 !px-3 text-sm"
+          tabIndex={visible ? 0 : -1}
+          data-track="quote"
+          data-track-location="mobile-bar"
+        >
           {quoteLabel}
         </Link>
       </div>
