@@ -76,8 +76,8 @@ export async function LandingPageView({ locale, landing }: { locale: Locale; lan
         <section className="border-b border-[var(--hairline)]">
           <div className="container-page py-8 md:py-10">
             <ul className="grid gap-x-10 gap-y-4 sm:grid-cols-2 lg:grid-cols-4">
-              {highlights.map((item, index) => (
-                <li key={item} className={`reveal reveal-delay-${Math.min(index + 1, 4)} flex items-start gap-3`}>
+              {highlights.map((item) => (
+                <li key={item} className="flex items-start gap-3">
                   <CheckIcon className="mt-1 h-3.5 w-3.5 text-accent" />
                   <span className="text-[0.95rem] leading-relaxed text-ink-2">{item}</span>
                 </li>
@@ -89,12 +89,12 @@ export async function LandingPageView({ locale, landing }: { locale: Locale; lan
 
       <section className="section">
         <div className={`container-page grid gap-14 lg:gap-20 ${recommended ? 'lg:grid-cols-[1.5fr_1fr]' : ''}`}>
-          <article className="prose-cordiale reveal max-w-2xl">
+          <article className="prose-cordiale max-w-2xl">
             {renderMarkdown(t(landing.body, locale))}
           </article>
 
           {recommended && (
-            <aside className="reveal reveal-delay-1 h-fit lg:sticky lg:top-28">
+            <aside className="h-fit lg:sticky lg:top-28">
               <p className="eyebrow mb-4">
                 {locale === 'en' ? 'Recommended format' : 'Formula consigliata'}
               </p>
@@ -108,8 +108,8 @@ export async function LandingPageView({ locale, landing }: { locale: Locale; lan
         <section className="section border-t border-[var(--hairline)]">
           <div className="container-page">
             <div className="max-w-4xl">
-              <h2 className="display-2 reveal">{t(settings.home.faqTitle, locale)}</h2>
-              <div className="reveal mt-8">
+              <h2 className="display-2">{t(settings.home.faqTitle, locale)}</h2>
+              <div className="mt-8">
                 <FaqList faqs={shownFaqs} locale={locale} />
               </div>
               {faqs.length > shownFaqs.length && (

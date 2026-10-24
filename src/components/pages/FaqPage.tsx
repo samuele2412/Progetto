@@ -40,8 +40,8 @@ export async function FaqPage({ locale }: { locale: Locale }) {
           <div className="max-w-4xl">
             {groups.map((group) => (
               <div key={group.title} className="mb-14 last:mb-0">
-                <h2 className="display-3 reveal mb-6">{group.title}</h2>
-                <div className="reveal">
+                <h2 className="display-3 mb-6">{group.title}</h2>
+                <div>
                   <FaqList faqs={group.faqs} locale={locale} />
                 </div>
               </div>

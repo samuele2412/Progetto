@@ -85,7 +85,6 @@ export async function HomePage({ locale }: { locale: Locale }) {
             )
           )}
           <div aria-hidden className="hero-scrim absolute inset-0" />
-          <div aria-hidden className="grain absolute inset-0" />
         </div>
 
         <div className="hero-content container-page w-full pb-14 pt-32 md:pb-20 md:pt-40 lg:pb-24">
@@ -141,7 +140,7 @@ export async function HomePage({ locale }: { locale: Locale }) {
       <section className="section border-t border-[var(--hairline)]">
         <div className="container-page grid items-center gap-10 lg:grid-cols-12 lg:gap-16">
           {/* Text first on a phone: the hero has just ended on a photograph. */}
-          <div className="reveal lg:order-2 lg:col-span-7">
+          <div className="lg:order-2 lg:col-span-7">
             <p className="eyebrow eyebrow-ruled">{t(settings.intro.eyebrow, locale)}</p>
             <h2 className="display-2 mt-4">{t(settings.intro.title, locale)}</h2>
             <p className="copy mt-6 max-w-xl">{t(settings.intro.body, locale)}</p>
@@ -149,7 +148,7 @@ export async function HomePage({ locale }: { locale: Locale }) {
               <span className="label">{t(settings.intro.linkLabel, locale)}</span> <span aria-hidden className="arrow">→</span>
             </Link>
           </div>
-          <div className="reveal lg:order-1 lg:col-span-5">
+          <div className="lg:order-1 lg:col-span-5">
             <div className="frame aspect-[4/3] sm:aspect-[16/10] lg:aspect-[4/5]">
               <Media
                 src={settings.about.imagePath}
@@ -165,7 +164,7 @@ export async function HomePage({ locale }: { locale: Locale }) {
       {/* ================= 3. COSA FACCIO ================= */}
       <section className="section bg-paper-2">
         <div className="container-page grid gap-10 lg:grid-cols-12 lg:gap-16">
-          <div className="reveal lg:col-span-5">
+          <div className="lg:col-span-5">
             <h2 className="display-2">{t(settings.service.homeTitle, locale)}</h2>
             <p className="copy mt-5 max-w-md">{t(settings.service.homeBody, locale)}</p>
             <Link href={path('packages', locale)} className="link-more mt-6">
@@ -176,7 +175,7 @@ export async function HomePage({ locale }: { locale: Locale }) {
             // An index rather than a row of tags: each party has its own page,
             // and a list with a rule under every line reads as a table of
             // contents — which is what it is.
-            <ul className="reveal reveal-delay-1 grid border-t border-[var(--hairline-strong)] sm:grid-cols-2 sm:gap-x-10 lg:col-span-7">
+            <ul className="grid border-t border-[var(--hairline-strong)] sm:grid-cols-2 sm:gap-x-10 lg:col-span-7">
               {eventLinks.map((link) => (
                 <li key={link.href} className="border-b border-[var(--hairline-strong)]">
                   <Link
@@ -198,7 +197,7 @@ export async function HomePage({ locale }: { locale: Locale }) {
       {/* ================= 4. IL MIO MODO DI LAVORARE ================= */}
       <section className="section">
         <div className="container-page">
-          <div className="reveal max-w-4xl">
+          <div className="max-w-4xl">
             <p className="eyebrow eyebrow-ruled">{t(settings.method.eyebrow, locale)}</p>
             {/* His own sentence, set as what it is: something he says. The
                 quotation mark is drawn, not typed, so it is not read out. */}
@@ -214,8 +213,8 @@ export async function HomePage({ locale }: { locale: Locale }) {
 
           {featured.length > 0 && (
             <ul className="section-body grid sm:grid-cols-3 sm:gap-6 lg:gap-8">
-              {featured.map((cocktail, index) => (
-                <li key={cocktail.id} className={`reveal reveal-delay-${index + 1}`}>
+              {featured.map((cocktail) => (
+                <li key={cocktail.id}>
                   {/* A thumbnail row on a phone, a framed picture from sm up:
                       three full images stacked would cost two screens for
                       three examples. */}
@@ -238,7 +237,7 @@ export async function HomePage({ locale }: { locale: Locale }) {
             </ul>
           )}
 
-          <Link href={path('cocktails', locale)} className="link-more reveal mt-8">
+          <Link href={path('cocktails', locale)} className="link-more mt-8">
             <span className="label">{t(settings.method.linkLabel, locale)}</span> <span aria-hidden className="arrow">→</span>
           </Link>
         </div>

@@ -28,7 +28,7 @@ export async function PartnersPage({ locale }: { locale: Locale }) {
 
       <section className="section">
         <div className="container-page grid gap-12 lg:grid-cols-[1.2fr_1fr] lg:gap-20">
-          <ul className="reveal space-y-6">
+          <ul className="space-y-6">
             {tList(settings.partners.bullets, locale).map((bullet) => (
               <li key={bullet} className="flex gap-4 border-b border-[var(--hairline)] pb-6 last:border-0">
                 <CheckIcon className="mt-1 h-4 w-4 text-accent" />
@@ -37,7 +37,7 @@ export async function PartnersPage({ locale }: { locale: Locale }) {
             ))}
           </ul>
 
-          <aside className="card reveal reveal-delay-1 h-fit p-7">
+          <aside className="card h-fit p-7">
             <h2 className="font-[family-name:var(--font-display)] text-xl text-ink">
               {t(settings.partners.ctaLabel, locale)}
             </h2>

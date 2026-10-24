@@ -121,7 +121,7 @@ function Header({
 function Body({ source, className }: { source: string; className?: string }) {
   if (!source.trim()) return null;
   return (
-    <div className={cn('reveal copy space-y-4', className)}>
+    <div className={cn('copy space-y-4', className)}>
       {renderMarkdown(source, {
         h2: 'display-3 mt-10 first:mt-0',
         h3: 'mt-8 font-[family-name:var(--font-display)] text-xl first:mt-0',
@@ -178,7 +178,7 @@ export function BlockSection({
           className={cn(
             'relative isolate flex items-end overflow-hidden border-b border-[var(--hairline)]',
             heroHeightClass(str(c.height) || 'medium'),
-            // Light type and brass button over the darkened photograph, in
+            // Light type and a cream button over the darkened photograph, in
             // either theme: the overlay is always night.
             hasImage && 'on-image bg-night',
           )}
@@ -239,7 +239,7 @@ export function BlockSection({
               <Body source={tx(c.body, locale)} className={cn('mt-8 max-w-3xl', align === 'center' && 'mx-auto')} />
             </div>
             {imagePath && (
-              <div className="reveal relative mt-10 aspect-[16/9] overflow-hidden rounded-[var(--radius-card)]">
+              <div className="relative mt-10 aspect-[16/9] overflow-hidden rounded-[var(--radius-card)]">
                 <Media src={imagePath} alt={tx(image?.alt, locale)} sizes="(max-width: 1024px) 100vw, 900px" />
               </div>
             )}
@@ -254,7 +254,7 @@ export function BlockSection({
       const imagePath = str(image?.path);
       const imageFirst = (c.imagePosition ?? 'left') === 'left';
       const mediaColumn = (
-        <div className={cn('reveal relative aspect-[4/3] overflow-hidden rounded-[var(--radius-card)]', !imageFirst && 'lg:order-2')}>
+        <div className={cn('relative aspect-[4/3] overflow-hidden rounded-[var(--radius-card)]', !imageFirst && 'lg:order-2')}>
           <Media
             src={imagePath}
             alt={tx(image?.alt, locale) || tx(c.title, locale)}
@@ -264,7 +264,7 @@ export function BlockSection({
         </div>
       );
       const textColumn = (
-        <div className={cn('reveal', !imageFirst && 'lg:order-1')}>
+        <div className={cn(!imageFirst && 'lg:order-1')}>
           {tx(c.eyebrow, locale) && <p className="eyebrow">{tx(c.eyebrow, locale)}</p>}
           {tx(c.title, locale) &&
             (isFirst ? (
@@ -310,8 +310,7 @@ export function BlockSection({
                 <figure
                   key={`${item.path}-${index}`}
                   className={cn(
-                    'reveal relative aspect-[4/5] overflow-hidden rounded-[var(--radius-card)]',
-                    `reveal-delay-${Math.min((index % 4) + 1, 4)}`,
+                    'relative aspect-[4/5] overflow-hidden rounded-[var(--radius-card)]',
                   )}
                 >
                   <Media
@@ -338,15 +337,15 @@ export function BlockSection({
           <div className={containerClass(width)}>
             <Header config={c} locale={locale} isFirst={isFirst} />
             <div className={cn(gridClass(columns), 'mt-12')}>
-              {items.map((cocktail, index) => (
-                <div key={cocktail.id} className={cn('reveal', `reveal-delay-${Math.min((index % 4) + 1, 4)}`)}>
+              {items.map((cocktail) => (
+                <div key={cocktail.id}>
                   <CocktailCard cocktail={cocktail} locale={locale} headingLevel={cardHeading} />
                 </div>
               ))}
             </div>
             {(() => {
               const cta = <Cta link={c.cta} locale={locale} variant="ghost" />;
-              return cta ? <div className="reveal mt-10">{cta}</div> : null;
+              return cta ? <div className="mt-10">{cta}</div> : null;
             })()}
           </div>
         </section>
@@ -364,8 +363,8 @@ export function BlockSection({
           <div className={containerClass(width)}>
             <Header config={c} locale={locale} isFirst={isFirst} />
             <div className={cn(gridClass(columns), hasHeader ? 'mt-12' : '')}>
-              {items.map((pkg, index) => (
-                <div key={pkg.id} className={cn('reveal', `reveal-delay-${Math.min((index % 4) + 1, 4)}`)}>
+              {items.map((pkg) => (
+                <div key={pkg.id}>
                   {/* Without a heading above the grid the cards are the page's
                       first subheading, so they move up a level to keep the
                       outline continuous. */}
@@ -375,7 +374,7 @@ export function BlockSection({
             </div>
             {(() => {
               const cta = <Cta link={c.cta} locale={locale} variant="ghost" />;
-              return cta ? <div className="reveal mt-10">{cta}</div> : null;
+              return cta ? <div className="mt-10">{cta}</div> : null;
             })()}
           </div>
         </section>
@@ -473,14 +472,14 @@ export function BlockSection({
           <div className="container-page text-center">
             <div className="rule-brass mx-auto mb-6" />
             {isFirst ? (
-              <h1 className="display-2 reveal mx-auto max-w-2xl text-ink">{title}</h1>
+              <h1 className="display-2 mx-auto max-w-2xl text-ink">{title}</h1>
             ) : (
-              <h2 className="display-2 reveal mx-auto max-w-2xl text-ink">{title}</h2>
+              <h2 className="display-2 mx-auto max-w-2xl text-ink">{title}</h2>
             )}
             {tx(c.body, locale) && (
-              <p className="lede reveal mx-auto mt-5 max-w-xl">{tx(c.body, locale)}</p>
+              <p className="lede mx-auto mt-5 max-w-xl">{tx(c.body, locale)}</p>
             )}
-            <div className="reveal mt-9 flex flex-wrap justify-center gap-3">
+            <div className="mt-9 flex flex-wrap justify-center gap-3">
               <Cta link={c.primaryCta} locale={locale} />
               <Cta link={c.secondaryCta} locale={locale} variant="ghost" />
             </div>
@@ -499,9 +498,9 @@ export function BlockSection({
             <div className={alignClass(align)}>
               {tx(c.title, locale) &&
                 (isFirst ? (
-                  <h1 className="display-2 reveal text-ink">{tx(c.title, locale)}</h1>
+                  <h1 className="display-2 text-ink">{tx(c.title, locale)}</h1>
                 ) : (
-                  <h2 className="display-2 reveal text-ink">{tx(c.title, locale)}</h2>
+                  <h2 className="display-2 text-ink">{tx(c.title, locale)}</h2>
                 ))}
               <Body source={body} className={cn('mt-6 max-w-3xl', align === 'center' && 'mx-auto')} />
             </div>
@@ -519,13 +518,13 @@ export function BlockSection({
           <div className={containerClass(width)}>
             {tx(c.title, locale) &&
               (isFirst ? (
-                <h1 className="display-2 reveal mb-6 text-ink">{tx(c.title, locale)}</h1>
+                <h1 className="display-2 mb-6 text-ink">{tx(c.title, locale)}</h1>
               ) : (
-                <h2 className="display-2 reveal mb-6 text-ink">{tx(c.title, locale)}</h2>
+                <h2 className="display-2 mb-6 text-ink">{tx(c.title, locale)}</h2>
               ))}
             {/* Parsed against an allow-list into React elements — see
                 lib/safe-html.ts. Nothing here is raw markup. */}
-            <div className="reveal max-w-3xl">{renderSafeHtml(html)}</div>
+            <div className="max-w-3xl">{renderSafeHtml(html)}</div>
           </div>
         </section>
       );

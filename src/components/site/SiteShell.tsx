@@ -1,5 +1,4 @@
 import type { ReactNode } from 'react';
-import { Reveal } from '@/components/Reveal';
 import { analyticsEnabled } from '@/lib/env';
 import { d } from '@/lib/dictionary';
 import { t, type Locale } from '@/lib/i18n';
@@ -16,9 +15,9 @@ import { MobileActionBar } from './MobileActionBar';
 import type { SlugPair } from './LanguageSwitcher';
 
 /**
- * Assembles the chrome around every public page: header, footer, the persistent
- * mobile CTA and the scroll-reveal observer. Doing it here (rather than in the
- * layout) keeps all the settings and navigation reads in one place.
+ * Assembles the chrome around every public page: header, footer and the
+ * persistent mobile CTA. Doing it here (rather than in the layout) keeps all
+ * the settings and navigation reads in one place.
  */
 export async function SiteShell({
   locale,
@@ -78,7 +77,6 @@ export async function SiteShell({
       <Header
         locale={locale}
         brandName={settings.brand.name}
-        descriptor={t(settings.brand.descriptor, locale)}
         homeHref={path('home', locale)}
         links={[
           { label: copy.nav.packages, href: path('packages', locale) },
@@ -156,7 +154,6 @@ export async function SiteShell({
         hideOnPaths={[path('request', locale), path('thanks', locale)]}
       />
 
-      <Reveal />
       {/* Only shipped when there is somewhere to send the events. */}
       {analyticsEnabled && <ConversionTracking quotePaths={[path('request', 'it'), path('request', 'en')]} />}
     </>

@@ -27,7 +27,9 @@ export async function AboutPage({ locale }: { locale: Locale }) {
 
       <section className="section">
         <div className="container-page grid gap-10 sm:gap-12 lg:grid-cols-[1fr_1.1fr] lg:gap-20">
-          <div className="frame reveal aspect-[4/5] max-h-[34rem] lg:max-h-none">
+          {/* Landscape until the two columns open, as on the home page: a capped
+              portrait left half the row empty on a tablet. */}
+          <div className="frame aspect-[4/3] sm:aspect-[16/10] lg:aspect-[4/5]">
             <Media
               src={about.imagePath}
               alt={t(about.imageAlt, locale)}
@@ -36,7 +38,7 @@ export async function AboutPage({ locale }: { locale: Locale }) {
               placeholderLabel={locale === 'en' ? 'Portrait of the bartender' : 'Ritratto del bartender'}
             />
           </div>
-          <div className="reveal reveal-delay-1">
+          <div>
             <div className="copy space-y-5">
               {paragraphs(t(about.body, locale)).map((paragraph, index) => (
                 <p key={`${index}-${paragraph.slice(0, 24)}`}>{paragraph}</p>
@@ -65,8 +67,8 @@ export async function AboutPage({ locale }: { locale: Locale }) {
       {approach.length > 0 && (
         <section className="section border-t border-[var(--hairline)]">
           <div className="container-page grid gap-6 lg:grid-cols-[1fr_1.4fr] lg:gap-20">
-            <h2 className="display-2 reveal">{t(about.approachTitle, locale)}</h2>
-            <div className="copy reveal reveal-delay-1 space-y-5 lg:pt-2">
+            <h2 className="display-2">{t(about.approachTitle, locale)}</h2>
+            <div className="copy space-y-5 lg:pt-2">
               {approach.map((paragraph, index) => (
                 <p key={`${index}-${paragraph.slice(0, 24)}`}>{paragraph}</p>
               ))}

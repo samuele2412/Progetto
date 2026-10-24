@@ -48,7 +48,7 @@ export async function PackagesPage({ locale }: { locale: Locale }) {
 
       <section className="section">
         <div className="container-page grid gap-10 md:grid-cols-3 md:gap-8 lg:gap-14">
-          <div className="reveal">
+          <div>
             <h2 className="display-3">{t(service.bringTitle, locale)}</h2>
             <ul className="mt-5 space-y-3 text-[0.98rem] leading-relaxed text-ink-2">
               {bring.map((item) => (
@@ -59,11 +59,11 @@ export async function PackagesPage({ locale }: { locale: Locale }) {
               ))}
             </ul>
           </div>
-          <div className="reveal reveal-delay-1">
+          <div>
             <h2 className="display-3">{t(service.needTitle, locale)}</h2>
             <p className="mt-5 text-[0.98rem] leading-relaxed text-ink-2">{t(service.needBody, locale)}</p>
           </div>
-          <div className="reveal reveal-delay-2">
+          <div>
             <h2 className="display-3">{t(service.drinksTitle, locale)}</h2>
             <p className="mt-5 text-[0.98rem] leading-relaxed text-ink-2">{t(service.drinksBody, locale)}</p>
             <Link
@@ -78,8 +78,8 @@ export async function PackagesPage({ locale }: { locale: Locale }) {
 
       <section className="section border-t border-[var(--hairline)] bg-paper-2">
         <div className="container-page grid gap-5 lg:grid-cols-[1fr_1.4fr] lg:gap-20">
-          <h2 className="display-2 reveal">{t(service.priceTitle, locale)}</h2>
-          <p className="lede reveal reveal-delay-1 lg:pt-2">{t(service.priceBody, locale)}</p>
+          <h2 className="display-2">{t(service.priceTitle, locale)}</h2>
+          <p className="lede lg:pt-2">{t(service.priceBody, locale)}</p>
         </div>
       </section>
 
@@ -89,7 +89,7 @@ export async function PackagesPage({ locale }: { locale: Locale }) {
             <SectionHeader title={copy.packages.title} />
             <div className="section-body grid gap-5 md:grid-cols-2 xl:grid-cols-4">
               {packages.map((pkg) => (
-                <div key={pkg.id} className="reveal">
+                <div key={pkg.id}>
                   <PackageCard pkg={pkg} locale={locale} copy={copy} />
                 </div>
               ))}
@@ -103,11 +103,8 @@ export async function PackagesPage({ locale }: { locale: Locale }) {
           <div className="container-page">
             <SectionHeader title={copy.packages.addons} intro={copy.packages.addonsIntro} />
             <ul className="section-body grid gap-x-10 sm:grid-cols-2 lg:grid-cols-3">
-              {addons.map((addon, index) => (
-                <li
-                  key={addon.id}
-                  className={`reveal reveal-delay-${Math.min(index % 4 + 1, 4)} flex flex-col border-t border-[var(--hairline-strong)] py-5`}
-                >
+              {addons.map((addon) => (
+                <li key={addon.id} className="flex flex-col border-t border-[var(--hairline-strong)] py-5">
                   <div className="flex items-start justify-between gap-4">
                     <h3 className="font-[family-name:var(--font-display)] text-lg text-ink">
                       {t(addon.name, locale)}
@@ -127,7 +124,7 @@ export async function PackagesPage({ locale }: { locale: Locale }) {
       {steps.length > 0 && (
         <section className="section border-t border-[var(--hairline)]">
           <div className="container-page">
-            <h2 className="display-2 reveal max-w-xl">{t(service.stepsTitle, locale)}</h2>
+            <h2 className="display-2 max-w-xl">{t(service.stepsTitle, locale)}</h2>
             <div className="section-body">
               <StepList steps={steps} />
             </div>
@@ -139,7 +136,7 @@ export async function PackagesPage({ locale }: { locale: Locale }) {
         <section className="section border-t border-[var(--hairline)]">
           <div className="container-page">
             <SectionHeader title={t(settings.home.faqTitle, locale)} />
-            <div className="reveal mt-10">
+            <div className="mt-10">
               <FaqList faqs={faqs} locale={locale} />
             </div>
           </div>

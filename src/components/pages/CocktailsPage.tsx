@@ -50,10 +50,10 @@ export async function CocktailsPage({ locale }: { locale: Locale }) {
         <div className="container-page grid gap-14 md:gap-20">
           {grouped.map((group) => (
             <div key={group.category} id={group.category} className="grid scroll-mt-28 gap-6 lg:grid-cols-12 lg:gap-12">
-              <h2 className="display-3 reveal lg:col-span-3">{copy.cocktails[group.category]}</h2>
+              <h2 className="display-3 lg:col-span-3">{copy.cocktails[group.category]}</h2>
               <ul className="grid border-t border-[var(--hairline-strong)] md:grid-cols-2 md:gap-x-12 lg:col-span-9">
                 {group.items.map((cocktail) => (
-                  <li key={cocktail.id} className="reveal border-b border-[var(--hairline)] py-5">
+                  <li key={cocktail.id} className="border-b border-[var(--hairline)] py-5">
                     <h3 className="font-[family-name:var(--font-display)] text-xl">{cocktail.name}</h3>
                     <p className="mt-1.5 text-xs uppercase tracking-[0.14em] text-accent">{t(cocktail.ingredients, locale)}</p>
                     <p className="mt-2 text-[0.95rem] leading-relaxed text-ink-2">{t(cocktail.description, locale)}</p>

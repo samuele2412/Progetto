@@ -114,17 +114,18 @@
        only a slightly lighter rectangle. */
     --field-border: color-mix(in srgb, var(--color-ink) 50%, transparent);
 
-    /* The primary button: the one solid shape of the page. Ink by day, brass
-       by night and over photographs. */
+    /* The primary button is filled with the text colour of the theme: ink by
+       day, cream by night and over photographs. The strongest contrast on the
+       page, so there is no doubt which button matters — and brass stays a
+       detail (rules, eyebrows, focus) instead of a gold surface. Spelled out
+       per theme rather than as var(--color-ink): custom properties inherit
+       computed, and .on-image has to be able to re-point them. */
     --cta: #1c1a17;
     --cta-hover: #34302a;
     --cta-text: #f7f3ec;
-    --cta-shadow: 0 14px 30px -20px rgb(28 26 23 / 0.6);
 
     --selection: var(--color-accent-soft);
     --selection-text: var(--color-ink);
-    /* The warm light some bands are lit by. */
-    --glow: rgb(176 138 79 / 0.1);
   }
 
   /*
@@ -153,17 +154,15 @@
 
     --field-border: color-mix(in srgb, var(--color-ink) 40%, transparent);
 
-    --cta: #c9a46a;
-    --cta-hover: #d8b87d;
+    --cta: #f3ede3;
+    --cta-hover: #fffaf2;
     --cta-text: #0e0c0a;
-    --cta-shadow: 0 12px 32px -16px rgb(201 164 106 / 0.5);
 
     --shadow-lift: 0 24px 60px -28px rgb(0 0 0 / 0.8);
     --shadow-soft: 0 2px 20px -8px rgb(0 0 0 / 0.6);
 
     --selection: #c9a46a;
     --selection-text: #0e0c0a;
-    --glow: rgb(201 164 106 / 0.11);
   }
 
   /*
@@ -182,10 +181,9 @@
     --color-brass: #c9a46a;
     --hairline: rgb(246 241 232 / 0.16);
     --hairline-strong: rgb(246 241 232 / 0.34);
-    --cta: #c9a46a;
-    --cta-hover: #d8b87d;
+    --cta: var(--color-cream);
+    --cta-hover: #fffaf2;
     --cta-text: var(--color-night);
-    --cta-shadow: 0 12px 32px -16px rgb(201 164 106 / 0.55);
     color: var(--color-ink-2);
   }
 
@@ -272,9 +270,10 @@
   /* --- Type ------------------------------------------------------------- */
   .eyebrow {
     font-family: var(--font-sans);
-    font-size: 0.72rem;
+    /* 12px: the smallest size used anywhere on the site. */
+    font-size: 0.75rem;
     font-weight: 500;
-    letter-spacing: 0.18em;
+    letter-spacing: 0.16em;
     text-transform: uppercase;
     color: var(--color-accent);
   }
@@ -361,25 +360,19 @@
     line-height: 1;
     text-align: center;
     cursor: pointer;
-    transition: transform 0.2s var(--ease-out-soft), background-color 0.2s, border-color 0.2s, color 0.2s, box-shadow 0.2s;
+    transition: transform 0.2s var(--ease-out-soft), background-color 0.2s, border-color 0.2s, color 0.2s;
     /* Comfortable thumb target on phones. */
     min-height: 3rem;
   }
   .btn:active { transform: translateY(1px); }
   .btn:disabled { opacity: 0.55; cursor: not-allowed; }
 
-  /* The one solid shape on the page — ink by day, brass by night — so there
-     is never a doubt about which button matters. */
+  /* The one solid shape on the page, flat: no shadow, no lift. */
   .btn-primary {
     background: var(--cta);
     color: var(--cta-text);
-    box-shadow: var(--cta-shadow);
   }
-  .btn-primary:hover {
-    background: var(--cta-hover);
-    transform: translateY(-1px);
-  }
-  .btn-primary:active { transform: translateY(1px); }
+  .btn-primary:hover { background: var(--cta-hover); }
 
   .btn-ghost {
     background: transparent;
@@ -589,25 +582,6 @@
     opacity: 0.7;
   }
 
-  /* Bands lit from one side, like a counter under a lamp: barely there by
-     day, warm at night. Only a background-image, so it sits on top of
-     whatever background colour the band already has. */
-  .lit { background-image: radial-gradient(80% 140% at 0% 0%, var(--glow), transparent 62%); }
-  .lit-center { background-image: radial-gradient(60% 120% at 50% 0%, var(--glow), transparent 70%); }
-
-  /* Film grain over a photograph: a fine dot screen, blended so it reads as
-     texture rather than as a pattern. Put it on an empty positioned layer. */
-  .grain::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    opacity: 0.6;
-    background-image: radial-gradient(rgb(246 241 232 / 0.07) 1px, transparent 1px);
-    background-size: 3px 3px;
-    mix-blend-mode: overlay;
-  }
-
   /* "A photograph goes here": a quiet hatch in the theme's own hairline. */
   .placeholder-hatch {
     background-image: repeating-linear-gradient(135deg, var(--hairline) 0 1px, transparent 1px 11px);
@@ -667,25 +641,12 @@
 }
 
 /* ==========================================================================
-   Motion — every animation here is opt-out via prefers-reduced-motion.
-   Nothing above the fold animates in: the first screen is there at once.
+   Motion — feedback only: colours, the menu rule, the arrow of a link, the
+   sun and moon. Nothing enters the page on scroll: the content is there when
+   the page is. Every transition is opt-out via prefers-reduced-motion.
    ========================================================================== */
 
 @layer utilities {
-  .reveal {
-    opacity: 0;
-    transform: translateY(12px);
-    transition: opacity 0.6s var(--ease-out-soft), transform 0.6s var(--ease-out-soft);
-  }
-  .reveal.is-visible {
-    opacity: 1;
-    transform: none;
-  }
-  .reveal-delay-1 { transition-delay: 70ms; }
-  .reveal-delay-2 { transition-delay: 140ms; }
-  .reveal-delay-3 { transition-delay: 210ms; }
-  .reveal-delay-4 { transition-delay: 280ms; }
-
   .no-scrollbar::-webkit-scrollbar { display: none; }
   .no-scrollbar { scrollbar-width: none; }
 
@@ -705,12 +666,11 @@
   }
 }
 
-/* The theme switch opens the new theme as a circle from the button (see
-   ThemeToggle). The default cross-fade is switched off so only that shows. */
+/* The theme switch cross-fades the page (see ThemeToggle), a little quicker
+   than the browser's default. */
 ::view-transition-old(root),
 ::view-transition-new(root) {
-  animation: none;
-  mix-blend-mode: normal;
+  animation-duration: 0.2s;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -720,7 +680,6 @@
     animation-iteration-count: 1 !important;
     transition-duration: 0.001ms !important;
   }
-  .reveal { opacity: 1; transform: none; }
 }
 
 /* ==========================================================================

@@ -14,7 +14,6 @@ export type NavLink = { label: string; href: string };
 export type HeaderProps = {
   locale: Locale;
   brandName: string;
-  descriptor: string;
   links: NavLink[];
   /** Grouped under "Eventi" — the hand-written SEO landing pages. */
   eventLinks: NavLink[];
@@ -105,7 +104,7 @@ export function Header(props: HeaderProps) {
       className={cn(
         'fixed inset-x-0 top-0 z-50 transition-all duration-300',
         scrolled || open || eventsOpen
-          ? 'border-b border-[var(--hairline)] bg-paper/85 backdrop-blur-md'
+          ? 'border-b border-[var(--hairline)] bg-paper'
           : 'border-b border-transparent',
         overImage && 'on-image',
       )}
@@ -123,21 +122,13 @@ export function Header(props: HeaderProps) {
           scrolled && !open ? 'h-14' : 'h-16',
         )}
       >
-        <Link
-          href={props.homeHref}
-          className="group flex min-h-11 flex-col justify-center leading-none"
-          aria-label={props.brandName}
-        >
-          <span className="font-[family-name:var(--font-display)] text-xl tracking-tight text-ink transition-colors group-hover:text-accent-strong md:text-[1.4rem]">
+        {/* The wordmark alone. The descriptor used to sit under it, and every
+            page then said "Bartender per feste private · Roma" twice in the
+            first screen: the page's own eyebrow (or the home headline) says it
+            once, where it is read. */}
+        <Link href={props.homeHref} className="group flex min-h-11 items-center" aria-label={props.brandName}>
+          <span className="font-[family-name:var(--font-display)] text-xl tracking-tight text-ink transition-colors group-hover:text-accent-strong md:text-[1.45rem]">
             {props.brandName}
-          </span>
-          <span
-            className={cn(
-              'mt-0.5 hidden overflow-hidden text-[0.7rem] uppercase tracking-[0.2em] text-ink-3 transition-opacity duration-200 sm:block',
-              scrolled && !open && 'sm:hidden',
-            )}
-          >
-            {props.descriptor}
           </span>
         </Link>
 

@@ -25,7 +25,6 @@ export function SectionHeader({
   return (
     <div
       className={cn(
-        'reveal',
         align === 'center' ? 'mx-auto max-w-2xl text-center' : 'max-w-2xl',
         className,
       )}

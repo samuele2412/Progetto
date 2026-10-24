@@ -47,7 +47,7 @@ export async function LegalPage({ locale, kind }: { locale: Locale; kind: 'priva
 
       <section className="section">
         <div className="container-page">
-          <div className="max-w-3xl">
+          <div className="max-w-2xl">
             {stillDraft && (
               <div
                 role="note"

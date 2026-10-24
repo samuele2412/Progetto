@@ -38,14 +38,16 @@ export function Footer(props: FooterProps) {
           mobile CTA bar, which otherwise covers the legal links. */}
       <div className="container-page pb-28 pt-14 md:pb-20 md:pt-20 lg:pb-14">
         {/* Two link columns side by side on a phone: stacked, the footer was
-            a second, longer menu. */}
-        <div className="grid grid-cols-2 gap-x-6 gap-y-10 md:grid-cols-[1.4fr_1fr_1fr_1fr] md:gap-12">
-          <div className="col-span-2 md:col-span-1">
+            a second, longer menu. From a tablet the wordmark takes its own row
+            over three columns: four at 820px squeezed the contact column to a
+            few words a line. */}
+        <div className="grid grid-cols-2 gap-x-6 gap-y-10 md:grid-cols-3 md:gap-12 lg:grid-cols-[1.4fr_1fr_1fr_1fr]">
+          <div className="col-span-2 md:col-span-3 lg:col-span-1">
             {/* The wordmark set large, as on a menu's back cover. */}
             <p className="font-[family-name:var(--font-display)] text-[2.1rem] leading-none tracking-tight text-ink md:text-[2.6rem]">
               {props.brandName}
             </p>
-            <p className="mt-3 text-[0.65rem] uppercase tracking-[0.2em] text-ink-3">{props.descriptor}</p>
+            <p className="mt-3 text-xs uppercase tracking-[0.16em] text-ink-3">{props.descriptor}</p>
             <div className="rule-brass mt-6" />
             <p className="mt-6 max-w-xs text-sm leading-relaxed text-ink-2">{props.claim}</p>
             <p className="mt-3 text-sm text-ink-3">{props.serviceArea}</p>

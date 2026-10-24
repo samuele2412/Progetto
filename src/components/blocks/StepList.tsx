@@ -22,10 +22,7 @@ export function StepList({ steps, headingLevel = 3 }: {
   return (
     <ol className={`grid gap-x-10 gap-y-8 ${columns}`}>
       {steps.map((step, index) => (
-        <li
-          key={`${index}-${step.title}`}
-          className={`reveal reveal-delay-${Math.min(index + 1, 4)} border-t border-[var(--hairline-strong)] pt-5`}
-        >
+        <li key={`${index}-${step.title}`} className="border-t border-[var(--hairline-strong)] pt-5">
           <span className="text-sm font-medium tabular-nums text-accent">
             {String(index + 1).padStart(2, '0')}
           </span>

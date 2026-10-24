@@ -56,7 +56,7 @@ export function Testimonials({
       copy.promises.fromBoard,
     ];
     return (
-      <div className="reveal card grid gap-8 p-6 sm:p-8 lg:grid-cols-[1fr_1.15fr] lg:gap-12 lg:p-10">
+      <div className="card grid gap-8 p-6 sm:p-8 lg:grid-cols-[1fr_1.15fr] lg:gap-12 lg:p-10">
         <div>
           <Heading className="font-[family-name:var(--font-display)] text-xl text-ink sm:text-2xl">
             {copy.misc.noReviewsTitle}
@@ -86,11 +86,8 @@ export function Testimonials({
 
   return (
     <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-      {testimonials.map((item, index) => (
-        <figure
-          key={item.id}
-          className={`card reveal reveal-delay-${Math.min(index + 1, 4)} flex flex-col p-6`}
-        >
+      {testimonials.map((item) => (
+        <figure key={item.id} className="card flex flex-col p-6">
           <Stars rating={item.rating} />
           <blockquote className="mt-4 flex-1 text-[0.95rem] leading-relaxed text-ink-2">
             “{t(item.quote, locale)}”

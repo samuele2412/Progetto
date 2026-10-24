@@ -13,8 +13,8 @@ import { cn } from '@/lib/utils';
  * The icon is drawn by CSS from <html data-theme>, so it can never disagree
  * with the colours on screen (globals.css, "Theme switch").
  *
- * Where the browser has view transitions, the new theme opens as a circle from
- * the button; with reduced motion, or without them, it simply changes.
+ * Where the browser has view transitions the two themes cross-fade (0.2 s,
+ * globals.css); with reduced motion, or without them, it simply changes.
  */
 export function ThemeToggle({
   initialTheme,
@@ -42,7 +42,7 @@ export function ThemeToggle({
     document.querySelector('meta[name="color-scheme"]')?.setAttribute('content', next);
   }
 
-  function onClick(event: React.MouseEvent<HTMLButtonElement>) {
+  function onClick() {
     const next: Theme = theme === 'dark' ? 'light' : 'dark';
     const swap = () => {
       apply(next);
@@ -54,21 +54,7 @@ export function ThemeToggle({
       swap();
       return;
     }
-
-    const { left, top, width, height } = event.currentTarget.getBoundingClientRect();
-    const x = left + width / 2;
-    const y = top + height / 2;
-    const radius = Math.hypot(Math.max(x, window.innerWidth - x), Math.max(y, window.innerHeight - y));
-    const transition = document.startViewTransition(swap);
-    transition.ready
-      .then(() => {
-        document.documentElement.animate(
-          { clipPath: [`circle(0px at ${x}px ${y}px)`, `circle(${radius}px at ${x}px ${y}px)`] },
-          { duration: 650, easing: 'cubic-bezier(0.22, 1, 0.36, 1)', pseudoElement: '::view-transition-new(root)' },
-        );
-      })
-      // A transition skipped by the browser has already applied the change.
-      .catch(() => {});
+    document.startViewTransition(swap);
   }
 
   const dark = theme === 'dark';

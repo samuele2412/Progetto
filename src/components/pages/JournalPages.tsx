@@ -49,7 +49,7 @@ export async function JournalIndexPage({ locale }: { locale: Locale }) {
                 const slug = locale === 'en' ? post.slugEn : post.slugIt;
                 const hasCover = mediaExists(post.coverImagePath);
                 return (
-                  <li key={post.id} className="reveal border-b border-[var(--hairline)]">
+                  <li key={post.id} className="border-b border-[var(--hairline)]">
                     <Link
                       href={journalPath(slug, locale)}
                       className={`group grid gap-5 py-7 ${hasCover ? 'sm:grid-cols-[12rem_minmax(0,1fr)] sm:gap-8' : ''}`}
@@ -93,24 +93,29 @@ export async function JournalPostPage({ locale, post }: { locale: Locale; post: 
 
   return (
     <>
+      {/* On the same left edge as every other page (the header, the menu, the
+          footer), with the measure kept by the inner width: a centred column
+          was the one page off the site's vertical line. */}
       <article>
         <header className="border-b border-[var(--hairline)]">
-          <div className="container-page max-w-3xl py-14 md:py-20">
-            <Link href={path('journal', locale)} className="tap-target text-sm text-ink-3 transition-colors hover:text-ink">
-              ← Journal
-            </Link>
-            <h1 className="display-2 mt-6">{t(post.title, locale)}</h1>
-            <p className="mt-5 text-sm text-ink-3">
-              {copy.misc.published} {formatDate(post.publishedAt, locale)} · {readingMinutes(body)}{' '}
-              {copy.misc.readingTime}
-            </p>
-            <p className="lede mt-6">{t(post.excerpt, locale)}</p>
+          <div className="container-page py-14 md:py-20">
+            <div className="max-w-3xl">
+              <Link href={path('journal', locale)} className="tap-target text-sm text-ink-3 transition-colors hover:text-ink">
+                ← Journal
+              </Link>
+              <h1 className="display-2 mt-6">{t(post.title, locale)}</h1>
+              <p className="mt-5 text-sm text-ink-3">
+                {copy.misc.published} {formatDate(post.publishedAt, locale)} · {readingMinutes(body)}{' '}
+                {copy.misc.readingTime}
+              </p>
+              <p className="lede mt-6 max-w-2xl">{t(post.excerpt, locale)}</p>
+            </div>
           </div>
         </header>
 
         {mediaExists(post.coverImagePath) && (
-          <div className="container-page max-w-4xl py-10">
-            <div className="frame aspect-[16/9]">
+          <div className="container-page py-10">
+            <div className="frame aspect-[16/9] max-w-4xl">
               <Media
                 src={post.coverImagePath}
                 alt={t(post.title, locale)}
@@ -122,18 +127,18 @@ export async function JournalPostPage({ locale, post }: { locale: Locale; post: 
           </div>
         )}
 
-        <div className="container-page max-w-3xl pb-16 pt-10 md:pb-24 md:pt-14">
-          <div className="prose-cordiale">{renderMarkdown(body)}</div>
+        <div className="container-page pb-16 pt-10 md:pb-24 md:pt-14">
+          <div className="prose-cordiale max-w-2xl">{renderMarkdown(body)}</div>
         </div>
       </article>
 
       {others.length > 0 && (
         <section className="border-t border-[var(--hairline)] py-14">
-          <div className="container-page max-w-4xl">
+          <div className="container-page">
             <h2 className="display-3">
               {locale === 'en' ? 'Keep reading' : 'Continua a leggere'}
             </h2>
-            <ul className="mt-6 grid gap-x-10 sm:grid-cols-2">
+            <ul className="mt-6 grid max-w-4xl gap-x-10 sm:grid-cols-2">
               {others.map((item) => {
                 const otherSlug = locale === 'en' ? item.slugEn : item.slugIt;
                 return (

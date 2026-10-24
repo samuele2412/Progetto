@@ -36,9 +36,9 @@ export async function FinalCta({
   const periods = t(settings.contact.periods, locale);
 
   return (
-    <section className="section lit-center border-t border-[var(--hairline)] bg-paper-2">
+    <section className="section border-t border-[var(--hairline)] bg-paper-2">
       <div className="container-page text-center">
-        <div className="reveal mx-auto max-w-2xl">
+        <div className="mx-auto max-w-2xl">
           <div className="rule-brass mx-auto" />
           <h2 className="display-2 mt-6">{t(settings.home.finalCtaTitle, locale)}</h2>
           {!brief && <p className="lede mx-auto mt-5 max-w-xl">{t(settings.home.finalCtaBody, locale)}</p>}

@@ -28,10 +28,7 @@ export async function GalleryPage({ locale }: { locale: Locale }) {
           ) : (
             <div className="columns-2 gap-3 md:columns-3 lg:columns-4 [&>figure]:mb-3">
               {items.map((item, index) => (
-                <figure
-                  key={item.id}
-                  className={`reveal reveal-delay-${Math.min(index % 4 + 1, 4)} break-inside-avoid overflow-hidden rounded-xl`}
-                >
+                <figure key={item.id} className="break-inside-avoid overflow-hidden rounded-xl">
                   <div className={`relative ${index % 3 === 0 ? 'aspect-[3/4]' : 'aspect-square'}`}>
                     <Media
                       src={item.imagePath}
