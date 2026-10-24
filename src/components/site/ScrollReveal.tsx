@@ -40,7 +40,7 @@ export function ScrollReveal() {
       const timer = window.setTimeout(() => {
         element.removeAttribute('data-reveal-state');
         timers.delete(timer);
-      }, 2000 + delay);
+      }, 1600 + delay);
       timers.add(timer);
     };
 
@@ -70,7 +70,7 @@ export function ScrollReveal() {
       },
       // A little before the element is fully in: it should be moving as the
       // eye reaches it, not after.
-      { rootMargin: '0px 0px -8% 0px', threshold: 0.08 },
+      { rootMargin: '0px 0px -6% 0px', threshold: 0.06 },
     );
 
     document.querySelectorAll<HTMLElement>('[data-reveal]:not([data-reveal-done])').forEach((element) => {

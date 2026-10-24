@@ -5,7 +5,7 @@ import { d } from '@/lib/dictionary';
 import { t, type Locale } from '@/lib/i18n';
 import { path } from '@/lib/routes';
 import { getSettings } from '@/lib/settings';
-import { whatsappLink } from '@/lib/utils';
+import { typeset, whatsappLink } from '@/lib/utils';
 
 /**
  * The closing call to action at the bottom of every public page.
@@ -45,12 +45,12 @@ export async function FinalCta({
         <div className="grid gap-12 lg:grid-cols-12 lg:items-end lg:gap-16">
           <div className="lg:col-span-7" data-reveal>
             <div aria-hidden className="rule-brass" />
-            <h2 className="display-1 mt-8 max-w-[14ch]">{t(settings.home.finalCtaTitle, locale)}</h2>
-            {!brief && <p className="lede mt-7 max-w-xl">{t(settings.home.finalCtaBody, locale)}</p>}
+            <h2 className="display-1 mt-8 max-w-[14ch]">{typeset(t(settings.home.finalCtaTitle, locale))}</h2>
+            {!brief && <p className="lede mt-7 max-w-xl">{typeset(t(settings.home.finalCtaBody, locale))}</p>}
           </div>
           <div className="lg:col-span-4 lg:col-start-9" data-reveal style={{ '--reveal-delay': '0.12s' } as CSSProperties}>
             <CoupeMark className="mx-auto mb-10 hidden h-44 w-auto text-brass opacity-70 lg:block" />
-            <div className="flex flex-col gap-3 sm:flex-row lg:flex-col">
+            <div className="flex flex-col gap-3 sm:flex-row lg:flex-col" data-cta-zone="end">
               <Link
                 href={path('request', locale, { pacchetto: packageSlug, evento: eventTypeSlug })}
                 className="btn btn-primary sm:flex-1 lg:w-full"

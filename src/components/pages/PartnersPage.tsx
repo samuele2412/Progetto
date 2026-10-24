@@ -42,7 +42,7 @@ export async function PartnersPage({ locale }: { locale: Locale }) {
               {t(settings.partners.ctaLabel, locale)}
             </h2>
             <p className="mt-3 text-sm leading-relaxed text-ink-2">{t(settings.partners.ctaBody, locale)}</p>
-            <div className="mt-7 space-y-3">
+            <div className="mt-7 space-y-3" data-cta-zone>
               <Link
                 href={path('request', locale, { evento: 'aziendale', partner: '1' })}
                 className="btn btn-primary w-full"

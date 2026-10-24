@@ -1,6 +1,6 @@
 import type { CSSProperties } from 'react';
 import { Media, mediaExists } from '@/components/Media';
-import { cn, keepSeparators } from '@/lib/utils';
+import { cn, keepSeparators, typeset } from '@/lib/utils';
 
 /**
  * The opening of every inner page: type on paper, then — only when the file
@@ -41,11 +41,11 @@ export function PageHero({
             </p>
           )}
           <h1 className={cn('display-1 hero-rise', eyebrow && 'mt-6')} style={{ '--d': '0.05s' } as CSSProperties}>
-            {title}
+            {typeset(title)}
           </h1>
           {intro && (
             <p className="lede hero-in mt-7 max-w-2xl" style={{ '--d': '0.3s' } as CSSProperties}>
-              {intro}
+              {typeset(intro)}
             </p>
           )}
           {children}

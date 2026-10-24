@@ -11,6 +11,12 @@ import { WhatsAppIcon } from '@/components/icons';
  * one thumb-reach away — but only after the visitor has scrolled past the hero,
  * where the same two buttons are already on screen.
  *
+ * For the same reason it steps aside wherever the page shows its own buttons
+ * (any element marked `data-cta-zone`): two "Chiedimi un preventivo" one above
+ * the other read as a mistake, and the bar covered the closing section's note.
+ * The closing block is marked `data-cta-zone="end"`: once it has been reached
+ * the bar stays away, since below it there is only the footer.
+ *
  * It hides itself on the request form: nudging somebody to WhatsApp while they
  * are halfway through the form would cost the lead, not win it.
  */
@@ -30,15 +36,43 @@ export function MobileActionBar({
   regionLabel: string;
   hideOnPaths: string[];
 }) {
-  const [visible, setVisible] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  const [besideButtons, setBesideButtons] = useState(false);
   const pathname = usePathname() ?? '';
+  const visible = scrolled && !besideButtons;
 
   useEffect(() => {
-    const onScroll = () => setVisible(window.scrollY > 560);
+    const onScroll = () => setScrolled(window.scrollY > 560);
     onScroll();
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
+
+  useEffect(() => {
+    setBesideButtons(false);
+    if (!('IntersectionObserver' in window)) return;
+    const covering = new Set<Element>();
+    const update = (entries: IntersectionObserverEntry[]) => {
+      for (const entry of entries) {
+        if (entry.isIntersecting) covering.add(entry.target);
+        else covering.delete(entry.target);
+      }
+      setBesideButtons(covering.size > 0);
+    };
+    // The closing block's observer reaches far above the screen, so the block
+    // counts from the moment it comes into view until it is below the screen
+    // again — a state an observer sees change even on the quickest fling,
+    // which can carry a block past the screen between two frames.
+    const onScreen = new IntersectionObserver(update);
+    const reached = new IntersectionObserver(update, { rootMargin: '100000px 0px 0px 0px' });
+    document.querySelectorAll('[data-cta-zone]').forEach((zone) => {
+      (zone.getAttribute('data-cta-zone') === 'end' ? reached : onScreen).observe(zone);
+    });
+    return () => {
+      onScreen.disconnect();
+      reached.disconnect();
+    };
+  }, [pathname]);
 
   if (hideOnPaths.some((path) => pathname.startsWith(path))) return null;
 

@@ -1,6 +1,7 @@
+import { Fragment } from 'react';
 import Link from 'next/link';
 import type { Locale } from '@/lib/i18n';
-import { isPlaceholder } from '@/lib/utils';
+import { isPlaceholder, typeset } from '@/lib/utils';
 
 export type FooterProps = {
   locale: Locale;
@@ -38,6 +39,11 @@ export function Footer(props: FooterProps) {
     { label: 'Instagram', href: props.instagram },
     { label: 'TikTok', href: props.tiktok },
   ].filter((social) => !isPlaceholder(social.href));
+  // "Tu pensa alla festa, ai drink penso io": two halves of one sentence, set
+  // one under the other. Left to the width, the line broke inside the second
+  // half ("ai drink / penso io").
+  const comma = props.claim.indexOf(', ');
+  const claimLines = comma > 0 ? [props.claim.slice(0, comma + 1), props.claim.slice(comma + 2)] : [props.claim];
 
   return (
     <footer className="tone-night mt-auto border-t border-[var(--hairline)] bg-paper">
@@ -55,7 +61,12 @@ export function Footer(props: FooterProps) {
                 face would then be downloaded by every landing page for this
                 one line. */}
             <p className="mt-8 max-w-sm font-[family-name:var(--font-display)] text-[1.7rem] leading-snug text-ink">
-              {props.claim}
+              {claimLines.map((line, index) => (
+                <Fragment key={index}>
+                  {index > 0 && ' '}
+                  <span className="block">{typeset(line)}</span>
+                </Fragment>
+              ))}
             </p>
             <p className="mt-4 max-w-sm text-sm leading-relaxed text-ink-3">{props.serviceArea}</p>
           </div>

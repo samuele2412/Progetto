@@ -2,21 +2,21 @@
   {
     "name": "hero-bancone",
     "slot": "hero",
-    "file": "/tmp/claude-0/-home-user-Progetto/b4f83179-0888-51b9-a79c-6fc23a254732/scratchpad/final/hero-bancone.webp",
-    "bytes": 117118,
+    "file": "/tmp/claude-0/-home-user-Progetto/b4f83179-0888-51b9-a79c-6fc23a254732/scratchpad/hero-hd/hero-2400.webp",
+    "bytes": 344192,
     "w": 2400,
     "h": 1350,
     "alt_it": "Cocktail su un bancone di legno con lucine calde sullo sfondo",
     "alt_en": "Cocktail on a wooden counter with warm string lights behind",
     "source": {
-      "provider": "rawpixel",
-      "title": "Cocktail counter",
-      "creator": "",
-      "creator_url": "",
+      "provider": "wikimedia",
+      "title": "File:Wu yi 2017 (Unsplash).jpg",
+      "creator": "wu yi",
+      "creator_url": "https://unsplash.com/@takeshi2",
       "license": "cc0-1.0",
-      "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
-      "landing": "https://www.rawpixel.com/image/3301385/free-photo-image-cocktail-bar-club",
-      "original": "https://images.rawpixel.com/editor_1024/czNmcy1wcml2YXRlL3Jhd3BpeGVsX2ltYWdlcy93ZWJzaXRlX2NvbnRlbnQvbHIvdXB3azYxODUzNzg2LXdpa2ltZWRpYS1pbWFnZS1rb3dwcmFjOC5qcGc.jpg"
+      "license_url": "https://creativecommons.org/publicdomain/zero/1.0/deed.en",
+      "landing": "https://commons.wikimedia.org/w/index.php?curid=61853786",
+      "original": "https://upload.wikimedia.org/wikipedia/commons/6/61/Wu_yi_2017_%28Unsplash%29.jpg"
     }
   },
   {
@@ -523,20 +523,40 @@
     "name": "servizio-attrezzatura",
     "slot": "home",
     "file": "public/images/stock/servizio-attrezzatura.webp",
-    "bytes": 67944,
-    "w": 908,
-    "h": 681,
+    "bytes": 207410,
+    "w": 1600,
+    "h": 1200,
     "alt_it": "Strainer e shaker accanto a un cocktail con ghiaccio, bottiglie sfocate sullo sfondo",
     "alt_en": "A strainer and a shaker beside a cocktail on ice, bottles blurred behind",
     "source": {
+      "provider": "wikimedia",
+      "title": "File:Licor (249190917).jpeg",
+      "creator": "Daniel Rueda",
+      "creator_url": "",
+      "license": "cc0-1.0",
+      "license_url": "https://creativecommons.org/publicdomain/zero/1.0/deed.en",
+      "landing": "https://commons.wikimedia.org/w/index.php?curid=71326032",
+      "original": "https://upload.wikimedia.org/wikipedia/commons/2/28/Licor_%28249190917%29.jpeg"
+    }
+  },
+  {
+    "name": "servizio-bottiglie",
+    "slot": "home",
+    "file": "public/images/stock/servizio-bottiglie.webp",
+    "bytes": 109490,
+    "w": 1000,
+    "h": 700,
+    "alt_it": "Parete di bottiglie illuminata dietro al bancone",
+    "alt_en": "Backlit wall of bottles behind the bar",
+    "source": {
       "provider": "rawpixel",
-      "title": "Manhattan cocktail",
-      "creator": "",
+      "title": "Just portion legendary Bourbon Bar",
+      "creator": "Carol M Highsmith",
       "creator_url": "",
       "license": "cc0-1.0",
       "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
-      "landing": "https://www.rawpixel.com/image/3371450",
-      "original": "https://images.rawpixel.com/editor_1024/czNmcy1wcml2YXRlL3Jhd3BpeGVsX2ltYWdlcy93ZWJzaXRlX2NvbnRlbnQvd2s3MTMyNjAzMi1pbWFnZS1rcHFtZzMzei5qcGVn.jpeg"
+      "landing": "https://www.rawpixel.com/image/8054207/photo-image-person-wood-public-domain",
+      "original": "https://images.rawpixel.com/editor_1024/cHJpdmF0ZS9sci9pbWFnZXMvd2Vic2l0ZS8yMDIyLTA5L2xvYzIwMjA3MjIyNjYtaW1hZ2UuanBn.jpg"
     }
   },
   {

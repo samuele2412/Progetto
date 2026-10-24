@@ -13,7 +13,7 @@ import { getFaqs, getPackages } from '@/lib/queries';
 import { landingPath, path } from '@/lib/routes';
 import { absoluteUrl, breadcrumbJsonLd, faqJsonLd, serviceJsonLd } from '@/lib/seo';
 import { getSettings } from '@/lib/settings';
-import { whatsappLink } from '@/lib/utils';
+import { typeset, whatsappLink } from '@/lib/utils';
 
 export async function LandingPageView({ locale, landing }: { locale: Locale; landing: LandingPage }) {
   const [settings, packages, faqs] = await Promise.all([
@@ -44,7 +44,7 @@ export async function LandingPageView({ locale, landing }: { locale: Locale; lan
         intro={t(landing.heroSubtitle, locale)}
         imagePath={landing.heroImagePath}
       >
-        <div className="mt-8 flex flex-wrap items-center gap-x-7 gap-y-4">
+        <div className="mt-8 flex flex-wrap items-center gap-x-7 gap-y-4" data-cta-zone>
           <Link
             href={path('request', locale, {
               evento: landing.eventTypeSlug || undefined,
@@ -79,7 +79,7 @@ export async function LandingPageView({ locale, landing }: { locale: Locale; lan
               {highlights.map((item) => (
                 <li key={item} className="flex items-start gap-3">
                   <CheckIcon className="mt-1 h-3.5 w-3.5 text-accent" />
-                  <span className="text-[0.95rem] leading-relaxed text-ink-2">{item}</span>
+                  <span className="text-[0.95rem] leading-relaxed text-ink-2">{typeset(item)}</span>
                 </li>
               ))}
             </ul>

@@ -155,6 +155,22 @@ più ampia: i titoli di carte e passaggi stanno tra 1,4 e 2,15rem.
 non scendono sotto. `text-wrap: balance` sui titoli e `pretty` sui paragrafi;
 righe di testo entro 65–75 caratteri.
 
+**Composizione a mano** — `typeset()` (`src/lib/utils.ts`) lega con uno
+spazio unificatore articoli, preposizioni, congiunzioni e pronomi atoni
+(«il», «di», «e», «da», «ti», «li»…, e gli equivalenti inglesi) alla parola
+che segue, e i numeri a ciò che contano. Si usa sui titoli e sui testi brevi
+della home, sulle aperture delle pagine interne, sulle intestazioni di
+sezione e sul contatto finale: nessuna riga finisce più su «in», «e» o «da».
+Il testo salvato resta com'è scritto. Tre scelte puntuali:
+
+- i titoli del servizio e dei passaggi sono riempiti riga per riga
+  (`text-pretty`) invece che bilanciati, perché il bilanciamento li spezzava
+  in mezzo a un'espressione («Dal compleanno / in casa al matrimonio.»);
+- nella citazione della sezione III la virgoletta d'apertura è sospesa nel
+  margine: le parole, non il segno, si allineano all'occhiello e al testo;
+- la frase del brand nel footer va a capo alla virgola («Tu pensa alla
+  festa, / ai drink penso io.»).
+
 ## 4.5 Componenti
 
 Classi CSS in `@layer components`, non componenti React.
@@ -196,8 +212,9 @@ Classi CSS in `@layer components`, non componenti React.
   sezione successiva. `.hero-scrim` vela la foto dove sta il testo.
 - **Sezioni della home** (`src/components/pages/HomePage.tsx`):
   I. Il servizio — titolo e testo affiancati, tre colonne con foto di formati
-  diversi e fuori asse, l'indice dei tipi di festa. II. Chi sono — ritratto,
-  i fatti, la formazione in elenco. III. Il mio modo di lavorare — fascia
+  diversi e fuori asse, l'indice dei tipi di festa. II. Chi sono — ritratto
+  (orizzontale 4:3 al telefono, dove una cornice verticale occupava uno
+  schermo intero, verticale da desktop), i fatti, la formazione in elenco. III. Il mio modo di lavorare — fascia
   scura, la sua frase in corsivo tra virgolette d'oro, la carta del bar.
   IV. Galleria — quattro foto in mosaico (una grande verticale contro una
   orizzontale e due piccole). V. Come funziona — tre passaggi con numeri
@@ -212,8 +229,16 @@ Classi CSS in `@layer components`, non componenti React.
   entrata e in uscita (`.mobile-menu`): le tre voci grandi con il loro numero,
   i tipi di festa in due colonne, lingua e pulsante in fondo. Chiuso è
   `visibility: hidden`, quindi fuori dal `Tab` e dai lettori di schermo.
+- **Barra del telefono** — `MobileActionBar`: compare dopo l'apertura
+  (560 px di scorrimento) e si fa da parte dove la pagina mostra già i suoi
+  pulsanti, gli elementi marcati `data-cta-zone` (apertura della home e delle
+  pagine dei tipi di festa, riquadro di Collaboriamo): due «Chiedimi un
+  preventivo» uno sopra l'altro sembravano un errore. Dal contatto finale
+  (`data-cta-zone="end"`) in giù resta nascosta, perché sotto c'è solo il
+  footer; un secondo IntersectionObserver con l'area estesa sopra lo schermo
+  lo sa anche dopo uno scorrimento velocissimo. Non c'è nel modulo.
 - **Footer** — fascia scura: il nome in grande, descrittore, la frase del
-  brand, le colonne, solo i contatti e i profili davvero impostati, le note
+  brand su due righe, le colonne, solo i contatti e i profili davvero impostati, le note
   legali e «Torna su».
 - **Passaggi** — `StepList` (pagina del servizio e page builder): numero
   grande in `accent`, filetto che parte dal numero, titolo, testo.
@@ -242,16 +267,19 @@ Leggero e fatto in casa: CSS e un piccolo componente
 (`src/components/site/ScrollReveal.tsx`), nessuna libreria.
 
 1. **L'apertura della home** — solo CSS. Un velo notturno si alza sulla foto
-   mentre questa si assesta da un leggero ingrandimento (2,6 s); l'occhiello
-   appare, le tre righe del titolo salgono da dietro una maschera una dopo
-   l'altra, poi il testo, i pulsanti e la riga in fondo (circa 1,6 s in
-   tutto). La foto non parte mai trasparente: è l'elemento più grande della
+   (1,2 s) mentre questa si assesta da un leggero ingrandimento (2,2 s);
+   l'occhiello appare, le tre righe del titolo salgono da dietro una maschera
+   una dopo l'altra, poi il testo, i pulsanti e la riga in fondo: circa 1,5 s
+   in tutto, con il pulsante leggibile e cliccabile dal primo secondo (prima
+   arrivava a 2 s). La foto non parte mai trasparente: è l'elemento più grande della
    pagina, e un'immagine trasparente ritarderebbe la misura del caricamento.
 2. **Le aperture delle pagine interne** — occhiello e introduzione in
    dissolvenza; il titolo sale senza dissolvenza, per lo stesso motivo.
 3. **Le sezioni allo scorrimento** — gli elementi con `data-reveal` salgono
-   di 28 px in dissolvenza; le foto (`data-reveal="image"`) si aprono da un
-   ritaglio più stretto. Una volta sola, scaglionate dentro un gruppo. Sono
+   di 20 px in dissolvenza (0,8 s; lo spostamento 0,95 s); le foto
+   (`data-reveal="image"`) si aprono da un ritaglio più stretto (1,1 s).
+   Partono poco prima di essere del tutto in vista, così sono già in
+   movimento quando l'occhio ci arriva. Una volta sola, scaglionate dentro un gruppo. Sono
    nascosti **solo** gli elementi ancora sotto la piega, e solo dopo che il
    JavaScript ha verificato di poterli mostrare: senza JavaScript, per un
    crawler o con "riduci movimento" tutto è visibile da subito.
@@ -259,8 +287,8 @@ Leggero e fatto in casa: CSS e un piccolo componente
    frecce che scorrono, foto che si avvicinano, campi con alone al focus,
    errori che scendono, chip, menu del telefono, cambio di tema.
 5. **Mai** — scorrimento dirottato, parallasse, cursori personalizzati,
-   animazioni necessarie per leggere. L'unica animazione continua è la
-   goccia dell'indicatore di scorrimento, decorativa.
+   animazioni necessarie per leggere, animazioni senza fine: la goccia
+   dell'indicatore di scorrimento cade tre volte e si ferma.
 
 `prefers-reduced-motion: reduce` azzera durate e ritardi (le animazioni
 finiscono subito nello stato visibile) e nasconde la goccia.
@@ -285,8 +313,8 @@ Requisiti trattati come vincoli di build, non come rifiniture.
 - **Testo sopra la foto** — misurato a parte (axe non sa farlo): il colore di
   ogni riga contro il pixel più chiaro (99° percentile) della foto velata
   dietro le sue lettere. Minimi: titolo 9,1:1, occhiello 6,2:1 (al telefono,
-  dopo aver scurito la parte alta del velo), testo 9,7:1, link e note sopra
-  8:1, intestazione sopra 8:1.
+  dopo aver scurito la parte alta del velo), testo 10:1, link e note sopra
+  8:1, intestazione sopra 8:1. Rimisurati con la foto a piena definizione.
 - **Verifica (24 ottobre 2026)** — axe con le regole WCAG 2.2 AA su 15
   pagine, telefono e desktop, in entrambi i temi: zero violazioni. Nessun
   testo sotto i 12 px, nessuno scorrimento orizzontale a 360, 390, 820, 1024
@@ -294,6 +322,14 @@ Requisiti trattati come vincoli di build, non come rifiniture.
   movimento" (17 controlli); tastiera, interruttore del tema (12 controlli) ed
   eventi di conversione (18) provati con script. Restano da provare con uno
   screen reader vero.
+- **Revisione di art direction (24 ottobre 2026)** — le stesse verifiche
+  ripetute dopo le modifiche, tutte superate, più 25 controlli sulle
+  chiamate all'azione: ogni pulsante e link della home cliccato su desktop e
+  telefono fino alla pagina d'arrivo, i 18 link interni con risposta 200, e
+  la barra del telefono seguita lungo tre pagine (nascosta sull'apertura,
+  visibile a metà, nascosta accanto ai pulsanti finali e sul footer, di
+  nuovo visibile risalendo). Il modulo è stato inviato davvero: richiesta
+  salvata e pagina di conferma con il riferimento.
 
 ## 4.9 Performance
 
@@ -311,7 +347,10 @@ Requisiti trattati come vincoli di build, non come rifiniture.
   saltava di una riga quando il font arrivava.
 - **Immagini** — `next/image` con AVIF e WebP e `sizes` su ogni istanza;
   `priority` solo sulla foto dell'apertura. Le foto nuove sono WebP a 80, tra
-  45 e 93 KB alla dimensione piena.
+  45 e 93 KB alla dimensione piena. L'apertura (2400 px) e la foto
+  dell'attrezzatura (1600 px) sono ricavate dai loro originali
+  (`docs/photo-sources.md`): il file sorgente pesa di più, ma `next/image`
+  serve la larghezza che serve, e la home al telefono scarica 1 KiB in più.
 - **Rendering differito** — `content-visibility: auto` sulle sezioni basse
   della home.
 - **Misure** (Lighthouse 12.6, telefono, build di produzione in locale, tre
@@ -327,5 +366,10 @@ Requisiti trattati come vincoli di build, non come rifiniture.
   le due. La home è più ricca (sette sezioni, più foto) e pesa di più; le
   pagine interne sono più leggere perché precaricano meno font e il corsivo
   non serve fuori dalla home.
+- **Dopo la revisione di art direction** (stesso metodo, rete e CPU
+  simulate): home al telefono punteggio 94 (prima 93), LCP 3,10 s (3,17 s),
+  TBT 40 ms (100 ms), 355 KiB (354 KiB); desktop invariato, 100 con LCP
+  0,69 s. La macchina era più carica che nella misura sopra: contano i
+  confronti tra le due versioni, fatti nelle stesse condizioni.
 - **Client component solo dove servono**: header, modulo, `ScrollReveal`,
   barra del telefono, editor admin.

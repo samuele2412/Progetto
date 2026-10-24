@@ -365,8 +365,8 @@ export const defaultSettings: SiteSettings = {
   home: {
     stepsEyebrow: { it: 'Come funziona', en: 'How it works' },
     stepsTitle: {
-      it: 'Dalla prima domanda all’ultimo drink.',
-      en: 'From your first question to the last drink.',
+      it: 'Dal primo messaggio alla festa.',
+      en: 'From your first message to the party.',
     },
     steps: {
       it: [
@@ -441,7 +441,7 @@ export const defaultSettings: SiteSettings = {
       it: 'Strainer e shaker accanto a un cocktail con ghiaccio, bottiglie sfocate sullo sfondo',
       en: 'A strainer and a shaker beside a cocktail on ice, bottles blurred behind',
     },
-    service3: '/images/stock/evento-aziendale.webp',
+    service3: '/images/stock/servizio-bottiglie.webp',
     service3Alt: {
       it: 'Parete di bottiglie illuminata dietro al bancone',
       en: 'Backlit wall of bottles behind the bar',

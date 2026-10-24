@@ -1,4 +1,4 @@
-import { cn } from '@/lib/utils';
+import { cn, typeset } from '@/lib/utils';
 
 export function SectionHeader({
   eyebrow,
@@ -33,8 +33,8 @@ export function SectionHeader({
       {eyebrow && <p className={cn('eyebrow', align === 'left' && 'eyebrow-ruled')}>{eyebrow}</p>}
       {/* A section built in the panel can have an intro and no title; an empty
           heading element is worse than none, so it is simply not rendered. */}
-      {title && <Heading className={cn('display-2 text-ink', eyebrow && 'mt-5')}>{title}</Heading>}
-      {intro && <p className="lede mt-6 max-w-2xl">{intro}</p>}
+      {title && <Heading className={cn('display-2 text-ink', eyebrow && 'mt-5')}>{typeset(title)}</Heading>}
+      {intro && <p className="lede mt-6 max-w-2xl">{typeset(intro)}</p>}
     </div>
   );
 }

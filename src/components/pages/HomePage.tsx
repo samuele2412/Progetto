@@ -9,7 +9,7 @@ import { getFeaturedCocktails, getNavigationLandings } from '@/lib/queries';
 import { landingNavLabel, landingPath, path } from '@/lib/routes';
 import { absoluteUrl, serviceJsonLd } from '@/lib/seo';
 import { getSettings } from '@/lib/settings';
-import { cn } from '@/lib/utils';
+import { cn, typeset } from '@/lib/utils';
 
 /** A stagger for `data-reveal` siblings, in seconds. */
 const delay = (seconds: number) => ({ '--reveal-delay': `${seconds}s` }) as CSSProperties;
@@ -146,7 +146,7 @@ export async function HomePage({ locale }: { locale: Locale }) {
                 search terms, so what he does and where is read as part of the
                 heading. */}
             <h1>
-              <span className="eyebrow eyebrow-ruled hero-in block" style={{ '--d': '0.15s' } as CSSProperties}>
+              <span className="eyebrow eyebrow-ruled hero-in block" style={{ '--d': '0.1s' } as CSSProperties}>
                 {/* On a phone the line breaks at the dot whatever the font:
                     left to the width, the fallback face (wider in capitals)
                     wrapped where the real one did not, and the whole opening
@@ -168,19 +168,20 @@ export async function HomePage({ locale }: { locale: Locale }) {
                       className={cn('line', heroLines.length > 1 && index === heroLines.length - 1 && 'line-last')}
                       style={{ '--i': index } as CSSProperties}
                     >
-                      <span className="line-inner">{line}</span>
+                      <span className="line-inner">{typeset(line)}</span>
                     </span>
                   </Fragment>
                 ))}
               </span>
             </h1>
-            <p className="lede hero-in mt-7 max-w-[33rem] md:mt-9" style={{ '--d': '0.85s' } as CSSProperties}>
-              {t(settings.hero.subtitle, locale)}
+            <p className="lede hero-in mt-7 max-w-[33rem] md:mt-9" style={{ '--d': '0.6s' } as CSSProperties}>
+              {typeset(t(settings.hero.subtitle, locale))}
             </p>
 
             <div
               className="hero-actions hero-in mt-9 flex flex-wrap items-center gap-x-8 gap-y-5 md:mt-11"
-              style={{ '--d': '1s' } as CSSProperties}
+              style={{ '--d': '0.7s' } as CSSProperties}
+              data-cta-zone
             >
               <Link
                 href={path('request', locale)}
@@ -203,9 +204,9 @@ export async function HomePage({ locale }: { locale: Locale }) {
               left, the way down on the right. */}
           <div
             className="hero-foot hero-in mt-12 flex min-h-16 items-center justify-between gap-6 border-t border-[var(--hairline)] md:mt-14"
-            style={{ '--d': '1.2s' } as CSSProperties}
+            style={{ '--d': '0.85s' } as CSSProperties}
           >
-            <p className="py-4 text-xs uppercase tracking-[0.18em] text-ink-3">{t(settings.hero.note, locale)}</p>
+            <p className="py-4 text-xs uppercase tracking-[0.18em] text-ink-3">{typeset(t(settings.hero.note, locale))}</p>
             <a href="#servizio" className="scroll-cue hidden py-2 md:inline-flex">
               <span>{copy.misc.scroll}</span>
               <span aria-hidden className="gauge">
@@ -222,10 +223,12 @@ export async function HomePage({ locale }: { locale: Locale }) {
           <div className="grid gap-8 lg:grid-cols-12 lg:items-end lg:gap-16">
             <div className="lg:col-span-7" data-reveal>
               <SectionMark numeral="I">{t(settings.service.homeEyebrow, locale)}</SectionMark>
-              <h2 className="display-2 mt-6 max-w-[17ch]">{t(settings.service.homeTitle, locale)}</h2>
+              {/* Filled line by line, not balanced: balancing chose "Dal compleanno /
+                  in casa al matrimonio.", splitting the party from its place. */}
+              <h2 className="display-2 mt-6 max-w-[20ch] text-pretty">{typeset(t(settings.service.homeTitle, locale))}</h2>
             </div>
             <div className="lg:col-span-5 lg:pb-3" data-reveal style={delay(0.1)}>
-              <p className="copy max-w-md">{t(settings.service.homeBody, locale)}</p>
+              <p className="copy max-w-md">{typeset(t(settings.service.homeBody, locale))}</p>
               <Link href={path('packages', locale)} className="link-more mt-5">
                 <span className="label">{t(settings.service.homeLinkLabel, locale)}</span>{' '}
                 <span aria-hidden className="arrow">
@@ -251,8 +254,8 @@ export async function HomePage({ locale }: { locale: Locale }) {
                   />
                 </div>
                 <div data-reveal style={delay(0.15 + index * 0.12)}>
-                  <h3 className="display-3 mt-6">{item.title}</h3>
-                  <p className="mt-3 max-w-sm text-[0.9375rem] leading-relaxed text-ink-2">{item.body}</p>
+                  <h3 className="display-3 mt-6">{typeset(item.title)}</h3>
+                  <p className="mt-3 max-w-sm text-[0.9375rem] leading-relaxed text-ink-2">{typeset(item.body)}</p>
                 </div>
               </li>
             ))}
@@ -295,7 +298,11 @@ export async function HomePage({ locale }: { locale: Locale }) {
       <section className="section bg-paper-2">
         <div className="container-page grid items-center gap-12 lg:grid-cols-12 lg:gap-16">
           <div className="lg:col-span-5">
-            <div className="frame aspect-[4/5] sm:aspect-[16/11] lg:aspect-[4/5]" data-reveal="image">
+            {/* Landscape until the two columns sit side by side: a portrait
+                frame filled a phone's screen, mostly with the dark top of the
+                picture. Cropped from the centre, which also keeps the face of
+                the portrait that will replace this stock photograph. */}
+            <div className="frame aspect-[4/3] sm:aspect-[16/11] lg:aspect-[4/5]" data-reveal="image">
               <Media
                 src={settings.about.imagePath}
                 alt={t(settings.about.imageAlt, locale)}
@@ -307,8 +314,8 @@ export async function HomePage({ locale }: { locale: Locale }) {
           <div className="lg:col-span-6 lg:col-start-7">
             <div data-reveal>
               <SectionMark numeral="II">{t(settings.intro.eyebrow, locale)}</SectionMark>
-              <h2 className="display-2 mt-6">{t(settings.intro.title, locale)}</h2>
-              <p className="copy mt-7 max-w-xl">{t(settings.intro.body, locale)}</p>
+              <h2 className="display-2 mt-6">{typeset(t(settings.intro.title, locale))}</h2>
+              <p className="copy mt-7 max-w-xl">{typeset(t(settings.intro.body, locale))}</p>
             </div>
             {facts.length > 0 && (
               <div className="mt-10 max-w-xl" data-reveal style={delay(0.1)}>
@@ -343,17 +350,20 @@ export async function HomePage({ locale }: { locale: Locale }) {
             <SectionMark numeral="III">{t(settings.method.eyebrow, locale)}</SectionMark>
             {/* His own sentence, set as what it is: something he says. The
                 quotation marks are drawn in the gold and hidden from screen
-                readers, so the heading is read as the sentence alone. */}
-            <h2 className="mt-8 text-[clamp(2.15rem,1.25rem+3.3vw,4.1rem)] font-normal italic leading-[1.06]">
-              <span aria-hidden className="mr-1 text-brass">
+                readers, so the heading is read as the sentence alone. The
+                opening one hangs in the margin, as a compositor would set it:
+                the words, not the mark, line up with the label and the text
+                below. */}
+            <h2 className="relative mt-8 text-[clamp(2.15rem,1.25rem+3.3vw,4.1rem)] font-normal italic leading-[1.06]">
+              <span aria-hidden className="absolute right-full top-0 pr-[0.06em] text-brass">
                 “
               </span>
-              {t(settings.method.title, locale)}
-              <span aria-hidden className="ml-1 text-brass">
+              {typeset(t(settings.method.title, locale))}
+              <span aria-hidden className="ml-[0.08em] text-brass">
                 ”
               </span>
             </h2>
-            <p className="copy mt-8 max-w-xl">{t(settings.method.body, locale)}</p>
+            <p className="copy mt-8 max-w-xl">{typeset(t(settings.method.body, locale))}</p>
           </div>
 
           {featured.length > 0 && (
@@ -398,7 +408,7 @@ export async function HomePage({ locale }: { locale: Locale }) {
           <div className="grid gap-6 lg:grid-cols-12 lg:items-end lg:gap-16">
             <div className="lg:col-span-8" data-reveal>
               <SectionMark numeral="IV">{t(settings.home.galleryTitle, locale)}</SectionMark>
-              <h2 className="display-2 mt-6 max-w-[19ch]">{t(settings.home.galleryIntro, locale)}</h2>
+              <h2 className="display-2 mt-6 max-w-[19ch]">{typeset(t(settings.home.galleryIntro, locale))}</h2>
             </div>
             <div className="lg:col-span-4 lg:pb-3 lg:text-right" data-reveal style={delay(0.1)}>
               <Link href={path('gallery', locale)} className="link-more">
@@ -444,7 +454,7 @@ export async function HomePage({ locale }: { locale: Locale }) {
         <div className="container-page">
           <div className="max-w-3xl" data-reveal>
             <SectionMark numeral="V">{t(settings.home.stepsEyebrow, locale)}</SectionMark>
-            <h2 className="display-2 mt-6">{t(settings.home.stepsTitle, locale)}</h2>
+            <h2 className="display-2 mt-6 max-w-[20ch] text-pretty">{typeset(t(settings.home.stepsTitle, locale))}</h2>
           </div>
           <ol className="mt-14 grid gap-12 md:mt-20 md:grid-cols-3 md:gap-10 lg:gap-14">
             {steps.map((step, index) => (
@@ -455,8 +465,8 @@ export async function HomePage({ locale }: { locale: Locale }) {
                   </span>
                   <span aria-hidden className="h-px flex-1 bg-[var(--hairline-strong)]" />
                 </div>
-                <h3 className="display-3 mt-6">{step.title}</h3>
-                <p className="mt-3 max-w-sm leading-relaxed text-ink-2">{step.body}</p>
+                <h3 className="display-3 mt-6">{typeset(step.title)}</h3>
+                <p className="mt-3 max-w-sm leading-relaxed text-ink-2">{typeset(step.body)}</p>
               </li>
             ))}
           </ol>

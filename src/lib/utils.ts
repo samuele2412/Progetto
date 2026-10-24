@@ -12,6 +12,36 @@ export function keepSeparators(text: string): string {
   return text.replace(/ · /g, '\u00a0· ');
 }
 
+/**
+ * Articles, prepositions, conjunctions and the unstressed pronouns that lean on
+ * the verb after them ("Ti preparo", "li porto"), Italian and English: the
+ * words a compositor never leaves at the end of a line, where they read as a
+ * sentence stopping half-way ("Dal compleanno in / casa").
+ */
+const BOUND_WORDS = new Set(
+  (
+    'a ad al allo alla ai agli alle da dal dallo dalla dai dagli dalle di del dello della dei degli delle ' +
+    'in nel nello nella nei negli nelle su sul sullo sulla sui sugli sulle con col per tra fra ' +
+    'il lo la i gli le un uno una e ed o od ma né se che non è mi ti ci vi si ne li ' +
+    'an the of to on at by for and or but nor as is my our your no not'
+  ).split(' '),
+);
+
+/**
+ * Display copy, set by hand: each short word in BOUND_WORDS, and each number,
+ * travels to the next line with the word it introduces (a no-break space), and
+ * the separator dots stay off the start of a line. Nothing else changes, so it
+ * is safe on any heading or lede; the stored text is left as written.
+ */
+export function typeset(text: string | null | undefined): string {
+  // The columns and steps come from the database as written: a missing field
+  // renders as nothing, as it did before, rather than failing the page.
+  if (!text) return '';
+  return keepSeparators(text).replace(/(?<=^|[\s(“‘"«])([\p{L}\d’']+) +(?=\S)/gu, (match, word: string) =>
+    BOUND_WORDS.has(word.toLowerCase()) || /^\d+$/.test(word) ? `${word}\u00a0` : match,
+  );
+}
+
 /** Turn free text into a URL-safe slug (accents folded, punctuation dropped). */
 export function slugify(input: string): string {
   return input
