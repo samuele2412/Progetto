@@ -642,7 +642,7 @@
     .hero-scrim {
       background:
         linear-gradient(to bottom, rgb(14 12 10 / 0.86) 0%, rgb(14 12 10 / 0.62) 9%, rgb(14 12 10 / 0) 26%),
-        linear-gradient(100deg, rgb(14 12 10 / 0.92) 0%, rgb(14 12 10 / 0.78) 38%, rgb(14 12 10 / 0.3) 68%, rgb(14 12 10 / 0.12) 100%),
+        linear-gradient(100deg, rgb(14 12 10 / 0.92) 0%, rgb(14 12 10 / 0.8) 40%, rgb(14 12 10 / 0.5) 62%, rgb(14 12 10 / 0.18) 82%, rgb(14 12 10 / 0.1) 100%),
         linear-gradient(to top, rgb(14 12 10 / 0.6) 0%, rgb(14 12 10 / 0) 45%);
     }
   }

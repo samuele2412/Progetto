@@ -226,8 +226,11 @@ Requisiti trattati come vincoli di build, non come rifiniture.
   aperto il resto della pagina è `inert`: il `Tab` non finisce su link coperti.
 - **Testo sopra la foto** — axe non sa misurarlo, quindi è misurato a parte:
   il colore del testo contro il pixel più chiaro (99° percentile) della foto
-  velata dietro ogni riga. Minimo 5,2:1 (l'occhiello al telefono), titolo e
-  sottotitolo sopra 10:1, voci dell'intestazione sopra 8:1.
+  velata dietro ogni riga. Minimo 5:1 (l'occhiello al telefono, e al
+  computer la fine della prima riga del titolo, che passa sopra il bicchiere),
+  sottotitolo sopra 10:1, voci dell'intestazione sopra 8:1. Ogni frase del
+  titolo va su una riga sua: il bilanciamento automatico spezzava a metà
+  "Ai cocktail penso / io.".
 - **Verifica** — axe con le regole WCAG 2.2 AA su 15 pagine, telefono e
   desktop, **in entrambi i temi**: zero violazioni (ottobre 2026).
   L'interruttore è provato con clic, `Invio`, `Spazio`, tocco, "riduci

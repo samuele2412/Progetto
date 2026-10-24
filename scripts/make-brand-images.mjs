@@ -35,7 +35,9 @@ const PUBLIC = path.join(ROOT, 'public');
 const BRAND = 'Cordiale';
 const DESCRIPTOR = 'Bartender per feste private · Roma e provincia';
 // The hero headline, so a shared link says the same thing the home page does.
-const CLAIM = 'Sono Samuele. Vengo a fare da bere alla tua festa.';
+const CLAIM = 'Ai cocktail penso io. Tu goditi la festa.';
+// One sentence per line: balanced wrapping alone broke it as "penso / io.".
+const CLAIM_LINES = CLAIM.split(/(?<=[.!?])\s+/).join('<br>');
 
 // Night and brass, like the site's default theme and its home page: the
 // photograph under the whole card, darkened on the left where the words are,
@@ -70,7 +72,7 @@ const card = /* html */ `
   <div class="veil"></div>
   <div class="copy">
     <div><div class="word">${BRAND}</div><div class="desc">${DESCRIPTOR}</div></div>
-    <div><div class="rule"></div><div class="claim">${CLAIM}</div></div>
+    <div><div class="rule"></div><div class="claim">${CLAIM_LINES}</div></div>
     <div class="foot">Attrezzatura, ghiaccio e bottiglie: <b>li porto io</b></div>
   </div>
 </div></body></html>`;

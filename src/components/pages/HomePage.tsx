@@ -1,3 +1,4 @@
+import { Fragment } from 'react';
 import Link from 'next/link';
 import { Media, mediaExists } from '@/components/Media';
 import { FinalCta } from '@/components/blocks/FinalCta';
@@ -36,6 +37,9 @@ export async function HomePage({ locale }: { locale: Locale }) {
   const whatsappHref = whatsappLink(settings.contact.whatsapp, t(settings.contact.whatsappMessage, locale));
   // A missing file would put the light placeholder under light type.
   const heroImage = mediaExists(settings.hero.imagePath) ? settings.hero.imagePath : '';
+  // One sentence per line: balancing the whole title broke a two-sentence
+  // headline mid-sentence ("Ai cocktail penso / io. Tu goditi…").
+  const heroLines = t(settings.hero.title, locale).split(/(?<=[.!?])\s+/);
 
   const featured = cocktails.slice(0, 3);
   const eventLinks = landings.map((landing) => ({
@@ -87,13 +91,20 @@ export async function HomePage({ locale }: { locale: Locale }) {
         <div className="hero-content container-page w-full pb-14 pt-32 md:pb-20 md:pt-40 lg:pb-24">
           <div className="max-w-2xl lg:max-w-3xl">
             {/* The kicker sits inside the h1 on purpose: the headline is a
-                person talking ("Sono Samuele…") and carries no search terms,
+                person talking ("Ai cocktail penso io…") and carries no search terms,
                 so what he does and where is read as part of the heading. */}
             <h1>
               <span className="eyebrow eyebrow-ruled block">{t(settings.hero.eyebrow, locale)}</span>
               {/* Invisible between two blocks, but without it the heading's
-                  text reads "…Roma e provinciaSono Samuele" to a crawler. */}{' '}
-              <span className="display-hero text-shadow-hero mt-5 block">{t(settings.hero.title, locale)}</span>
+                  text reads "…Roma e provinciaAi cocktail" to a crawler. */}{' '}
+              <span className="display-hero text-shadow-hero mt-5 block">
+                {heroLines.map((line, index) => (
+                  <Fragment key={index}>
+                    {index > 0 && ' '}
+                    <span className="block">{line}</span>
+                  </Fragment>
+                ))}
+              </span>
             </h1>
             <p className="lede mt-6 max-w-xl">{t(settings.hero.subtitle, locale)}</p>
 
