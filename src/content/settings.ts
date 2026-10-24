@@ -195,14 +195,14 @@ export const defaultSettings: SiteSettings = {
       en: 'Private party bartender · Rome and province',
     },
     title: {
-      it: 'Ai cocktail penso io. Tu goditi la festa.',
-      en: 'I’ll take care of the cocktails. You enjoy the party.',
+      it: 'La tua casa. I tuoi ospiti. Il mio bancone.',
+      en: 'Your home. Your guests. My bar.',
     },
-    // The name moved here from the title: the opening still says who, what
-    // and where — the eyebrow carries the what and the where.
+    // The eyebrow says what and where; the section right under the opening
+    // ("Chi sono") says who.
     subtitle: {
-      it: 'Sono Samuele. Porto io attrezzatura, ghiaccio e bottiglie e preparo i drink sul posto.',
-      en: 'I’m Samuele. I bring the kit, the ice and the bottles, and make the drinks on the spot.',
+      it: 'Porto l’arte della miscelazione ai tuoi eventi privati, con cocktail preparati sul momento e un servizio pensato intorno a te.',
+      en: 'I bring the art of mixology to your private events, with cocktails made on the spot and a service designed around you.',
     },
     primaryCta: { it: 'Chiedimi un preventivo', en: 'Ask me for a quote' },
     imagePath: '/images/hero/hero-main.jpg',

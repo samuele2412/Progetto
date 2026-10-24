@@ -35,7 +35,7 @@ const PUBLIC = path.join(ROOT, 'public');
 const BRAND = 'Cordiale';
 const DESCRIPTOR = 'Bartender per feste private · Roma e provincia';
 // The hero headline, so a shared link says the same thing the home page does.
-const CLAIM = 'Ai cocktail penso io. Tu goditi la festa.';
+const CLAIM = 'La tua casa. I tuoi ospiti. Il mio bancone.';
 // One sentence per line: balanced wrapping alone broke it as "penso / io.".
 const CLAIM_LINES = CLAIM.split(/(?<=[.!?])\s+/).join('<br>');
 

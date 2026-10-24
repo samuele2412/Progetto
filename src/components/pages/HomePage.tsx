@@ -90,12 +90,12 @@ export async function HomePage({ locale }: { locale: Locale }) {
         <div className="hero-content container-page w-full pb-14 pt-32 md:pb-20 md:pt-40 lg:pb-24">
           <div className="max-w-2xl lg:max-w-3xl">
             {/* The kicker sits inside the h1 on purpose: the headline is a
-                person talking ("Ai cocktail penso io…") and carries no search terms,
+                person talking ("La tua casa. I tuoi ospiti…") and carries no search terms,
                 so what he does and where is read as part of the heading. */}
             <h1>
               <span className="eyebrow eyebrow-ruled block">{t(settings.hero.eyebrow, locale)}</span>
               {/* Invisible between two blocks, but without it the heading's
-                  text reads "…Roma e provinciaAi cocktail" to a crawler. */}{' '}
+                  text reads "…Roma e provinciaLa tua casa" to a crawler. */}{' '}
               <span className="display-hero text-shadow-hero mt-5 block">
                 {heroLines.map((line, index) => (
                   <Fragment key={index}>
