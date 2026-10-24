@@ -75,7 +75,7 @@ export default async function PanelLayout({ children }: { children: ReactNode })
 
   const brand = (
     <Link href="/admin" className="block leading-tight">
-      <span className="font-[family-name:var(--font-display)] text-lg text-stone-900">Cordiale</span>
+      <span className="font-[family-name:var(--font-display)] text-2xl font-medium text-stone-900">Cordiale</span>
       <span className="block text-[0.65rem] uppercase tracking-[0.16em] text-stone-600">Pannello</span>
     </Link>
   );

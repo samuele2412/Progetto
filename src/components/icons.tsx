@@ -29,3 +29,25 @@ export function CheckIcon({ className = 'h-3.5 w-3.5' }: { className?: string })
     </svg>
   );
 }
+
+/**
+ * A coupe drawn in one line: the ornament of the closing call to action. Set
+ * large and faint behind the copy, it is the one picture that belongs to the
+ * trade rather than to a stock library. `vector-effect` keeps the line hair-
+ * thin at any size.
+ */
+export function CoupeMark({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 240 320" className={className} fill="none" stroke="currentColor" strokeWidth="1" aria-hidden>
+      <g vectorEffect="non-scaling-stroke" strokeLinecap="round">
+        <path d="M18 58h204" vectorEffect="non-scaling-stroke" />
+        <path d="M18 58c6 46 46 72 102 72s96-26 102-72" vectorEffect="non-scaling-stroke" />
+        <path d="M44 82c18 18 44 28 76 28" vectorEffect="non-scaling-stroke" />
+        <path d="M120 130v134" vectorEffect="non-scaling-stroke" />
+        <path d="M120 264c-30 0-56 8-62 18h124c-6-10-32-18-62-18z" vectorEffect="non-scaling-stroke" />
+        <circle cx="168" cy="40" r="15" vectorEffect="non-scaling-stroke" />
+        <path d="M168 25v30M153 40h30" vectorEffect="non-scaling-stroke" />
+      </g>
+    </svg>
+  );
+}

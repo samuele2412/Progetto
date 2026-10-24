@@ -1,100 +1,95 @@
 # 04 — Design system
 
-> **Ottobre 2026: due temi.** Il sito ha la palette chiara "carta e
-> inchiostro" e quella scura "il bar di notte", con gli stessi ruoli. **Lo
-> scuro è il tema predefinito**, per scelta di Samuele; chi visita può passare
-> al chiaro con il sole e la luna nell'intestazione (§ 4.3). L'apertura della
-> home è di nuovo una fotografia a tutto schermo con il titolo sopra. I token
-> vivono in `src/app/globals.css` (`@theme` per il chiaro,
-> `:root[data-theme='dark']` per lo scuro).
+> **Redesign premium (24 ottobre 2026).** Rivista editoriale, cocktail bar
+> intimo e ospitalità boutique: avorio caldo e nero carbone, l'oro champagne
+> solo nei dettagli, Cormorant Garamond per i titoli e DM Sans per il testo.
+> La home è diventata una piccola rivista in sette parti (§ 4.5), con fasce
+> chiare e scure che si alternano in entrambi i temi, fotografie integrate
+> nell'impaginato e un movimento d'ingresso misurato (§ 4.7). Restano: lo
+> scuro come tema predefinito, l'interruttore con il sole e la luna (§ 4.3),
+> la fotografia a tutto schermo sotto l'apertura della home. I token vivono in
+> `src/app/globals.css` (`@theme` per il chiaro, `:root[data-theme='dark']`
+> per lo scuro, `.tone-night` per le fasce scure).
 >
-> **Restyling di fine ottobre: ospitalità contemporanea.** Una sola direzione,
-> per sottrazione. L'ottone resta l'identità ma diventa un dettaglio (filetti,
-> occhielli, focus, numeri), non una superficie: il pulsante principale è nel
-> colore del testo, crema di notte e inchiostro di giorno, piatto. Via gli
-> effetti che non servono a leggere (aloni di luce, grana, ombre e bagliore
-> dei pulsanti, vetro sfocato di intestazione e barra del telefono, entrate
-> animate dei blocchi, il cerchio del cambio tema). L'intestazione mostra solo
-> il nome: lo slogan sotto di esso ripeteva l'occhiello di ogni pagina.
+> Le fotografie sono tutte **temporanee** (CC0, `docs/photo-sources.md`) e
+> nessuna mostra Samuele o una sua serata: si sostituiscono dal pannello
+> (Testi e contatti → Home · Fotografie, più l'apertura e «Chi sono»).
 
 ## 4.1 Principi
 
-1. **La tipografia porta il design, le foto lo accompagnano.** Una sola
-   fotografia a tutto schermo, quella dell'apertura della home; altrove titoli
-   in Fraunces, molto spazio, poche immagini incorniciate. Una pagina deve
-   sembrare finita anche senza fotografie.
-2. **Costoso non vuol dire dorato.** Il premium si ottiene con spazio,
-   gerarchia e contrasto, non con oro, ombre e decorazioni. Nero e ottone non
-   diventano mai "nero e oro": l'ottone è un filo, non una superficie.
+1. **Editoriale, non a modelli.** Titoli grandi con a capo voluti, numerazione
+   da rivista (numeri romani per le sezioni, 01–03 per i passaggi), filetti
+   sottili, fotografie di formati diversi e fuori asse. Ogni dettaglio ha una
+   funzione: orientare, ordinare, far respirare.
+2. **L'oro è un dettaglio.** Filetti, numeri, link, focus, il passaggio sul
+   pulsante. Mai superfici dorate, gradienti metallici o "nero e oro".
 3. **Un solo segnale per l'azione.** L'unica forma piena della pagina è il
-   pulsante principale, nel colore del testo (inchiostro di giorno, crema di
-   notte e sopra le foto): il contrasto più forte della pagina, quindi non c'è
-   mai il dubbio su quale conta.
-4. **Mobile prima.** Ogni componente è progettato a 390 px e poi allargato.
-5. **L'animazione conferma, non intrattiene.** Niente entra in scena: i
-   contenuti ci sono quando c'è la pagina. Si muove solo ciò che risponde a un
-   gesto (passaggio del mouse, focus, menu, cambio di tema).
+   pulsante principale, nel colore del testo (carbone di giorno, avorio di
+   notte e sopra le foto); al passaggio diventa bronzo o oro chiaro.
+4. **Le foto accompagnano, non mentono.** Luce calda, mani, ghiaccio, agrumi,
+   attrezzi: immagini d'atmosfera, mai presentate come serate di Samuele.
+5. **Mobile prima.** Ogni sezione è disegnata a 390 px e poi allargata; il
+   telefono non è una versione impoverita (stesse foto, stesse sezioni).
+6. **Il movimento accompagna, non trattiene.** Un'apertura in sequenza e
+   sezioni che entrano una volta sola: niente si nasconde senza JavaScript,
+   niente si muove con "riduci movimento", niente parallasse o cursori.
 
 ## 4.2 Colore
 
 I nomi sono ruoli, non tonalità: `ink-3` è "testo secondario" ovunque, in
-entrambi i temi. Tutti i colori di testo superano AA (4,5:1) su `paper`,
-`paper-2` e `paper-3`.
+entrambi i temi. Tutti i colori di testo superano AA (4,5:1) su `paper` e
+`paper-2`. Punto di partenza: avorio `#F5F0E6`, carbone `#171612`, oro
+champagne `#B69A68`, beige `#DED3C0`, grigio caldo `#777064`; i valori sotto
+sono quelli adattati per il contrasto.
 
-**Tema chiaro** (carta e inchiostro):
+**Tema chiaro** (avorio):
 
 | Token | Valore | Uso | Contrasto su paper / paper-2 |
 | --- | --- | --- | --- |
-| `paper` | `#f7f3ec` | Fondo pagina: avorio caldo, non bianco | — |
-| `paper-2` | `#efe9df` | Fasce alterne, pannelli, il modulo | — |
-| `paper-3` | `#e6dfd3` | Hover su `paper-2`, fascia "contrasto" del page builder | — |
-| `field` | `#fffdf9` | Campi dei moduli, card | — |
-| `ink` | `#1c1a17` | Titoli, pulsante principale | 15,7 : 1 |
-| `ink-2` | `#3b3631` | Testo corrente | 10,8 : 1 |
-| `ink-3` | `#645d55` | Testo secondario, didascalie, placeholder | 5,9 / 5,4 : 1 |
-| `accent` | `#7e5a28` | **Ottone brunito**: eyebrow, link, focus, stati attivi | 5,6 / 5,1 : 1 |
-| `accent-strong` | `#5f431d` | Hover e pressione | — |
-| `accent-soft` | `#ebe1cf` | Stati selezionati (chip del modulo), selezione del testo | — |
-| `brass` | `#b08a4f` | Filetti e puntini decorativi. **Mai testo** (2,9 : 1) | — |
-| `brass-light` | `#d8b87d` | Accenti sopra una foto scurita | — |
-| `danger` | `#a23b2a` | Solo errori | 5,9 / 5,4 : 1 |
+| `paper` | `#f5f0e6` | Avorio caldo, fondo pagina | — |
+| `paper-2` | `#ede6d8` | Fasce alterne, il modulo | — |
+| `paper-3` | `#ded3c0` | Beige tenue: riempimenti, cornici delle foto. Mai sotto testo piccolo | — |
+| `field` | `#fbf8f2` | Campi dei moduli, card | — |
+| `ink` | `#171612` | Titoli, pulsante principale | 15,9 / 14,6 : 1 |
+| `ink-2` | `#3a362f` | Testo corrente | 10,6 / 9,7 : 1 |
+| `ink-3` | `#6b6458` | Grigio caldo scurito per il testo piccolo (`#777064` era 4,3:1) | 5,2 / 4,7 : 1 |
+| `accent` | `#7a6338` | L'oro champagne scurito: occhielli, link, numeri, focus | 5,0 / 4,6 : 1 |
+| `accent-strong` | `#5e4c2a` | Passaggio e pressione; fondo del pulsante al passaggio | 7,3 / 6,7 : 1 |
+| `accent-soft` | `#f0e9dc` | Stati selezionati (chip del modulo) | — |
+| `brass` | `#b69a68` | **Oro champagne pieno**: filetti, ornamenti. Mai testo sull'avorio (2,4:1) | — |
+| `danger` | `#a23b2a` | Solo errori | 5,8 / 5,3 : 1 |
 
-**Tema scuro** (il bar di notte, predefinito) — la palette con cui il sito è
-nato, ricostruita sugli stessi ruoli:
+**Tema scuro** (carbone, predefinito):
 
-| Token | Valore | Contrasto su paper / paper-2 / paper-3 |
+| Token | Valore | Contrasto su paper / paper-2 |
 | --- | --- | --- |
-| `paper` | `#0e0c0a` | — |
-| `paper-2` | `#161310` | — |
-| `paper-3` | `#1f1b16` | — |
-| `field` | `#1a1612` | — |
-| `ink` | `#f3ede3` | 16,8 / 15,9 / 14,7 : 1 |
-| `ink-2` | `#d9d0c2` | 12,8 / 12,1 / 11,2 : 1 |
-| `ink-3` | `#a59b8c` | 7,1 / 6,8 / 6,3 : 1 |
-| `accent` | `#d2b07a` | 9,5 / 9,0 / 8,3 : 1 |
-| `accent-strong` | `#e8cf9e` | — |
-| `accent-soft` | `#2b2319` | — |
-| `brass` | `#a8874f` | decorativo |
-| `danger` | `#e8907c` | 8,1 / 7,7 / 7,1 : 1 |
+| `paper` | `#171612` | — |
+| `paper-2` | `#1f1d18` | — |
+| `paper-3` | `#2a2721` | — |
+| `field` | `#1c1a16` | — |
+| `ink` | `#f5f0e6` | 15,9 / 14,8 : 1 |
+| `ink-2` | `#ded3c0` | 12,2 / 11,4 : 1 |
+| `ink-3` | `#a39a8a` | 6,5 / 6,1 : 1 |
+| `accent` / `brass` | `#b69a68` | 6,7 / 6,3 : 1 |
+| `accent-strong` | `#cdb689` | — |
+| `danger` | `#e8907c` | 7,5 / 7,0 : 1 |
 
-**Costanti** — `cream` (`#f6f1e8`) e `night` (`#0e0c0a`) non cambiano con il
-tema: servono per il testo e le forme sopra una fotografia scurita, che è
-scura in entrambi i temi. La classe `.on-image` ripunta i ruoli (`ink`,
-`ink-2`, `accent`, i filetti, il pulsante principale) su valori chiari: tutto
-quello che sta dentro (titoli, link, focus) funziona senza casi speciali. La
-usano l'apertura della home, l'intestazione mentre galleggia sopra di essa e
-l'apertura con foto del page builder.
+**Fasce scure** — `.tone-night` impone la palette di notte a una sezione in
+entrambi i temi: di giorno la pagina alterna avorio e carbone, di notte la
+fascia scende di un tono (`paper` `#100f0c`), così il ritmo resta. La usano «Il
+mio modo di lavorare», il contatto finale e il footer.
 
-**Altre variabili per tema** — `--cta`, `--cta-hover`, `--cta-text` (il
-pulsante principale: `#1c1a17` su `#f7f3ec` di giorno, `#f3ede3` su `#0e0c0a`
-di notte e sopra le foto), `--field-border` (bordo dei campi, almeno 3:1 come
-chiede WCAG 1.4.11: inchiostro al 50% di giorno, al 40% di notte),
-`--selection`.
+**Costanti** — `cream` (`#f5f0e6`) e `night` (`#100f0c`) non cambiano con il
+tema: testo e forme sopra una fotografia scurita. `.on-image` ripunta i ruoli
+su valori chiari (l'oro dei link diventa `#cdb689`): la usano l'apertura della
+home, l'intestazione mentre ci galleggia sopra e l'apertura con foto del page
+builder.
 
-**Perché l'ottone resta.** È la continuità con l'identità di prima: stesso
-metallo, brunito perché su carta deve reggere come testo. Il verde di WhatsApp
-è sparito dai pulsanti: WhatsApp è un'azione secondaria, contornata come le
-altre e riconoscibile dal suo simbolo.
+**Altre variabili** — `--cta`, `--cta-hover`, `--cta-text` (pulsante
+principale: carbone su avorio con passaggio bronzo `#5e4c2a` di giorno; avorio
+su carbone con passaggio oro `#cdb689` di notte, nelle fasce scure e sopra le
+foto), `--field-border` (3:1 come chiede WCAG 1.4.11), `--focus-ring` (alone
+dei campi), `--selection`.
 
 **Il pannello admin** resta con la sua palette da strumento (`.admin-shell`).
 
@@ -110,180 +105,227 @@ altre e riconoscibile dal suo simbolo.
   (`src/content/legal.ts`) e non richiede consenso: è una preferenza chiesta
   dal visitatore, non un tracciamento (`09-gdpr.md` § 9.6).
 - **Niente lampi** — il server legge il cookie e scrive
-  `<html data-theme="…">`, il colore della barra del browser (`theme-color`) e
-  `color-scheme` già nella risposta (`src/app/[locale]/layout.tsx`,
-  `src/lib/theme.ts`). Non serve uno script in linea, quindi la CSP con nonce
-  resta com'era.
+  `<html data-theme="…">`, il colore della barra del browser (`theme-color`:
+  `#171612` di notte, `#f5f0e6` di giorno) e `color-scheme` già nella risposta
+  (`src/app/[locale]/layout.tsx`, `src/lib/theme.ts`). Nessuno script in linea:
+  la CSP con nonce resta com'era.
 - **La transizione** — dove il browser ha le View Transitions il nuovo tema si
   dissolve nell'altro in 0,2 s; con "riduci movimento", o senza supporto,
   cambia e basta.
-- **Accessibilità** — è un pulsante a due stati con nome fisso ("Tema scuro") e
-  `aria-pressed`, il modello che i lettori di schermo annunciano meglio; il
-  suggerimento al passaggio dice cosa fa il clic ("Passa al tema chiaro").
-- **Senza scelta** — il tema predefinito è lo scuro (`defaultTheme`). Per
-  seguire invece l'impostazione del telefono basterebbe cambiare quella riga,
-  ma il server non conosce la preferenza del sistema: tornerebbe il lampo al
-  primo caricamento.
+- **Accessibilità** — pulsante a due stati con nome fisso ("Tema scuro") e
+  `aria-pressed`; il suggerimento al passaggio dice cosa fa il clic.
 
 ## 4.4 Tipografia
 
-Due famiglie, **autoprodotte** (`public/fonts/`, subset latin e latin-ext).
-Nessuna chiamata a Google Fonts a runtime.
+Due famiglie **autoprodotte** (`public/fonts/`, subset latin e latin-ext,
+licenza SIL OFL in `public/fonts/licenses/`). Nessuna chiamata a Google Fonts:
+la CSP ammette font solo da `'self'`.
 
 | Ruolo | Font | Perché |
 | --- | --- | --- |
-| Display | **Fraunces** (variabile 300–700), peso 400 | Serif contemporaneo con carattere: regge i titoli grandi, che sono l'immagine principale del sito |
-| Testo | **Inter** (variabile 300–700) | Leggibile a corpo piccolo, neutro: lascia parlare il display |
+| Titoli | **Cormorant Garamond** (variabile 300–700, tondo e corsivo), peso 500 | Un Garamond disegnato per i corpi grandi, con un corsivo vero: il tono della rivista. Il peso 400 si assottiglia troppo sullo schermo |
+| Testo | **DM Sans** (variabile 300–700, dimensione ottica fissata a 14) | Morbido, leggibile in piccolo, più caldo di un grottesco tecnico |
+
+DM Sans è stato **istanziato** (asse ottico fissato al disegno da testo, pesi
+limitati a 300–700): da 62,7 a 28,4 KB, senza differenze nel testo corrente.
+Cormorant è com'è su Google Fonts.
+
+**Font di riserva tarati** — `DM Sans Fallback` (Arial / Liberation Sans) e
+`Cormorant Garamond Fallback` (Times New Roman / Liberation Serif) con
+`size-adjust` 105,25% e 96,75% e le sovrascritture di ascendenti e
+discendenti calcolate dai file: mentre i font arrivano il testo occupa già lo
+stesso spazio, e nulla si sposta quando arrivano (la tecnica di `next/font`).
 
 | Classe | Dimensione | Uso |
 | --- | --- | --- |
-| `.display-hero` | `clamp(2.75rem, 7.4vw, 5.6rem)`, interlinea 1,02 | Il titolo sopra la foto della home |
-| `.display-1` | `clamp(2.6rem, 6.4vw, 4.75rem)`, interlinea 1,04 | H1 |
-| `.display-2` | `clamp(1.9rem, 4.2vw, 3rem)` | Titoli di sezione |
-| `.display-3` | `clamp(1.35rem, 2.4vw, 1.75rem)` | Titoli di blocco |
-| `.lede` | `clamp(1.0625rem, 1.5vw, 1.25rem)` | Sottotitoli |
-| `.copy` | `1.0625rem`, interlinea 1,7 | Testo corrente nelle sezioni |
-| `.eyebrow` | `0.75rem`, maiuscolo, tracking 0,16em, `accent` | Etichette sopra i titoli; con `.eyebrow-ruled` sono precedute da un filetto, come i capitoli a stampa |
+| `.display-hero` | `clamp(3.1rem, 1.25rem + 6.6vw, 7.6rem)`, interlinea 0,93 | Il titolo dell'apertura: una frase per riga, a scalare, l'ultima in corsivo |
+| `.display-1` | `clamp(2.9rem, 1.6rem + 4.6vw, 5.6rem)` | H1 delle pagine interne, il contatto finale |
+| `.display-2` | `clamp(2.35rem, 1.55rem + 3vw, 4.25rem)` | Titoli di sezione |
+| `.display-3` | `clamp(1.6rem, 1.35rem + 0.9vw, 2.15rem)` | Titoli di colonna e di passaggio |
+| `.lede` | `clamp(1.0625rem, 1rem + 0.35vw, 1.25rem)` | Sottotitoli |
+| `.copy` | `1.0625rem`, interlinea 1,75 | Testo corrente nelle sezioni |
+| `.eyebrow` | `0.75rem`, maiuscolo, tracking 0,2em, `accent` | Occhielli; `.eyebrow-ruled` li fa precedere da un filetto d'oro |
+| `.section-mark` | occhiello + numero romano in corsivo | Il "capitolo" delle sezioni della home (I–V) |
+| `.numeral` | cifre allineate di Cormorant, `accent` | Numeri dei passaggi, del menu, del modulo |
+
+Il corpo minore di Cormorant (occhio 0,39 dell'em) è compensato da una scala
+più ampia: i titoli di carte e passaggi stanno tra 1,4 e 2,15rem.
 
 **12 px è il minimo**: occhielli, titoli delle colonne del footer, date e note
-non scendono sotto (c'erano testi da 10,4 e 11,2 px).
-
-`text-wrap: balance` sui titoli e `pretty` sui paragrafi. Righe di testo entro
-circa 65 caratteri (`max-w-xl` / `max-w-2xl`).
+non scendono sotto. `text-wrap: balance` sui titoli e `pretty` sui paragrafi;
+righe di testo entro 65–75 caratteri.
 
 ## 4.5 Componenti
 
 Classi CSS in `@layer components`, non componenti React.
 
-- **Pulsanti** — `.btn` (pillola, altezza minima 48 px).
-  - `.btn-primary`: pieno, dalle variabili `--cta` — il colore del testo del
-    tema, piatto: niente ombra, niente sollevamento; al passaggio cambia solo
-    tono. Uno per schermata.
-  - `.btn-ghost`: contorno sottile, per le azioni secondarie.
-  - `.btn-whatsapp`: come `.btn-ghost`, con il simbolo di WhatsApp
-    (`src/components/icons.tsx`).
-- **Link "continua"** — `.link-more`: area di tocco da 44 px, etichetta
-  sottolineata in ottone (`.label`), freccia che si sposta al passaggio
-  (`.arrow`).
-- **Cornice delle foto** — `.frame`: angoli da 0,75rem e un filetto disegnato
-  sopra l'immagine, così una foto chiara su carta ha comunque un bordo.
-- **Card** — `.card`: fondo `field`, filetto, nessuna ombra a riposo. Usata
-  poco: liste e indici con filetti sono preferiti alle griglie di card.
+- **Pulsanti** — `.btn` (pillola, altezza minima 52 px; freccia `.arrow` che
+  scorre di 4 px al passaggio).
+  - `.btn-primary`: pieno, dalle variabili `--cta`, piatto; al passaggio
+    bronzo o oro chiaro. Uno per schermata.
+  - `.btn-ghost` / `.btn-whatsapp`: contorno sottile; il pulsante dell'
+    intestazione è un `.btn-ghost`, discreto per scelta.
+  - Durante l'invio del modulo: `aria-busy`, un anello che gira e
+    l'etichetta "Invio in corso…".
+- **Link** — `.link-more`: filetto d'oro sotto l'etichetta, su cui al
+  passaggio si disegna da sinistra un filetto nel colore del testo; freccia
+  che scorre. `.link-line`: lo stesso filetto, senza freccia (footer, liste).
+  `.nav-link`: filetto d'oro sotto la voce del menu e sotto la pagina attiva.
+- **Cornice delle foto** — `.frame`: angoli quasi vivi (2 px), fondo beige
+  mentre l'immagine arriva, filetto disegnato sopra. Dentro un link la foto
+  si avvicina del 3,5% al passaggio.
+- **Carta del bar** — `.menu-card`: doppio filetto come una carta stampata; in
+  home elenca i tre cocktail «in evidenza» con nome e ingredienti, senza foto.
 - **Campi e chip** — `.field`: fondo `field`, bordo `--field-border` (3:1),
-  `font-size: 1rem` (sotto i 16 px iOS zooma), altezza minima 48 px. `.chip`:
-  bordo al 24%, perché la riconosce già la sua etichetta. Chip selezionata:
-  bordo inchiostro e fondo `accent-soft`.
+  16 px (sotto iOS zooma), altezza 52 px; al focus bordo carbone e alone
+  `--focus-ring`; con errore bordo e alone rossi. `.field-error`: un punto e
+  il messaggio, che scende in 0,35 s. `.chip`: selezionata con bordo carbone
+  doppio e fondo `accent-soft`.
+- **Modulo di richiesta** — i tre passi per nome e numero, con una linea d'oro
+  che cresce sotto (`role="progressbar"` per i lettori di schermo); ogni passo
+  entra con una breve dissolvenza; il messaggio del server arriva in un
+  riquadro con filetto rosso a sinistra. Il modulo resta collegato al server
+  com'era: il "ricevuta" compare solo dopo il salvataggio.
 - **Apertura della home** — `.hero`: la fotografia sotto tutta la prima
-  schermata, l'intestazione trasparente che ci galleggia sopra finché non si
-  scorre o si apre un menu. La fascia è `night` in entrambi i temi, con
-  `.hero-scrim` (velatura più scura dove sta il testo, una fascia in alto per
-  l'intestazione: è l'unico gradiente del sito, e serve a leggere). Senza
-  fotografia resta una fascia scura finita, non un segnaposto. Altezza:
-  `min(86svh, 40rem)` al telefono, `min(92svh, 56rem)` da tablet.
-- **Intestazione e barra del telefono** — superfici piene nel colore della
-  pagina con un filetto, senza trasparenze né sfocature. L'intestazione mostra
-  solo il nome; lo slogan sta nell'occhiello della pagina e nel footer.
-- **Menu** — `.nav-link`: un filetto d'ottone si disegna da sinistra sotto la
-  voce al passaggio del mouse e resta sotto la pagina in cui ci si trova.
-- **Footer** — nome grande, descrittore e filetto d'ottone; dal tablet al
-  portatile il nome ha la sua riga sopra tre colonne, da `lg` sono quattro.
-- **Passaggi** — `StepList`: lista aperta con un filetto sopra ogni passo e il
-  numero in ottone, niente riquadri.
-- **Immagini mancanti** — `Media` mostra un segnaposto tratteggiato nel
-  filetto del tema (`.placeholder-hatch`); dove una
-  foto è facoltativa (copertina di una pagina evento o di un articolo) la
-  pagina usa `mediaExists()` e la omette del tutto.
+  schermata (`min(92svh, 46rem)` al telefono, `min(100svh, 60rem)` da tablet),
+  l'intestazione trasparente sopra. Occhiello con filetto, titolo a scalare
+  (`.hero-title`, una frase per riga, l'ultima in corsivo e rientrata), testo,
+  pulsante e link al servizio; in fondo una riga sottile con "Preventivo
+  gratuito e senza impegno" e l'indicatore di scorrimento: le tacche di un
+  jigger con una goccia che scende (`.scroll-cue`), che è anche un link alla
+  sezione successiva. `.hero-scrim` vela la foto dove sta il testo.
+- **Sezioni della home** (`src/components/pages/HomePage.tsx`):
+  I. Il servizio — titolo e testo affiancati, tre colonne con foto di formati
+  diversi e fuori asse, l'indice dei tipi di festa. II. Chi sono — ritratto,
+  i fatti, la formazione in elenco. III. Il mio modo di lavorare — fascia
+  scura, la sua frase in corsivo tra virgolette d'oro, la carta del bar.
+  IV. Galleria — quattro foto in mosaico (una grande verticale contro una
+  orizzontale e due piccole). V. Come funziona — tre passaggi con numeri
+  grandi e filetti. Poi il contatto finale.
+- **Contatto finale** — `FinalCta`, in fondo a ogni pagina: fascia scura,
+  titolo grande, pulsante e WhatsApp, e sopra di essi un calice disegnato a
+  filo d'oro (`CoupeMark`, l'unico disegno del sito).
+- **Intestazione** — il nome in Cormorant, tre voci e «Eventi», lingua, tema,
+  contatto discreto. Trasparente sopra la foto della home, poi piena con un
+  filetto e 8 px più bassa quando si scorre.
+- **Menu del telefono** — a tutta altezza, sempre nella pagina e animato in
+  entrata e in uscita (`.mobile-menu`): le tre voci grandi con il loro numero,
+  i tipi di festa in due colonne, lingua e pulsante in fondo. Chiuso è
+  `visibility: hidden`, quindi fuori dal `Tab` e dai lettori di schermo.
+- **Footer** — fascia scura: il nome in grande, descrittore, la frase del
+  brand, le colonne, solo i contatti e i profili davvero impostati, le note
+  legali e «Torna su».
+- **Passaggi** — `StepList` (pagina del servizio e page builder): numero
+  grande in `accent`, filetto che parte dal numero, titolo, testo.
+- **Immagini mancanti** — `Media` mostra un segnaposto tratteggiato
+  (`.placeholder-hatch`); dove una foto è facoltativa la pagina usa
+  `mediaExists()` e la omette.
 
 ## 4.6 Spaziature e griglia
 
-- Contenitore: `max-width: 78rem`, margine laterale 1,25rem su mobile e 2rem
-  da 768 px (mai sotto i 16 px).
-- Sezione: `clamp(3rem, 9vw, 7.5rem)` in verticale.
-- Griglia a 12 colonne da `lg` per le composizioni testo + immagine; tutte le
-  pagine, articoli compresi, allineano tutto al bordo sinistro del
-  contenitore, sotto il nome nell'intestazione.
-- Misura di lettura: circa 70-80 battute (`max-w-2xl` per gli articoli e le
-  pagine legali, `max-w-xl` per i paragrafi nelle sezioni).
-- Le foto affiancate al testo diventano orizzontali e a tutta larghezza finché
-  le colonne non si aprono (`lg`), così su un tablet non resta mezza riga
-  vuota.
-- Testo e immagini si alternano lungo la pagina: due fotografie non stanno mai
-  una dopo l'altra sul telefono.
+- Contenitore: `max-width: 86rem`; margine laterale 1,25rem al telefono,
+  2,5rem da 768 px, 4rem da 1280 px (mai sotto i 16 px, rispettando le
+  tacche dei telefoni).
+- Sezione: `clamp(4.5rem, 10vw, 9rem)` in verticale.
+- Griglia a 12 colonne da `lg`; le composizioni sono asimmetriche per scelta
+  (7/5, 5/6, 6/6 con sfalsamenti verticali), mai centrate per comodità.
+- Misura di lettura: 65–75 battute (`max-w-xl` / `max-w-2xl`).
+- `.render-lazy` (`content-visibility: auto`) sulle tre sezioni basse della
+  home: il browser le impagina solo quando si avvicinano (§ 4.9). Non sul
+  footer né sul contatto finale: fuori schermo non vengono dipinti, e gli
+  strumenti di verifica del contrasto leggevano allora il loro testo chiaro
+  sullo sfondo avorio della pagina, segnalando errori che non esistono.
 
 ## 4.7 Movimento
 
-1. **Niente entra in scena.** I blocchi comparivano uno dopo l'altro
-   scorrendo (`.reveal`): l'effetto si ripeteva su ogni sezione di ogni pagina
-   e lasciava vuoti i blocchi finché non arrivavano sullo schermo. Tolto,
-   insieme al componente che lo guidava.
-2. **Microinterazioni** — 200 ms sui colori, la freccia dei link si sposta di
-   3 px, il filetto del menu si disegna in 350 ms, una foto dentro un link si
-   avvicina del 3% in 900 ms.
-3. **Cambio di tema** — una dissolvenza di 0,2 s (§ 4.3), il sole e la luna
-   che ruotano.
+Leggero e fatto in casa: CSS e un piccolo componente
+(`src/components/site/ScrollReveal.tsx`), nessuna libreria.
 
-`prefers-reduced-motion: reduce` azzera tutto. Niente parallax, niente
-animazioni continue.
+1. **L'apertura della home** — solo CSS. Un velo notturno si alza sulla foto
+   mentre questa si assesta da un leggero ingrandimento (2,6 s); l'occhiello
+   appare, le tre righe del titolo salgono da dietro una maschera una dopo
+   l'altra, poi il testo, i pulsanti e la riga in fondo (circa 1,6 s in
+   tutto). La foto non parte mai trasparente: è l'elemento più grande della
+   pagina, e un'immagine trasparente ritarderebbe la misura del caricamento.
+2. **Le aperture delle pagine interne** — occhiello e introduzione in
+   dissolvenza; il titolo sale senza dissolvenza, per lo stesso motivo.
+3. **Le sezioni allo scorrimento** — gli elementi con `data-reveal` salgono
+   di 28 px in dissolvenza; le foto (`data-reveal="image"`) si aprono da un
+   ritaglio più stretto. Una volta sola, scaglionate dentro un gruppo. Sono
+   nascosti **solo** gli elementi ancora sotto la piega, e solo dopo che il
+   JavaScript ha verificato di poterli mostrare: senza JavaScript, per un
+   crawler o con "riduci movimento" tutto è visibile da subito.
+4. **Microinterazioni** — filetti che si disegnano sotto link e voci di menu,
+   frecce che scorrono, foto che si avvicinano, campi con alone al focus,
+   errori che scendono, chip, menu del telefono, cambio di tema.
+5. **Mai** — scorrimento dirottato, parallasse, cursori personalizzati,
+   animazioni necessarie per leggere. L'unica animazione continua è la
+   goccia dell'indicatore di scorrimento, decorativa.
+
+`prefers-reduced-motion: reduce` azzera durate e ritardi (le animazioni
+finiscono subito nello stato visibile) e nasconde la goccia.
 
 ## 4.8 Accessibilità
 
 Requisiti trattati come vincoli di build, non come rifiniture.
 
-- **Focus** — `:focus-visible` con outline `accent` da 2px e offset di 3px, su
-  ogni elemento interattivo, mai rimosso.
-- **Skip link** — primo elemento del DOM, visibile al focus.
-- **HTML semantico** — `header`/`main`/`footer`/`nav`/`article`/`figure`; un solo
-  `h1` per pagina; gerarchia dei titoli senza salti.
-- **Form** — ogni campo ha una `<label>` associata; i gruppi di radio e checkbox
-  sono in `<fieldset>` con `<legend>`; gli errori usano `aria-invalid` e sono
-  annunciati; il cambio di passo sposta il focus sul titolo del nuovo passo.
-- **FAQ** — `<details>`/`<summary>` nativi: navigabili da tastiera e leggibili
-  da Google senza una riga di JavaScript.
-- **Immagini** — `alt` obbligatorio; il segnaposto espone `role="img"` con
-  `aria-label`, così anche prima delle foto vere la pagina si legge.
-- **Barra CTA mobile** — quando è nascosta gli elementi sono `tabIndex={-1}` e
-  la barra è `aria-hidden`: non si finisce dentro un elemento invisibile
-  tabulando.
-- **Menu** — `Esc` chiude il menu "Eventi" e quello del telefono e riporta il
-  focus sul pulsante che li ha aperti; il menu "Eventi" si apre solo con un
-  clic o `Invio`, e si chiude uscendone col `Tab`. Con il menu del telefono
-  aperto il resto della pagina è `inert`: il `Tab` non finisce su link coperti.
-- **Testo sopra la foto** — axe non sa misurarlo, quindi è misurato a parte:
-  il colore del testo contro il pixel più chiaro (99° percentile) della foto
-  velata dietro ogni riga. Minimo 4,8:1 per il titolo al computer, dove passa
-  sopra le luci sfocate (per un testo così grande la soglia AA è 3:1), 5,1:1
-  per l'occhiello al telefono, sopra 10:1 il sottotitolo, sopra 8:1 le voci
-  dell'intestazione. Ogni frase del titolo va su una riga sua: il
-  bilanciamento automatico spezzava le frasi a metà.
-- **Verifica** — axe con le regole WCAG 2.2 AA su 15 pagine, telefono e
-  desktop, **in entrambi i temi**: zero violazioni (ottobre 2026, ripetuta
-  dopo il restyling). Nessun testo sotto i 12 px, nessuno scorrimento
-  orizzontale su 15 pagine a 360, 390, 820, 1024 e 1440 px.
-  L'interruttore è provato con clic, `Invio`, `Spazio`, tocco, "riduci
-  movimento" e menu del telefono aperto. La navigazione da tastiera dei menu è
-  provata a mano; restano da provare con uno screen reader vero.
+- **Focus** — `:focus-visible` con outline `accent` da 2 px e offset di 3 px;
+  nei campi un bordo pieno più un alone.
+- **Skip link** — primo elemento del DOM, visibile al focus; «Torna su» nel
+  footer porta allo stesso punto.
+- **HTML semantico** — un solo `h1` per pagina (l'occhiello dell'apertura è
+  dentro l'`h1`), gerarchia dei titoli senza salti, numeri decorativi
+  (romani, 01–03) nascosti ai lettori di schermo.
+- **Form** — etichette associate, gruppi in `<fieldset>`, errori con
+  `aria-invalid` e `aria-describedby`, focus sul primo campo da correggere,
+  barra di avanzamento con nome e valore leggibili.
+- **Menu** — `Esc` chiude il menu «Eventi» e quello del telefono e riporta il
+  focus sul pulsante; con il menu del telefono aperto il resto della pagina è
+  `inert`.
+- **Testo sopra la foto** — misurato a parte (axe non sa farlo): il colore di
+  ogni riga contro il pixel più chiaro (99° percentile) della foto velata
+  dietro le sue lettere. Minimi: titolo 9,1:1, occhiello 6,2:1 (al telefono,
+  dopo aver scurito la parte alta del velo), testo 9,7:1, link e note sopra
+  8:1, intestazione sopra 8:1.
+- **Verifica (24 ottobre 2026)** — axe con le regole WCAG 2.2 AA su 15
+  pagine, telefono e desktop, in entrambi i temi: zero violazioni. Nessun
+  testo sotto i 12 px, nessuno scorrimento orizzontale a 360, 390, 820, 1024
+  e 1440 px. Movimento provato con e senza JavaScript e con "riduci
+  movimento" (17 controlli); tastiera, interruttore del tema (12 controlli) ed
+  eventi di conversione (18) provati con script. Restano da provare con uno
+  screen reader vero.
 
 ## 4.9 Performance
 
-Scelte fatte guardando i Core Web Vitals, non i benchmark.
+- **JavaScript** — ~103 kB condivisi, come prima: nessuna libreria di
+  animazione. `ScrollReveal` legge le posizioni dalle notifiche
+  dell'IntersectionObserver invece di misurare ogni elemento, così non
+  costringe il browser a impaginare tutta la pagina al caricamento.
+- **Font** — precaricati solo Cormorant tondo e DM Sans (66 KB in tutto,
+  contro i 115 KB di prima); il corsivo è precaricato solo dalla home, dove il
+  titolo lo usa subito, e fuori dalla home non si scarica affatto (la frase
+  del footer è in tondo per questo). `font-display: swap` e font di riserva
+  tarati: CLS 0. L'occhiello dell'apertura va a capo al punto su telefono,
+  qualunque sia il font: lasciato alla larghezza, il font di riserva (più
+  largo nelle maiuscole) andava a capo dove quello vero no, e l'apertura
+  saltava di una riga quando il font arrivava.
+- **Immagini** — `next/image` con AVIF e WebP e `sizes` su ogni istanza;
+  `priority` solo sulla foto dell'apertura. Le foto nuove sono WebP a 80, tra
+  45 e 93 KB alla dimensione piena.
+- **Rendering differito** — `content-visibility: auto` sulle sezioni basse
+  della home.
+- **Misure** (Lighthouse 12.6, telefono, build di produzione in locale, tre
+  misure alternate con la versione precedente, mediane, 24 ottobre 2026):
+  - rete e CPU simulate: home LCP 2,89 s (prima 2,95 s), landing dei
+    matrimoni 2,49 s (2,42 s), CLS 0, punteggi 95–97 (95–98);
+  - rallentamento reale di DevTools: home LCP 1,78 s (1,66 s), TBT 136 ms
+    (244 ms), punteggio 98 (95); landing LCP 1,68 s (1,66 s), punteggio 97
+    (97), peso 254 KiB (286 KiB).
 
-- **Bundle JS di primo caricamento: ~103 kB condivisi.** Nessuna libreria di
-  animazione, nessun framework di componenti, nessun icon pack: le icone sono
-  SVG inline (poche, riusate).
-- **Font autoprodotti** con `font-display: swap` e `<link rel="preload">` sui
-  due subset latin effettivamente usati above the fold.
-- **Immagini** via `next/image` con AVIF e WebP, `sizes` dichiarato su ogni
-  istanza, `priority` e `fetchPriority="high"` **solo** sull'immagine
-  dell'apertura: con `priority` da solo il browser la scaricava a priorità
-  bassa, dopo i font. La foto di sfondo della home pesa circa 14 KB in AVIF
-  alla larghezza di un telefono.
-- **Misure** (Lighthouse, telefono simulato, build di produzione in locale,
-  mediana di tre misure alternate con la versione precedente, fine ottobre
-  2026): home LCP 2,94 s (prima del restyling 2,95 s), landing dei matrimoni
-  2,74 s (2,75 s), CLS 0, punteggio 95-96. Le sottrazioni del restyling non
-  hanno cambiato il peso delle pagine.
-- **Testo prima delle immagini.** Nelle pagine interne l'elemento più grande
-  è il titolo, che compare con il primo disegno della pagina.
-- **Client component solo dove servono**: header (menu e tema), modulo,
-  editor admin. Tutto il resto è server component: zero JS spedito.
-- **CSS unico** generato da Tailwind v4, senza runtime.
+  In entrambe le versioni una misura su tre della landing arriva a circa 3 s:
+  è il titolo ridisegnato quando arriva il suo font, non una differenza tra
+  le due. La home è più ricca (sette sezioni, più foto) e pesa di più; le
+  pagine interne sono più leggere perché precaricano meno font e il corsivo
+  non serve fuori dalla home.
+- **Client component solo dove servono**: header, modulo, `ScrollReveal`,
+  barra del telefono, editor admin.

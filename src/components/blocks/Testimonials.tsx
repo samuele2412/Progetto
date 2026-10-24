@@ -58,7 +58,7 @@ export function Testimonials({
     return (
       <div className="card grid gap-8 p-6 sm:p-8 lg:grid-cols-[1fr_1.15fr] lg:gap-12 lg:p-10">
         <div>
-          <Heading className="font-[family-name:var(--font-display)] text-xl text-ink sm:text-2xl">
+          <Heading className="font-[family-name:var(--font-display)] text-2xl text-ink sm:text-[1.75rem]">
             {copy.misc.noReviewsTitle}
           </Heading>
           <p className="mt-4 text-sm leading-relaxed text-ink-3">{copy.misc.noReviewsYet}</p>

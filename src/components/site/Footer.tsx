@@ -22,9 +22,16 @@ export type FooterProps = {
   legalLinks: { label: string; href: string }[];
   legalName: string;
   vatNumber: string;
-  labels: { contact: string; follow: string; rights: string };
+  labels: { contact: string; follow: string; rights: string; backToTop: string };
 };
 
+const linkClass = 'tap-target link-line text-sm text-ink-2 transition-colors hover:text-ink';
+
+/**
+ * The back cover: a dark band in either theme, the wordmark set large as on a
+ * menu, then the links. Only contacts and profiles that exist are shown — a
+ * placeholder number or an empty profile is simply left out, never invented.
+ */
 export function Footer(props: FooterProps) {
   const year = new Date().getFullYear();
   const socials = [
@@ -33,127 +40,124 @@ export function Footer(props: FooterProps) {
   ].filter((social) => !isPlaceholder(social.href));
 
   return (
-    <footer className="hairline mt-auto">
+    <footer className="tone-night mt-auto border-t border-[var(--hairline)] bg-paper">
       {/* pb-28 on small screens keeps the last rows clear of the fixed
           mobile CTA bar, which otherwise covers the legal links. */}
-      <div className="container-page pb-28 pt-14 md:pb-20 md:pt-20 lg:pb-14">
-        {/* Two link columns side by side on a phone: stacked, the footer was
-            a second, longer menu. From a tablet the wordmark takes its own row
-            over three columns: four at 820px squeezed the contact column to a
-            few words a line. */}
-        <div className="grid grid-cols-2 gap-x-6 gap-y-10 md:grid-cols-3 md:gap-12 lg:grid-cols-[1.4fr_1fr_1fr_1fr]">
-          <div className="col-span-2 md:col-span-3 lg:col-span-1">
-            {/* The wordmark set large, as on a menu's back cover. */}
-            <p className="font-[family-name:var(--font-display)] text-[2.1rem] leading-none tracking-tight text-ink md:text-[2.6rem]">
+      <div className="container-page pb-28 pt-16 md:pb-20 md:pt-24 lg:pb-12">
+        <div className="grid gap-14 lg:grid-cols-12 lg:gap-16">
+          <div className="lg:col-span-5">
+            <p className="font-[family-name:var(--font-display)] text-[clamp(3.6rem,2.2rem+5.6vw,7.25rem)] font-medium leading-[0.86] tracking-[-0.025em] text-ink">
               {props.brandName}
             </p>
-            <p className="mt-3 text-xs uppercase tracking-[0.16em] text-ink-3">{props.descriptor}</p>
-            <div className="rule-brass mt-6" />
-            <p className="mt-6 max-w-xs text-sm leading-relaxed text-ink-2">{props.claim}</p>
-            <p className="mt-3 text-sm text-ink-3">{props.serviceArea}</p>
+            <p className="mt-6 text-xs uppercase tracking-[0.2em] text-accent">{props.descriptor}</p>
+            <div aria-hidden className="rule-brass mt-8" />
+            {/* Roman, not italic: the footer is on every page, and the italic
+                face would then be downloaded by every landing page for this
+                one line. */}
+            <p className="mt-8 max-w-sm font-[family-name:var(--font-display)] text-[1.7rem] leading-snug text-ink">
+              {props.claim}
+            </p>
+            <p className="mt-4 max-w-sm text-sm leading-relaxed text-ink-3">{props.serviceArea}</p>
           </div>
 
-          {props.columns.map((column) => (
-            <nav key={column.title} aria-label={column.title}>
-              <p className="eyebrow">{column.title}</p>
-              <ul className="mt-4 space-y-1">
-                {column.links.map((link) => (
-                  <li key={link.href}>
-                    <Link href={link.href} className="tap-target text-sm text-ink-2 transition-colors hover:text-ink">
-                      {link.label}
-                    </Link>
+          {/* Two link columns side by side on a phone: stacked, the footer was
+              a second, longer menu. */}
+          <div className="grid grid-cols-2 gap-x-6 gap-y-12 sm:grid-cols-3 lg:col-span-7 lg:pt-4">
+            {props.columns
+              .filter((column) => column.links.length > 0)
+              .map((column) => (
+                <nav key={column.title} aria-label={column.title}>
+                  <p className="eyebrow">{column.title}</p>
+                  <ul className="mt-5 space-y-1">
+                    {column.links.map((link) => (
+                      <li key={link.href}>
+                        <Link href={link.href} className={linkClass}>
+                          {link.label}
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                </nav>
+              ))}
+
+            <div className="col-span-2 sm:col-span-1">
+              <p className="eyebrow">{props.labels.contact}</p>
+              <ul className="mt-5 space-y-1">
+                <li>
+                  <Link href={props.quoteHref} className={linkClass} data-track="quote" data-track-location="footer">
+                    {props.quoteLabel}
+                  </Link>
+                </li>
+                {!isPlaceholder(props.phone) && (
+                  <li>
+                    <a href={props.phoneHref} className={linkClass} data-track-location="footer">
+                      {props.phone}
+                    </a>
                   </li>
-                ))}
+                )}
+                {props.whatsappHref && (
+                  <li>
+                    <a
+                      href={props.whatsappHref}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className={linkClass}
+                      data-track-location="footer"
+                    >
+                      WhatsApp
+                    </a>
+                  </li>
+                )}
+                {!isPlaceholder(props.email) && (
+                  <li>
+                    <a href={`mailto:${props.email}`} className={`${linkClass} break-all`} data-track-location="footer">
+                      {props.email}
+                    </a>
+                  </li>
+                )}
               </ul>
-            </nav>
-          ))}
+              <p className="mt-4 max-w-[16rem] text-xs leading-relaxed text-ink-3">{props.availability}</p>
 
-          <div className="col-span-2 md:col-span-1">
-            <p className="eyebrow">{props.labels.contact}</p>
-            <ul className="mt-4 space-y-1 text-sm">
-              <li>
-                <Link
-                  href={props.quoteHref}
-                  className="tap-target text-ink-2 transition-colors hover:text-ink"
-                  data-track="quote"
-                  data-track-location="footer"
-                >
-                  {props.quoteLabel}
-                </Link>
-              </li>
-              {!isPlaceholder(props.phone) && (
-                <li>
-                  <a
-                    href={props.phoneHref}
-                    className="tap-target text-ink-2 transition-colors hover:text-ink"
-                    data-track-location="footer"
-                  >
-                    {props.phone}
-                  </a>
-                </li>
+              {socials.length > 0 && (
+                <>
+                  <p className="eyebrow mt-10">{props.labels.follow}</p>
+                  <ul className="mt-5 flex gap-6">
+                    {socials.map((social) => (
+                      <li key={social.label}>
+                        <a href={social.href} target="_blank" rel="noopener noreferrer" className={linkClass}>
+                          {social.label}
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                </>
               )}
-              {props.whatsappHref && (
-                <li>
-                  <a
-                    href={props.whatsappHref}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="tap-target text-ink-2 transition-colors hover:text-ink"
-                    data-track-location="footer"
-                  >
-                    WhatsApp
-                  </a>
-                </li>
-              )}
-              {!isPlaceholder(props.email) && (
-                <li>
-                  <a
-                    href={`mailto:${props.email}`}
-                    className="tap-target break-all text-ink-2 transition-colors hover:text-ink"
-                    data-track-location="footer"
-                  >
-                    {props.email}
-                  </a>
-                </li>
-              )}
-              <li className="pt-1 text-xs text-ink-3">{props.availability}</li>
-            </ul>
-
-            {socials.length > 0 && (
-              <>
-                <p className="eyebrow mt-8">{props.labels.follow}</p>
-                <ul className="mt-4 flex gap-5 text-sm">
-                  {socials.map((social) => (
-                    <li key={social.label}>
-                      <a
-                        href={social.href}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="tap-target text-ink-2 transition-colors hover:text-ink"
-                      >
-                        {social.label}
-                      </a>
-                    </li>
-                  ))}
-                </ul>
-              </>
-            )}
+            </div>
           </div>
         </div>
 
-        <div className="hairline mt-14 flex flex-col gap-4 pt-6 text-xs text-ink-3 md:flex-row md:items-center md:justify-between">
+        <div className="mt-16 flex flex-col gap-5 border-t border-[var(--hairline)] pt-6 text-xs text-ink-3 md:mt-24 md:flex-row md:items-center md:justify-between">
           <p>
             © {year} {isPlaceholder(props.legalName) ? props.brandName : props.legalName}
             {isPlaceholder(props.vatNumber) ? '' : ` · P.IVA ${props.vatNumber}`} — {props.labels.rights}
           </p>
-          <ul className="flex flex-wrap gap-x-5 gap-y-1">
+          <ul className="flex flex-wrap items-center gap-x-6 gap-y-1">
             {props.legalLinks.map((link) => (
               <li key={link.href}>
-                <Link href={link.href} className="tap-target transition-colors hover:text-ink">
+                <Link href={link.href} className="tap-target link-line transition-colors hover:text-ink">
                   {link.label}
                 </Link>
               </li>
             ))}
+            <li>
+              {/* The skip link's target, so it lands on the content and moves focus there too. */}
+              <a href="#main" className="tap-target group inline-flex items-center gap-2 transition-colors hover:text-ink">
+                {props.labels.backToTop}
+                <span aria-hidden className="transition-transform duration-300 group-hover:-translate-y-0.5">
+                  ↑
+                </span>
+              </a>
+            </li>
           </ul>
         </div>
       </div>

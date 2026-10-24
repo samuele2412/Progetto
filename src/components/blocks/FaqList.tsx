@@ -29,7 +29,7 @@ export function FaqList({
       {faqs.map((faq) => (
         <details key={faq.id} className="group py-5">
           <summary className="flex min-h-11 cursor-pointer list-none items-start justify-between gap-6 text-left">
-            <Heading className="font-[family-name:var(--font-display)] text-lg leading-snug text-ink transition-colors group-hover:text-accent-strong md:text-xl">
+            <Heading className="font-[family-name:var(--font-display)] text-[1.4rem] leading-snug text-ink transition-colors group-hover:text-accent-strong md:text-[1.6rem]">
               {t(faq.question, locale)}
             </Heading>
             <span

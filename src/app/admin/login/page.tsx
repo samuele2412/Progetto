@@ -21,7 +21,7 @@ export default async function LoginPage({
         <div className="mb-8 text-center">
           {/* The brand is the page's only title, so it is the h1: the login
               screen had no heading and no landmark at all. */}
-          <h1 className="font-[family-name:var(--font-display)] text-2xl font-normal text-stone-900">Cordiale</h1>
+          <h1 className="font-[family-name:var(--font-display)] text-[2rem] font-medium text-stone-900">Cordiale</h1>
           {/* stone-500 at this size is 4.4:1 on white — just under AA. */}
           <p className="mt-1 text-[0.65rem] uppercase tracking-[0.2em] text-stone-600">Pannello</p>
         </div>

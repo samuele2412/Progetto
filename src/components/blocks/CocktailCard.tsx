@@ -30,7 +30,7 @@ export function CocktailCard({
         />
       </div>
       <div className="p-4 sm:p-5">
-        <Heading className="font-[family-name:var(--font-display)] text-lg text-ink">{cocktail.name}</Heading>
+        <Heading className="font-[family-name:var(--font-display)] text-2xl leading-tight text-ink">{cocktail.name}</Heading>
         <p className="mt-1 text-xs uppercase tracking-[0.14em] text-accent">{t(cocktail.ingredients, locale)}</p>
         <p className="mt-2.5 text-sm leading-relaxed text-ink-2 sm:mt-3">{t(cocktail.description, locale)}</p>
       </div>

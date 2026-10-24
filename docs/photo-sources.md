@@ -12,9 +12,11 @@ leggibile dalla macchina è in `src/content/stock-photos.json`.
 
 ## Licenza
 
-Tutte e 25 sono **CC0 1.0 Universal** (dedica al pubblico dominio), reperite
+Tutte e 29 sono **CC0 1.0 Universal** (dedica al pubblico dominio), reperite
 tramite [Openverse](https://openverse.org), il motore di ricerca di contenuti
-aperti della WordPress Foundation.
+aperti della WordPress Foundation. Per le quattro aggiunte con il redesign la
+licenza è stata controllata anche sulla pagina d'origine (wordpress.org/photos
+e rawpixel dichiarano CC0 1.0).
 
 CC0 significa che l'autore ha rinunciato a ogni diritto d'autore: l'uso
 commerciale è consentito, **non è richiesta alcuna attribuzione** e la modifica
@@ -61,6 +63,30 @@ obbligo da riportare sul sito.
 | `galleria-tavolo-sera.webp` | Galleria | [rawpixel](https://www.rawpixel.com/image/3282419/free-photo-image-restaurant-table-lunch) | CC0-1.0 |
 | `galleria-versata.webp` | Galleria | [stocksnap](https://stocksnap.io/photo/pouring-wine-6JMD0WXXTG) | CC0-1.0 |
 | `hero-bancone.webp` | Hero della home | [rawpixel](https://www.rawpixel.com/image/3301385/free-photo-image-cocktail-bar-club) | CC0-1.0 |
+| `servizio-limone.webp` | Home, «Il servizio», colonna 1 | [wordpress](https://wordpress.org/photos/photo/486a216f78/) | CC0-1.0 |
+| `servizio-attrezzatura.webp` | Home, «Il servizio», colonna 2 | [rawpixel](https://www.rawpixel.com/image/3371450) | CC0-1.0 |
+| `atmosfera-sour.webp` | Home, «Galleria», foto grande | [wordpress](https://wordpress.org/photos/photo/4866536b93/) | CC0-1.0 |
+| `atmosfera-coppa.webp` | Home, «Galleria», foto orizzontale | [rawpixel](https://www.rawpixel.com/image/6036261) | CC0-1.0 |
+
+La home usa anche, per la terza colonna del servizio e due foto della
+galleria, `evento-aziendale.webp`, `galleria-ghiaccio-fiamma.webp` ed
+`evento-diciottesimo.webp`, già nell'elenco.
+
+### Le quattro foto del redesign
+
+Scelte per una sola luce calda e bassa, coerente con il resto: mani al
+lavoro, attrezzi, un sour, un bicchiere di cristallo. Nessuna mostra un volto
+riconoscibile. Sono state **ritagliate** e corrette con un viraggio caldo
+leggero (bilanciamento del bianco, saturazione −10%, neri appena sollevati),
+cosa che la CC0 consente. Da rawpixel è stata usata solo l'anteprima a
+1024 px: quelle più grandi portano la filigrana del sito, che non può finire
+sulla pagina.
+
+**Come si sostituiscono**: si carica la propria foto in **Media**, se ne copia
+il percorso e lo si incolla in **Testi e contatti → Home · Fotografie**
+(colonne del servizio e galleria della home), aggiornando la descrizione di
+cosa si vede. L'apertura e il ritratto stanno in «Home · 1. Apertura» e «Chi
+sono».
 
 ### L'immagine social
 

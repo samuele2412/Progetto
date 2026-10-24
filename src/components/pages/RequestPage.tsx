@@ -109,7 +109,7 @@ export async function RequestPage({
               <ol className="mt-4 space-y-3">
                 {steps.map((item, index) => (
                   <li key={item.title} className="flex items-baseline gap-3">
-                    <span className="text-sm font-medium tabular-nums text-accent">{String(index + 1).padStart(2, '0')}</span>
+                    <span className="numeral text-xl leading-none">{String(index + 1).padStart(2, '0')}</span>
                     <span className="text-ink">{item.title}</span>
                   </li>
                 ))}

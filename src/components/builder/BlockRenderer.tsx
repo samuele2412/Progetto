@@ -124,7 +124,7 @@ function Body({ source, className }: { source: string; className?: string }) {
     <div className={cn('copy space-y-4', className)}>
       {renderMarkdown(source, {
         h2: 'display-3 mt-10 first:mt-0',
-        h3: 'mt-8 font-[family-name:var(--font-display)] text-xl first:mt-0',
+        h3: 'mt-8 font-[family-name:var(--font-display)] text-2xl first:mt-0',
         p: 'leading-relaxed',
         ul: 'list-disc space-y-2 pl-5 marker:text-accent',
         ol: 'list-decimal space-y-2 pl-5 marker:text-accent',

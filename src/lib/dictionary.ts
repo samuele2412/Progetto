@@ -36,6 +36,7 @@ export const dictionary = {
     seeAll: { it: 'Vedi tutto', en: 'See all' },
     seePackages: { it: 'Come funziona', en: 'How it works' },
     seeCocktails: { it: 'Vedi la carta', en: 'See the list' },
+    seeGallery: { it: 'Vedi la galleria', en: 'See the gallery' },
     readMore: { it: 'Continua a leggere', en: 'Read more' },
     back: { it: 'Torna indietro', en: 'Go back' },
     backHome: { it: 'Torna alla home', en: 'Back to home' },
@@ -48,6 +49,7 @@ export const dictionary = {
     rights: { it: 'Tutti i diritti riservati', en: 'All rights reserved' },
     privacy: { it: 'Privacy policy', en: 'Privacy policy' },
     cookies: { it: 'Cookie policy', en: 'Cookie policy' },
+    backToTop: { it: 'Torna su', en: 'Back to top' },
   },
   packages: {
     /** Heading of the formats section, shown only once formats exist. */
@@ -170,6 +172,8 @@ export const dictionary = {
   },
   misc: {
     reference: { it: 'Riferimento', en: 'Reference' },
+    // The scroll cue at the foot of the home opening.
+    scroll: { it: 'Scorri', en: 'Scroll' },
     published: { it: 'Pubblicato il', en: 'Published on' },
     readingTime: { it: 'min di lettura', en: 'min read' },
     notFoundTitle: { it: 'Pagina non trovata', en: 'Page not found' },

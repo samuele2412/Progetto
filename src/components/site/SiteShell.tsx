@@ -12,6 +12,7 @@ import { Footer } from './Footer';
 import { Header } from './Header';
 import { ConversionTracking } from './ConversionTracking';
 import { MobileActionBar } from './MobileActionBar';
+import { ScrollReveal } from './ScrollReveal';
 import type { SlugPair } from './LanguageSwitcher';
 
 /**
@@ -142,7 +143,12 @@ export async function SiteShell({
           { label: copy.footer.privacy, href: path('privacy', locale) },
           { label: copy.footer.cookies, href: path('cookies', locale) },
         ]}
-        labels={{ contact: copy.footer.contact, follow: copy.footer.follow, rights: copy.footer.rights }}
+        labels={{
+          contact: copy.footer.contact,
+          follow: copy.footer.follow,
+          rights: copy.footer.rights,
+          backToTop: copy.footer.backToTop,
+        }}
       />
 
       <MobileActionBar
@@ -153,6 +159,8 @@ export async function SiteShell({
         regionLabel={copy.nav.quickActions}
         hideOnPaths={[path('request', locale), path('thanks', locale)]}
       />
+
+      <ScrollReveal />
 
       {/* Only shipped when there is somewhere to send the events. */}
       {analyticsEnabled && <ConversionTracking quotePaths={[path('request', 'it'), path('request', 'en')]} />}

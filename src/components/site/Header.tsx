@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, type CSSProperties } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import type { Locale } from '@/lib/i18n';
@@ -91,8 +91,6 @@ export function Header(props: HeaderProps) {
 
   const isCurrent = (href: string) => pathname === href || pathname.startsWith(`${href}/`);
 
-  const allLinks = [...props.links, ...props.eventLinks];
-
   // On the home page the header floats over the hero photograph until the
   // visitor scrolls or opens a menu: transparent, with the light type the
   // photograph needs (.on-image). Anything open turns it back into the bar.
@@ -127,13 +125,13 @@ export function Header(props: HeaderProps) {
             first screen: the page's own eyebrow (or the home headline) says it
             once, where it is read. */}
         <Link href={props.homeHref} className="group flex min-h-11 items-center" aria-label={props.brandName}>
-          <span className="font-[family-name:var(--font-display)] text-xl tracking-tight text-ink transition-colors group-hover:text-accent-strong md:text-[1.45rem]">
+          <span className="font-[family-name:var(--font-display)] text-[1.75rem] font-medium leading-none tracking-[-0.01em] text-ink transition-colors duration-300 group-hover:text-accent-strong md:text-[2rem]">
             {props.brandName}
           </span>
         </Link>
 
         {/* Desktop navigation */}
-        <nav aria-label="Primary" className="hidden items-center gap-7 lg:flex">
+        <nav aria-label="Primary" className="hidden items-center gap-8 lg:flex">
           {props.links.map((link) => (
             <Link
               key={link.href}
@@ -188,12 +186,12 @@ export function Header(props: HeaderProps) {
                   eventsOpen ? 'visible opacity-100' : 'invisible opacity-0',
                 )}
               >
-                <ul className="card overflow-hidden p-1.5 shadow-[var(--shadow-lift)]">
+                <ul className="card overflow-hidden p-2 shadow-[var(--shadow-lift)]">
                   {props.eventLinks.map((link) => (
                     <li key={link.href}>
                       <Link
                         href={link.href}
-                        className="flex min-h-11 items-center rounded-md px-3 text-sm text-ink-2 transition-colors hover:bg-paper-2 hover:text-ink"
+                        className="flex min-h-11 items-center rounded-[var(--radius-sm)] px-3 text-sm text-ink-2 transition-colors hover:bg-paper-2 hover:text-ink"
                       >
                         {link.label}
                       </Link>
@@ -213,9 +211,11 @@ export function Header(props: HeaderProps) {
             toLight={props.themeLabels.toLight}
             toDark={props.themeLabels.toDark}
           />
+          {/* Discreet on purpose: an outline, not the filled button. The page
+              under it has its own, larger call to action on every screen. */}
           <Link
             href={props.ctaHref}
-            className="btn btn-primary hidden !min-h-11 !px-5 !py-2.5 text-sm lg:inline-flex"
+            className="btn btn-ghost hidden !min-h-11 !px-5 !py-2.5 text-sm lg:inline-flex"
             data-track="quote"
             data-track-location="header"
           >
@@ -245,29 +245,70 @@ export function Header(props: HeaderProps) {
         </div>
       </div>
 
-      {/* Mobile drawer */}
+      {/* Mobile menu. Always in the page and faded in and out rather than
+          mounted on demand (globals.css, "Mobile menu"); closed, it is
+          visibility: hidden, so it is out of the tab order and the
+          accessibility tree just as `hidden` would make it. */}
       <div
         id="mobile-menu"
-        hidden={!open}
-        className="h-[calc(100dvh-4rem)] overflow-y-auto border-t border-[var(--hairline)] bg-paper lg:hidden"
+        data-open={open}
+        className="mobile-menu absolute inset-x-0 top-full h-[calc(100dvh-4rem)] overflow-y-auto border-t border-[var(--hairline)] bg-paper lg:hidden"
       >
-        <nav aria-label="Mobile" className="container-page flex flex-col gap-1 py-6">
-          {allLinks.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              aria-current={isCurrent(link.href) ? 'page' : undefined}
-              className="border-b border-[var(--hairline)] py-4 font-[family-name:var(--font-display)] text-[1.65rem] leading-tight text-ink aria-[current=page]:text-accent"
-            >
-              {link.label}
-            </Link>
-          ))}
-          <div className="mt-6 flex items-center justify-between">
+        <nav aria-label="Mobile" className="container-page flex min-h-full flex-col pb-10 pt-4">
+          <ul>
+            {props.links.map((link, index) => (
+              <li
+                key={link.href}
+                className="menu-item border-b border-[var(--hairline)]"
+                style={{ '--i': index } as CSSProperties}
+              >
+                <Link
+                  href={link.href}
+                  aria-current={isCurrent(link.href) ? 'page' : undefined}
+                  className="group flex items-baseline gap-4 py-4 text-ink aria-[current=page]:text-accent"
+                >
+                  <span aria-hidden className="numeral w-6 shrink-0 text-base">
+                    {String(index + 1).padStart(2, '0')}
+                  </span>
+                  <span className="font-[family-name:var(--font-display)] text-[2.1rem] leading-tight">
+                    {link.label}
+                  </span>
+                </Link>
+              </li>
+            ))}
+          </ul>
+
+          {props.eventLinks.length > 0 && (
+            <div className="menu-item mt-8" style={{ '--i': props.links.length } as CSSProperties}>
+              <p className="eyebrow">{props.eventsLabel}</p>
+              <ul className="mt-2 grid grid-cols-2 gap-x-6">
+                {props.eventLinks.map((link) => (
+                  <li key={link.href}>
+                    <Link
+                      href={link.href}
+                      aria-current={isCurrent(link.href) ? 'page' : undefined}
+                      className="flex min-h-11 items-center text-[0.9375rem] text-ink-2 transition-colors hover:text-ink aria-[current=page]:text-accent"
+                    >
+                      {link.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+
+          <div
+            className="menu-item mt-auto flex flex-col gap-5 pt-10"
+            style={{ '--i': props.links.length + 1 } as CSSProperties}
+          >
             <LanguageSwitcher locale={props.locale} slugPairs={props.slugPairs} />
+            <Link href={props.ctaHref} className="btn btn-primary w-full" data-track="quote" data-track-location="menu">
+              {props.ctaLabel}
+              <span aria-hidden className="arrow">
+                →
+              </span>
+            </Link>
           </div>
-          <Link href={props.ctaHref} className="btn btn-primary mt-4 w-full" data-track="quote" data-track-location="menu">
-            {props.ctaLabel}
-          </Link>
         </nav>
       </div>
     </header>

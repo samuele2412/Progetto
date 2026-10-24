@@ -25,15 +25,16 @@ export function SectionHeader({
   return (
     <div
       className={cn(
-        align === 'center' ? 'mx-auto max-w-2xl text-center' : 'max-w-2xl',
+        align === 'center' ? 'mx-auto max-w-2xl text-center' : 'max-w-3xl',
         className,
       )}
+      data-reveal
     >
-      {eyebrow && <p className="eyebrow">{eyebrow}</p>}
+      {eyebrow && <p className={cn('eyebrow', align === 'left' && 'eyebrow-ruled')}>{eyebrow}</p>}
       {/* A section built in the panel can have an intro and no title; an empty
           heading element is worse than none, so it is simply not rendered. */}
-      {title && <Heading className={cn('display-2 text-ink', eyebrow && 'mt-3')}>{title}</Heading>}
-      {intro && <p className="lede mt-5">{intro}</p>}
+      {title && <Heading className={cn('display-2 text-ink', eyebrow && 'mt-5')}>{title}</Heading>}
+      {intro && <p className="lede mt-6 max-w-2xl">{intro}</p>}
     </div>
   );
 }

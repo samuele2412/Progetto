@@ -38,7 +38,7 @@ export async function PartnersPage({ locale }: { locale: Locale }) {
           </ul>
 
           <aside className="card h-fit p-7">
-            <h2 className="font-[family-name:var(--font-display)] text-xl text-ink">
+            <h2 className="font-[family-name:var(--font-display)] text-2xl text-ink">
               {t(settings.partners.ctaLabel, locale)}
             </h2>
             <p className="mt-3 text-sm leading-relaxed text-ink-2">{t(settings.partners.ctaBody, locale)}</p>

@@ -65,7 +65,7 @@ export async function JournalIndexPage({ locale }: { locale: Locale }) {
                           {copy.misc.readingTime}
                         </p>
                         <h2 className="display-3 mt-2 transition-colors group-hover:text-accent-strong">{t(post.title, locale)}</h2>
-                        <p className="mt-3 max-w-2xl leading-relaxed text-ink-2">{t(post.excerpt, locale)}</p>
+                        <p className="mt-3 max-w-xl leading-relaxed text-ink-2">{t(post.excerpt, locale)}</p>
                         <p className="link-more mt-3">
                           <span className="label">{copy.cta.readMore}</span> <span aria-hidden className="arrow">→</span>
                         </p>
@@ -144,7 +144,7 @@ export async function JournalPostPage({ locale, post }: { locale: Locale; post: 
                 return (
                   <li key={item.id} className="border-t border-[var(--hairline-strong)]">
                     <Link href={journalPath(otherSlug, locale)} className="group block py-5">
-                      <h3 className="font-[family-name:var(--font-display)] text-lg transition-colors group-hover:text-accent-strong">
+                      <h3 className="font-[family-name:var(--font-display)] text-2xl leading-snug transition-colors group-hover:text-accent-strong">
                         {t(item.title, locale)}
                       </h3>
                       <p className="mt-2 text-sm leading-relaxed text-ink-2">{t(item.excerpt, locale)}</p>

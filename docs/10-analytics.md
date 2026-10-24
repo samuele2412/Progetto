@@ -124,6 +124,11 @@ personali: niente nomi, numeri o indirizzi.
 | `form-submit-success` | Richiesta **salvata** dal server | `partner` (0/1) |
 | `form-submit-error` | Invio rifiutato o fallito | `error` |
 
+Dal redesign di fine ottobre l'apertura della home ha un solo punto di
+conversione, il pulsante («hero»); il link «Scopri il servizio» accanto è
+navigazione e non genera eventi. WhatsApp resta nel contatto finale, nella
+barra del telefono, nella pagina di richiesta e nel footer.
+
 I clic sono intenzioni, non contatti: il contatto ricevuto è
 `form-submit-success`, e la fonte di verità resta il database (un ad-blocker
 può fermare un evento, non un INSERT). Il codice: `src/lib/track.ts`,

@@ -54,7 +54,7 @@ export async function CocktailsPage({ locale }: { locale: Locale }) {
               <ul className="grid border-t border-[var(--hairline-strong)] md:grid-cols-2 md:gap-x-12 lg:col-span-9">
                 {group.items.map((cocktail) => (
                   <li key={cocktail.id} className="border-b border-[var(--hairline)] py-5">
-                    <h3 className="font-[family-name:var(--font-display)] text-xl">{cocktail.name}</h3>
+                    <h3 className="font-[family-name:var(--font-display)] text-2xl leading-tight">{cocktail.name}</h3>
                     <p className="mt-1.5 text-xs uppercase tracking-[0.14em] text-accent">{t(cocktail.ingredients, locale)}</p>
                     <p className="mt-2 text-[0.95rem] leading-relaxed text-ink-2">{t(cocktail.description, locale)}</p>
                   </li>

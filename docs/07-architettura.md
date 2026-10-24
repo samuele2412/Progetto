@@ -36,7 +36,7 @@
 ├── drizzle/                  Migrazioni SQL generate — vanno versionate
 ├── docker/entrypoint.sh      Attesa DB → migrazioni → seed → avvio
 ├── public/
-│   ├── fonts/                Fraunces e Inter, subset latin (autoprodotti)
+│   ├── fonts/                Cormorant Garamond e DM Sans, subset latin (autoprodotti, licenze OFL in licenses/)
 │   ├── images/               Segnaposto e foto definitive (vedi il README lì)
 │   └── uploads/              Volume Docker: immagini caricate dal pannello
 ├── scripts/

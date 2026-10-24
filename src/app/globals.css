@@ -1,103 +1,155 @@
 @import 'tailwindcss';
 
 /* ==========================================================================
-   Fonts — self-hosted (public/fonts), latin + latin-ext subsets only.
-   Nothing is fetched from a third party at runtime: fewer round trips, no
-   consent banner needed for Google Fonts, and the build works offline.
+   Fonts — self-hosted (public/fonts), latin + latin-ext subsets only, under
+   the SIL Open Font License (public/fonts/licenses). Nothing is fetched from a
+   third party at runtime: the CSP allows fonts from 'self' only, no consent
+   banner is needed for Google Fonts, and the build works offline.
+
+   Cormorant Garamond for headings — a Garamond cut for display sizes, with a
+   real italic — and DM Sans for everything that has to be read quickly (fixed
+   at its text optical size, which halves the file; see the licences folder).
    ========================================================================== */
 
 @font-face {
-  font-family: 'Fraunces';
+  font-family: 'Cormorant Garamond';
   font-style: normal;
   font-weight: 300 700;
   font-display: swap;
-  src: url('/fonts/fraunces-latin.woff2') format('woff2');
+  src: url('/fonts/cormorant-latin.woff2') format('woff2');
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC,
     U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 @font-face {
-  font-family: 'Fraunces';
+  font-family: 'Cormorant Garamond';
   font-style: normal;
   font-weight: 300 700;
   font-display: swap;
-  src: url('/fonts/fraunces-latin-ext.woff2') format('woff2');
+  src: url('/fonts/cormorant-latin-ext.woff2') format('woff2');
   unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304,
     U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0,
     U+2113, U+2C60-2C7F, U+A720-A7FF;
 }
 @font-face {
-  font-family: 'InterVar';
-  font-style: normal;
+  font-family: 'Cormorant Garamond';
+  font-style: italic;
   font-weight: 300 700;
   font-display: swap;
-  src: url('/fonts/inter-latin.woff2') format('woff2');
+  src: url('/fonts/cormorant-italic-latin.woff2') format('woff2');
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC,
     U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 @font-face {
-  font-family: 'InterVar';
-  font-style: normal;
+  font-family: 'Cormorant Garamond';
+  font-style: italic;
   font-weight: 300 700;
   font-display: swap;
-  src: url('/fonts/inter-latin-ext.woff2') format('woff2');
+  src: url('/fonts/cormorant-italic-latin-ext.woff2') format('woff2');
   unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304,
     U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0,
     U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'DM Sans';
+  font-style: normal;
+  font-weight: 300 700;
+  font-display: swap;
+  src: url('/fonts/dmsans-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC,
+    U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'DM Sans';
+  font-style: normal;
+  font-weight: 300 700;
+  font-display: swap;
+  src: url('/fonts/dmsans-latin-ext.woff2') format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304,
+    U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0,
+    U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+/* Metric-matched fallbacks: while the web fonts load, a system face is
+   scaled to the same average width and line height, so nothing moves when
+   the real one swaps in — the technique next/font uses. Arial and Liberation
+   Sans share their metrics, as do Times New Roman and Liberation Serif; the
+   figures come from the font files (scripts in docs/04-design-system.md). */
+@font-face {
+  font-family: 'DM Sans Fallback';
+  src: local('Arial'), local('ArialMT'), local('Liberation Sans'), local('Helvetica');
+  size-adjust: 105.25%;
+  ascent-override: 94.25%;
+  descent-override: 29.45%;
+  line-gap-override: 0%;
+}
+@font-face {
+  font-family: 'Cormorant Garamond Fallback';
+  src: local('Times New Roman'), local('TimesNewRomanPSMT'), local('Liberation Serif'), local('Times');
+  size-adjust: 96.75%;
+  ascent-override: 95.51%;
+  descent-override: 29.66%;
+  line-gap-override: 0%;
 }
 
 /* ==========================================================================
    Design tokens — see docs/04-design-system.md.
 
-   Paper and ink, with one accent, in two themes: the bar at night (dark, the
-   default) and the same page by day (light). The visitor switches with the
-   sun and moon in the header; the choice is a first-party cookie the server
+   Warm ivory and charcoal, with champagne gold kept for details: rules,
+   numbers, links, focus. Two themes — the bar at night (dark, the default)
+   and the same page by day (light) — plus dark bands (`.tone-night`) that
+   give the page its rhythm in either theme. The visitor switches with the sun
+   and moon in the header; the choice is a first-party cookie the server
    reads, so the page arrives already in the right colours (src/lib/theme.ts).
 
    Colour names are roles, not shades: `ink-3` is "secondary text" wherever it
    is used, so a theme is a set of values here, not a search and replace
-   through the components. Every text colour clears WCAG AA on `paper`,
-   `paper-2` and `paper-3` in both themes; `brass` is decorative only. `cream`
-   and `night` never change: they are for copy set over a darkened photograph,
-   which is dark whatever the theme. The admin panel keeps its own tool
-   palette (.admin-shell).
+   through the components. Every text colour clears WCAG AA on `paper` and
+   `paper-2` in both themes (the figures are next to each value). `brass` is
+   the champagne gold at full strength: on ivory it is decoration only (2.4:1),
+   so text that has to read as gold uses `accent`, the same hue darkened.
+   `cream` and `night` never change: they are for copy over a darkened
+   photograph, which is dark whatever the theme. The admin panel keeps its own
+   tool palette (.admin-shell).
    ========================================================================== */
 
 @theme {
   /* Surfaces */
-  --color-paper: #f7f3ec;     /* page */
-  --color-paper-2: #efe9df;   /* alternate bands, panels */
-  --color-paper-3: #e6dfd3;   /* hover on paper-2, the "contrast" band */
-  --color-field: #fffdf9;     /* inputs and raised surfaces */
+  --color-paper: #f5f0e6;     /* avorio caldo — the page */
+  --color-paper-2: #ede6d8;   /* alternate bands, panels */
+  --color-paper-3: #ded3c0;   /* beige tenue — fills, never under small text */
+  --color-field: #fbf8f2;     /* inputs and raised surfaces */
 
   /* Text — contrast on paper / paper-2 */
-  --color-ink: #1c1a17;       /* headings, primary button — 15.7:1 */
-  --color-ink-2: #3b3631;     /* body text — 10.8:1 */
-  --color-ink-3: #645d55;     /* secondary text, captions — 5.9:1 / 5.4:1 */
+  --color-ink: #171612;       /* nero carbone: headings, primary button — 15.9 / 14.6 */
+  --color-ink-2: #3a362f;     /* body text — 10.6 / 9.7 */
+  --color-ink-3: #6b6458;     /* grigio caldo, darkened for small text — 5.2 / 4.7 */
 
-  /* Accent: burnished brass, the one colour that means "this is for you" */
-  --color-accent: #7e5a28;        /* links, eyebrows, focus — 5.6:1 / 5.1:1 */
-  --color-accent-strong: #5f431d; /* hover and pressed */
-  --color-accent-soft: #ebe1cf;   /* selected states, tinted backgrounds */
-  --color-brass: #b08a4f;         /* rules and bullets only, never text */
-  --color-brass-light: #d8b87d;   /* accents over a darkened photograph */
+  /* Accent: oro champagne. `accent` is the hue darkened until it can carry text. */
+  --color-accent: #7a6338;        /* links, eyebrows, focus — 5.0 / 4.6 */
+  --color-accent-strong: #5e4c2a; /* hover and pressed — 7.3 / 6.7 */
+  --color-accent-soft: #f0e9dc;   /* selected states */
+  --color-brass: #b69a68;         /* rules, numbers, ornaments — never small text on ivory */
+  --color-brass-light: #cdb689;
 
-  --color-danger: #a23b2a;        /* errors only — 6:1 */
+  --color-danger: #a23b2a;        /* errors only — 5.8 / 5.3 */
 
   /* Constant in both themes: copy and shapes over a darkened photograph. */
-  --color-cream: #f6f1e8;
-  --color-night: #0e0c0a;
+  --color-cream: #f5f0e6;
+  --color-night: #100f0c;
 
-  --font-display: 'Fraunces', ui-serif, Georgia, 'Times New Roman', serif;
-  --font-sans: 'InterVar', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-display: 'Cormorant Garamond', 'Cormorant Garamond Fallback', ui-serif, Georgia, 'Times New Roman', serif;
+  --font-sans: 'DM Sans', 'DM Sans Fallback', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
 
-  --radius-sm: 0.5rem;     /* fields, chips */
-  --radius-card: 0.75rem;  /* cards, images */
-  --radius-panel: 1rem;    /* large panels */
+  /* Nearly square: photographs and panels read as printed, not as app cards. */
+  --radius-sm: 0.1875rem;  /* fields, chips */
+  --radius-card: 0.125rem; /* images, cards */
+  --radius-panel: 0.25rem; /* large panels */
 
-  --shadow-lift: 0 18px 40px -22px rgb(28 26 23 / 0.28);
-  --shadow-soft: 0 1px 2px rgb(28 26 23 / 0.05), 0 10px 30px -18px rgb(28 26 23 / 0.22);
+  --shadow-lift: 0 24px 48px -28px rgb(23 22 18 / 0.35);
+  --shadow-soft: 0 1px 2px rgb(23 22 18 / 0.04), 0 12px 32px -20px rgb(23 22 18 / 0.25);
 
   --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 /* ==========================================================================
@@ -109,81 +161,118 @@
     color-scheme: light;
     /* Declared on the root, so they follow whichever theme the root is in. */
     --hairline: color-mix(in srgb, var(--color-ink) 12%, transparent);
-    --hairline-strong: color-mix(in srgb, var(--color-ink) 24%, transparent);
+    --hairline-strong: color-mix(in srgb, var(--color-ink) 26%, transparent);
     /* Text fields need a 3:1 edge (WCAG 1.4.11): an empty input is otherwise
-       only a slightly lighter rectangle. */
+       only a slightly lighter rectangle. 50% ink is 3.4:1 on the field. */
     --field-border: color-mix(in srgb, var(--color-ink) 50%, transparent);
+    --focus-ring: color-mix(in srgb, var(--color-accent) 24%, transparent);
 
     /* The primary button is filled with the text colour of the theme: ink by
-       day, cream by night and over photographs. The strongest contrast on the
-       page, so there is no doubt which button matters — and brass stays a
-       detail (rules, eyebrows, focus) instead of a gold surface. Spelled out
-       per theme rather than as var(--color-ink): custom properties inherit
-       computed, and .on-image has to be able to re-point them. */
-    --cta: #1c1a17;
-    --cta-hover: #34302a;
-    --cta-text: #f7f3ec;
+       day, ivory by night and over photographs. The strongest contrast on the
+       page, so there is no doubt which button matters; the gold appears only
+       when it is touched. Spelled out per theme rather than as
+       var(--color-ink): custom properties inherit computed, and .on-image and
+       .tone-night have to be able to re-point them. */
+    --cta: #171612;
+    --cta-hover: #5e4c2a;
+    --cta-text: #f5f0e6;
 
-    --selection: var(--color-accent-soft);
-    --selection-text: var(--color-ink);
+    --selection: #e3d6bd;
+    --selection-text: #171612;
   }
 
   /*
-   * The bar at night — the palette the site was born with, rebuilt on the same
-   * roles: near-black with a warm cast, bone-white type, brass that can carry
-   * text. Contrast on paper / paper-2 / paper-3:
-   *   ink 16.8 / 15.9 / 14.7 · ink-2 12.8 / 12.1 / 11.2 · ink-3 7.1 / 6.8 / 6.3
-   *   accent 9.5 / 9.0 / 8.3 · danger 8.1 / 7.7 / 7.1
+   * The bar at night — carbone, ivory type, gold that can carry text.
+   * Contrast on paper / paper-2:
+   *   ink 15.9 / 14.8 · ink-2 12.2 / 11.4 · ink-3 6.5 / 6.1
+   *   accent 6.7 / 6.3 · danger 7.5 / 7.0
    */
   :root[data-theme='dark'] {
     color-scheme: dark;
-    --color-paper: #0e0c0a;
-    --color-paper-2: #161310;
-    --color-paper-3: #1f1b16;
-    --color-field: #1a1612;
+    --color-paper: #171612;
+    --color-paper-2: #1f1d18;
+    --color-paper-3: #2a2721;
+    --color-field: #1c1a16;
 
-    --color-ink: #f3ede3;
-    --color-ink-2: #d9d0c2;
-    --color-ink-3: #a59b8c;
+    --color-ink: #f5f0e6;
+    --color-ink-2: #ded3c0;
+    --color-ink-3: #a39a8a;
 
-    --color-accent: #d2b07a;
-    --color-accent-strong: #e8cf9e;
-    --color-accent-soft: #2b2319;
-    --color-brass: #a8874f;
+    --color-accent: #b69a68;
+    --color-accent-strong: #cdb689;
+    --color-accent-soft: #2b261d;
+    --color-brass: #b69a68;
     --color-danger: #e8907c;
 
     --field-border: color-mix(in srgb, var(--color-ink) 40%, transparent);
 
-    --cta: #f3ede3;
-    --cta-hover: #fffaf2;
-    --cta-text: #0e0c0a;
+    --cta: #f5f0e6;
+    --cta-hover: #cdb689;
+    --cta-text: #171612;
 
     --shadow-lift: 0 24px 60px -28px rgb(0 0 0 / 0.8);
     --shadow-soft: 0 2px 20px -8px rgb(0 0 0 / 0.6);
 
-    --selection: #c9a46a;
-    --selection-text: #0e0c0a;
+    --selection: #b69a68;
+    --selection-text: #171612;
+  }
+
+  /*
+   * A dark band — the night palette whatever the theme, so a page by day
+   * still alternates ivory and charcoal. In the dark theme the band goes one
+   * step deeper than the page, so the rhythm survives there too. Everything
+   * is restated (hairlines included) because custom properties inherit
+   * computed: the root's are already resolved against its own ink.
+   */
+  .tone-night {
+    color-scheme: dark;
+    --color-paper: #171612;
+    --color-paper-2: #1f1d18;
+    --color-paper-3: #2a2721;
+    --color-field: #1c1a16;
+    --color-ink: #f5f0e6;
+    --color-ink-2: #ded3c0;
+    --color-ink-3: #a39a8a;
+    --color-accent: #b69a68;
+    --color-accent-strong: #cdb689;
+    --color-accent-soft: #2b261d;
+    --color-brass: #b69a68;
+    --color-danger: #e8907c;
+    --hairline: rgb(245 240 230 / 0.12);
+    --hairline-strong: rgb(245 240 230 / 0.26);
+    --field-border: rgb(245 240 230 / 0.4);
+    --focus-ring: rgb(182 154 104 / 0.3);
+    --cta: #f5f0e6;
+    --cta-hover: #cdb689;
+    --cta-text: #171612;
+    background-color: var(--color-paper);
+    color: var(--color-ink-2);
+  }
+  :root[data-theme='dark'] .tone-night {
+    --color-paper: #100f0c;
+    --color-paper-2: #181612;
+    --color-paper-3: #221f1a;
   }
 
   /*
    * Copy over a darkened photograph — the home hero, and the header while it
    * floats over it. The same roles, re-pointed at light values, so everything
    * inside (headings, the lede, links, the primary button, focus rings) needs
-   * no special case. The hairlines are restated because custom properties
-   * inherit computed: the root's are already resolved against its own ink.
+   * no special case.
    */
   .on-image {
     --color-ink: var(--color-cream);
-    --color-ink-2: rgb(246 241 232 / 0.88);
-    --color-ink-3: rgb(246 241 232 / 0.72);
-    --color-accent: #d8b87d;
-    --color-accent-strong: #ecd4a4;
-    --color-brass: #c9a46a;
-    --hairline: rgb(246 241 232 / 0.16);
-    --hairline-strong: rgb(246 241 232 / 0.34);
+    --color-ink-2: rgb(245 240 230 / 0.9);
+    --color-ink-3: rgb(245 240 230 / 0.74);
+    --color-accent: #cdb689;
+    --color-accent-strong: #e3d3b0;
+    --color-brass: #cdb689;
+    --hairline: rgb(245 240 230 / 0.18);
+    --hairline-strong: rgb(245 240 230 / 0.38);
+    --focus-ring: rgb(205 182 137 / 0.35);
     --cta: var(--color-cream);
-    --cta-hover: #fffaf2;
-    --cta-text: var(--color-night);
+    --cta-hover: #cdb689;
+    --cta-text: #171612;
     color: var(--color-ink-2);
   }
 
@@ -207,10 +296,12 @@
     -webkit-font-smoothing: antialiased;
   }
 
+  /* Cormorant's medium weight: the regular is drawn for print and thins out
+     on a screen, above all over a photograph. */
   h1, h2, h3, h4 {
     font-family: var(--font-display);
-    font-weight: 400;
-    letter-spacing: -0.018em;
+    font-weight: 500;
+    letter-spacing: -0.01em;
     color: var(--color-ink);
     text-wrap: balance;
   }
@@ -226,7 +317,7 @@
   :focus-visible {
     outline: 2px solid var(--color-accent);
     outline-offset: 3px;
-    border-radius: 4px;
+    border-radius: 2px;
   }
 
   input, select, textarea, button { font: inherit; color: inherit; }
@@ -240,7 +331,7 @@
   .container-page {
     width: 100%;
     margin-inline: auto;
-    max-width: 78rem;
+    max-width: 86rem;
     /* max() rather than a bare value: in landscape on a notched phone the
        display cutout eats into the gutter, and 1.25rem is not enough to clear
        it. env() resolves to 0 everywhere else, so nothing changes elsewhere. */
@@ -249,23 +340,38 @@
   }
   @media (min-width: 768px) {
     .container-page {
-      padding-left: max(2rem, env(safe-area-inset-left));
-      padding-right: max(2rem, env(safe-area-inset-right));
+      padding-left: max(2.5rem, env(safe-area-inset-left));
+      padding-right: max(2.5rem, env(safe-area-inset-right));
+    }
+  }
+  @media (min-width: 1280px) {
+    .container-page {
+      padding-left: max(4rem, env(safe-area-inset-left));
+      padding-right: max(4rem, env(safe-area-inset-right));
     }
   }
 
   /*
    * Section rhythm: the one value that most decides whether a page feels
-   * considered. Generous from a tablet up; on a phone it stays at 3rem so a
-   * page of five sections does not become a page of five gaps.
+   * considered. Generous from a tablet up, as in print; on a phone it stays
+   * near 4.5rem so a page of seven sections does not become seven gaps.
    */
   .section {
-    padding-block: clamp(3rem, 9vw, 7.5rem);
+    padding-block: clamp(4.5rem, 10vw, 9rem);
+  }
+
+  /* Sections well below the first screen are laid out and painted only as
+     they come near: a long page then costs little more on load than a short
+     one. `auto` in the placeholder size keeps the height a section had once
+     rendered, so the scrollbar does not jump when scrolling back up. */
+  .render-lazy {
+    content-visibility: auto;
+    contain-intrinsic-size: auto 56rem;
   }
 
   /* The gap between a section's heading and the content under it. */
-  .section-body { margin-top: 2rem; }
-  @media (min-width: 768px) { .section-body { margin-top: 3rem; } }
+  .section-body { margin-top: 2.5rem; }
+  @media (min-width: 768px) { .section-body { margin-top: 4rem; } }
 
   /* --- Type ------------------------------------------------------------- */
   .eyebrow {
@@ -273,17 +379,54 @@
     /* 12px: the smallest size used anywhere on the site. */
     font-size: 0.75rem;
     font-weight: 500;
-    letter-spacing: 0.16em;
+    letter-spacing: 0.2em;
     text-transform: uppercase;
     color: var(--color-accent);
   }
 
-  .display-1 { font-size: clamp(2.6rem, 6.4vw, 4.75rem); line-height: 1.04; letter-spacing: -0.025em; }
-  .display-2 { font-size: clamp(1.9rem, 4.2vw, 3rem); line-height: 1.1; letter-spacing: -0.02em; }
-  .display-3 { font-size: clamp(1.35rem, 2.4vw, 1.75rem); line-height: 1.2; }
+  /* A chapter mark in front of a section's eyebrow: a Roman numeral, a rule,
+     the label. The numeral is a reading aid for the eye only (aria-hidden in
+     the markup): the label alone is what a screen reader needs. */
+  .section-mark {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.9rem;
+  }
+  /* `accent`, not `brass`: the champagne at full strength is 2.4:1 on ivory,
+     too faint for a figure someone may read. By night the two are the same. */
+  .section-mark .numeral {
+    font-family: var(--font-display);
+    font-size: 1rem;
+    font-style: italic;
+    letter-spacing: 0.04em;
+    text-transform: none;
+    color: var(--color-accent);
+  }
+  .section-mark .numeral::after {
+    content: '';
+    display: inline-block;
+    width: 2rem;
+    height: 1px;
+    margin-left: 0.9rem;
+    vertical-align: 0.3em;
+    background: currentColor;
+    opacity: 0.8;
+  }
+
+  /* Cormorant has a small x-height (0.39 of the em): the scale runs larger
+     than it would with a text serif, so a heading reads at the size its
+     place in the page suggests. */
+  .display-hero {
+    font-size: clamp(3.1rem, 1.25rem + 6.6vw, 7.6rem);
+    line-height: 0.93;
+    letter-spacing: -0.02em;
+  }
+  .display-1 { font-size: clamp(2.9rem, 1.6rem + 4.6vw, 5.6rem); line-height: 0.98; letter-spacing: -0.018em; }
+  .display-2 { font-size: clamp(2.35rem, 1.55rem + 3vw, 4.25rem); line-height: 1.02; letter-spacing: -0.014em; }
+  .display-3 { font-size: clamp(1.6rem, 1.35rem + 0.9vw, 2.15rem); line-height: 1.1; letter-spacing: -0.008em; }
 
   .lede {
-    font-size: clamp(1.0625rem, 1.5vw, 1.25rem);
+    font-size: clamp(1.0625rem, 1rem + 0.35vw, 1.25rem);
     line-height: 1.6;
     color: var(--color-ink-2);
   }
@@ -291,40 +434,42 @@
   /* Running text at a comfortable measure. */
   .copy {
     font-size: 1.0625rem;
-    line-height: 1.7;
+    line-height: 1.75;
     color: var(--color-ink-2);
   }
 
   /* --- Links ------------------------------------------------------------ */
-  /* "Read more"-style links: their own tap target, an arrow that moves. The
-     underline is on the label only — on the flex container it was drawn under
-     each child separately, with a gap before the arrow. */
+  /* "Read more"-style links: their own tap target, a gold rule under the
+     label that an ink rule draws over on hover, an arrow that moves. The
+     rules are backgrounds on the label, so they never break across the
+     arrow and need no extra element. */
   .link-more {
     display: inline-flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: 0.6rem;
     min-height: 2.75rem;
     font-size: 0.9375rem;
     font-weight: 500;
     color: var(--color-ink);
-    transition: color 0.2s;
+    transition: color 0.25s;
   }
   .link-more .label {
-    text-decoration: underline;
-    text-decoration-color: var(--color-brass);
-    text-decoration-thickness: 1px;
-    text-underline-offset: 0.35em;
-    transition: text-decoration-color 0.2s;
+    padding-bottom: 0.2em;
+    background-image: linear-gradient(currentColor, currentColor), linear-gradient(var(--color-brass), var(--color-brass));
+    background-repeat: no-repeat;
+    background-position: 0 100%, 0 100%;
+    background-size: 0% 1px, 100% 1px;
+    transition: background-size 0.5s var(--ease-out-soft);
   }
-  .link-more:hover { color: var(--color-accent-strong); }
-  .link-more:hover .label { text-decoration-color: currentColor; }
-  .link-more .arrow { transition: transform 0.25s var(--ease-out-soft); }
-  .link-more:hover .arrow { transform: translateX(3px); }
+  .link-more:hover .label,
+  .link-more:focus-visible .label { background-size: 100% 1px, 100% 1px; }
+  .link-more .arrow { display: inline-block; transition: transform 0.35s var(--ease-out-soft); }
+  .link-more:hover .arrow { transform: translateX(4px); }
   @media (pointer: fine) {
     .link-more { min-height: 1.75rem; }
   }
 
-  /* Header links: a brass rule draws in from the left under the hovered link
+  /* Header links: a gold rule draws in from the left under the hovered link
      and stays under the current page. */
   .nav-link {
     position: relative;
@@ -342,36 +487,43 @@
     background: var(--color-brass);
     transform: scaleX(0);
     transform-origin: left;
-    transition: transform 0.35s var(--ease-out-soft);
+    transition: transform 0.4s var(--ease-out-soft);
   }
   .nav-link:hover::after,
   .nav-link[aria-current='page']::after { transform: scaleX(1); }
 
   /* --- Buttons ---------------------------------------------------------- */
   .btn {
+    position: relative;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: 0.5rem;
+    gap: 0.75rem;
     border-radius: 999px;
-    padding: 0.9rem 1.6rem;
+    padding: 1rem 1.75rem;
     font-size: 0.9375rem;
     font-weight: 500;
+    letter-spacing: 0.01em;
     line-height: 1;
     text-align: center;
     cursor: pointer;
-    transition: transform 0.2s var(--ease-out-soft), background-color 0.2s, border-color 0.2s, color 0.2s;
+    transition: transform 0.2s var(--ease-out-soft), background-color 0.3s, border-color 0.3s, color 0.3s;
     /* Comfortable thumb target on phones. */
-    min-height: 3rem;
+    min-height: 3.25rem;
   }
-  .btn:active { transform: translateY(1px); }
-  .btn:disabled { opacity: 0.55; cursor: not-allowed; }
+  .btn:active { transform: translateY(1px) scale(0.99); }
+  .btn:disabled,
+  .btn[aria-disabled='true'] { opacity: 0.5; cursor: not-allowed; transform: none; }
+  .btn .arrow { display: inline-block; transition: transform 0.35s var(--ease-out-soft); }
+  .btn:hover .arrow { transform: translateX(4px); }
 
   /* The one solid shape on the page, flat: no shadow, no lift. */
   .btn-primary {
     background: var(--cta);
     color: var(--cta-text);
   }
+  /* By day the hover is a deep bronze under ivory text (7.3:1); by night, in
+     the dark bands and over photographs a light gold under charcoal (9.2:1). */
   .btn-primary:hover { background: var(--cta-hover); }
 
   .btn-ghost {
@@ -381,7 +533,7 @@
   }
   .btn-ghost:hover {
     border-color: var(--color-ink);
-    background: color-mix(in srgb, var(--color-ink) 4%, transparent);
+    background: color-mix(in srgb, var(--color-ink) 5%, transparent);
   }
 
   /* WhatsApp is a secondary action: outlined like the others, recognised by
@@ -393,7 +545,7 @@
   }
   .btn-whatsapp:hover {
     border-color: var(--color-ink);
-    background: color-mix(in srgb, var(--color-ink) 4%, transparent);
+    background: color-mix(in srgb, var(--color-ink) 5%, transparent);
   }
 
   /* --- Surfaces --------------------------------------------------------- */
@@ -401,15 +553,23 @@
     background: var(--color-field);
     border: 1px solid var(--hairline);
     border-radius: var(--radius-card);
-    transition: border-color 0.3s, transform 0.4s var(--ease-out-soft), box-shadow 0.3s;
+    transition: border-color 0.3s, transform 0.5s var(--ease-out-soft), box-shadow 0.3s;
   }
   .card-hover:hover {
     border-color: var(--hairline-strong);
     box-shadow: var(--shadow-soft);
-    transform: translateY(-2px);
+    transform: translateY(-3px);
   }
 
   .hairline { border-top: 1px solid var(--hairline); }
+
+  /* A printed menu card: a rule round the edge and a finer one just inside
+     it. The inner rule is two inset shadows — a band of the page colour, then
+     the hairline — so it needs no extra element. */
+  .menu-card {
+    border: 1px solid var(--hairline-strong);
+    box-shadow: inset 0 0 0 6px var(--color-paper), inset 0 0 0 7px var(--hairline);
+  }
 
   /* Photographs sit in a frame with a hairline drawn over the image, so a
      pale picture on a pale page still has an edge. The frame is the
@@ -418,7 +578,7 @@
     position: relative;
     overflow: hidden;
     border-radius: var(--radius-card);
-    background: var(--color-paper-2);
+    background: var(--color-paper-3);
   }
   .frame::after {
     content: '';
@@ -447,13 +607,28 @@
     .tap-target { min-height: 1.75rem; }
   }
 
+  /* A text link with the same drawn underline as .link-more, for links inside
+     lists (footer, menus) where an arrow would be noise. */
+  .link-line {
+    background-image: linear-gradient(currentColor, currentColor);
+    background-repeat: no-repeat;
+    background-position: 0 calc(100% - 0.55rem);
+    background-size: 0% 1px;
+    transition: background-size 0.45s var(--ease-out-soft), color 0.25s;
+  }
+  .link-line:hover,
+  .link-line:focus-visible { background-size: 100% 1px; }
+  @media (pointer: fine) {
+    .link-line { background-position: 0 100%; }
+  }
+
   /* --- Forms ------------------------------------------------------------ */
   .field-label {
     display: block;
     font-size: 0.875rem;
     font-weight: 500;
     color: var(--color-ink);
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.55rem;
   }
 
   .field {
@@ -461,17 +636,26 @@
     background: var(--color-field);
     border: 1px solid var(--field-border);
     border-radius: var(--radius-sm);
-    padding: 0.875rem 1rem;
+    padding: 0.9rem 1rem;
     /* 16px keeps iOS Safari from zooming when a field is focused. */
     font-size: 1rem;
     color: var(--color-ink);
-    transition: border-color 0.2s, box-shadow 0.2s;
-    min-height: 3rem;
+    transition: border-color 0.25s, box-shadow 0.25s, background-color 0.25s;
+    min-height: 3.25rem;
   }
   .field::placeholder { color: var(--color-ink-3); }
   .field:hover { border-color: color-mix(in srgb, var(--color-ink) 70%, transparent); }
-  .field:focus { border-color: var(--color-ink); }
+  /* The outline from :focus-visible is replaced here by a softer ring: a text
+     field gets focus from a click too, and a 2px outline on every click read
+     as an error. The ring is still clearly visible (border + 3px halo). */
+  .field:focus {
+    outline: none;
+    border-color: var(--color-ink);
+    box-shadow: 0 0 0 3px var(--focus-ring);
+  }
+  .field:disabled { opacity: 0.55; cursor: not-allowed; }
   .field[aria-invalid='true'] { border-color: var(--color-danger); }
+  .field[aria-invalid='true']:focus { box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-danger) 22%, transparent); }
 
   /* The visible box stays modest; the surrounding label is the real target. */
   .checkbox {
@@ -484,12 +668,50 @@
 
   .field-error {
     display: flex;
-    align-items: center;
-    gap: 0.35rem;
-    margin-top: 0.4rem;
+    align-items: flex-start;
+    gap: 0.45rem;
+    margin-top: 0.5rem;
     font-size: 0.8125rem;
+    line-height: 1.4;
     color: var(--color-danger);
+    animation: field-error-in 0.35s var(--ease-out-soft);
   }
+  /* A small drawn mark rather than an icon font or an emoji. */
+  .field-error::before {
+    content: '';
+    flex-shrink: 0;
+    width: 0.4rem;
+    height: 0.4rem;
+    margin-top: 0.4em;
+    border-radius: 999px;
+    background: currentColor;
+  }
+  @keyframes field-error-in {
+    from { opacity: 0; transform: translateY(-4px); }
+    to { opacity: 1; transform: none; }
+  }
+
+  /* Each step of the request form settles in when it is reached, and a
+     message from the server slides in under it rather than appearing. */
+  .form-step { animation: form-step-in 0.55s var(--ease-out-soft) both; }
+  .form-alert { animation: field-error-in 0.4s var(--ease-out-soft) both; }
+  @keyframes form-step-in {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: none; }
+  }
+
+  /* Sending: the button stays readable (a disabled button at half strength
+     read as "broken"), with a small ring turning in front of the label. */
+  .btn[aria-busy='true'] { opacity: 0.88; cursor: progress; }
+  .spinner {
+    width: 1rem;
+    height: 1rem;
+    border-radius: 999px;
+    border: 1.5px solid currentColor;
+    border-right-color: transparent;
+    animation: spin 0.8s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
 
   /* Chip-style radio / checkbox, driven by the peer input. */
   .chip {
@@ -500,16 +722,16 @@
     text-align: center;
     border: 1px solid var(--hairline-strong);
     border-radius: var(--radius-sm);
-    padding: 0.8rem 0.9rem;
+    padding: 0.85rem 0.9rem;
     font-size: 0.9rem;
     line-height: 1.25;
     cursor: pointer;
     background: var(--color-field);
     color: var(--color-ink-2);
-    transition: border-color 0.2s, background-color 0.2s, color 0.2s;
-    min-height: 3rem;
+    transition: border-color 0.25s, background-color 0.25s, color 0.25s, box-shadow 0.25s;
+    min-height: 3.25rem;
   }
-  .chip:hover { border-color: color-mix(in srgb, var(--color-ink) 45%, transparent); }
+  .chip:hover { border-color: color-mix(in srgb, var(--color-ink) 50%, transparent); }
   .peer:checked ~ .chip,
   .chip[data-selected='true'] {
     border-color: var(--color-ink);
@@ -523,40 +745,41 @@
   }
 
   /* --- Prose ------------------------------------------------------------ */
-  .prose-cordiale { font-size: 1.0625rem; line-height: 1.75; color: var(--color-ink-2); }
+  .prose-cordiale { font-size: 1.0625rem; line-height: 1.8; color: var(--color-ink-2); }
   .prose-cordiale h2 {
-    font-size: clamp(1.4rem, 2.4vw, 1.85rem);
-    margin-top: 2.75rem;
-    margin-bottom: 0.85rem;
+    font-size: clamp(1.75rem, 1.4rem + 1.3vw, 2.4rem);
+    line-height: 1.1;
+    margin-top: 3rem;
+    margin-bottom: 0.9rem;
     color: var(--color-ink);
   }
   .prose-cordiale h3 {
-    font-size: 1.2rem;
-    margin-top: 2rem;
+    font-size: 1.45rem;
+    line-height: 1.2;
+    margin-top: 2.25rem;
     margin-bottom: 0.6rem;
     color: var(--color-ink);
   }
   .prose-cordiale > :first-child { margin-top: 0; }
-  .prose-cordiale p { margin-bottom: 1.15rem; }
-  .prose-cordiale ul, .prose-cordiale ol { margin: 0 0 1.35rem 0; padding-left: 1.25rem; }
+  .prose-cordiale p { margin-bottom: 1.2rem; }
+  .prose-cordiale ul, .prose-cordiale ol { margin: 0 0 1.4rem 0; padding-left: 1.25rem; }
   .prose-cordiale ul { list-style: none; padding-left: 0; }
   .prose-cordiale ul li {
     position: relative;
-    padding-left: 1.4rem;
-    margin-bottom: 0.6rem;
+    padding-left: 1.5rem;
+    margin-bottom: 0.65rem;
   }
   .prose-cordiale ul li::before {
     content: '';
     position: absolute;
-    left: 0.15rem;
-    top: 0.72em;
-    width: 0.375rem;
-    height: 0.375rem;
-    border-radius: 999px;
+    left: 0.1rem;
+    top: 0.85em;
+    width: 0.7rem;
+    height: 1px;
     background: var(--color-brass);
   }
   .prose-cordiale ol { list-style: decimal; }
-  .prose-cordiale ol li { margin-bottom: 0.6rem; padding-left: 0.35rem; }
+  .prose-cordiale ol li { margin-bottom: 0.65rem; padding-left: 0.35rem; }
   .prose-cordiale ol li::marker { color: var(--color-accent); }
   .prose-cordiale strong { color: var(--color-ink); font-weight: 600; }
   .prose-cordiale a { color: var(--color-accent); text-decoration: underline; text-underline-offset: 3px; }
@@ -574,12 +797,20 @@
   .eyebrow-ruled::before {
     content: '';
     display: inline-block;
-    width: 1.75rem;
+    width: 2rem;
     height: 1px;
-    margin-right: 0.75rem;
+    margin-right: 0.85rem;
     vertical-align: 0.32em;
-    background: currentColor;
-    opacity: 0.7;
+    background: var(--color-brass);
+  }
+
+  /* Step and list numbers: Cormorant's lining figures, in the gold that can
+     carry text (5:1 on ivory; the full champagne by night). */
+  .numeral {
+    font-family: var(--font-display);
+    font-variant-numeric: lining-nums;
+    font-feature-settings: 'lnum';
+    color: var(--color-accent);
   }
 
   /* "A photograph goes here": a quiet hatch in the theme's own hairline. */
@@ -589,18 +820,10 @@
 
   /* --- Home hero -------------------------------------------------------- */
   /* A photograph under the whole first screen, with the header floating over
-     it. On a phone the height is capped and the copy decides the rest: the
-     full-viewport version left a third of a tall screen as empty gradient
-     above the first word, and what remains now shows the next section. */
-  .hero { min-height: min(86svh, 40rem); }
+     it. On a phone the height is capped and the copy decides the rest. */
+  .hero { min-height: min(92svh, 46rem); }
   @media (min-width: 768px) {
-    .hero { min-height: min(92svh, 56rem); }
-  }
-
-  .display-hero {
-    font-size: clamp(2.75rem, 7.4vw, 5.6rem);
-    line-height: 1.02;
-    letter-spacing: -0.028em;
+    .hero { min-height: min(100svh, 60rem); }
   }
 
   /* Tuned on the real photograph. Darkest where the copy is (the bottom on a
@@ -609,16 +832,73 @@
      stops; the lighter ones only ever have the photograph under them. */
   .hero-scrim {
     background:
-      linear-gradient(to bottom, rgb(14 12 10 / 0.7) 0%, rgb(14 12 10 / 0) 22%),
-      linear-gradient(to top, rgb(14 12 10 / 0.96) 6%, rgb(14 12 10 / 0.88) 34%, rgb(14 12 10 / 0.77) 62%, rgb(14 12 10 / 0.64) 100%);
+      linear-gradient(to bottom, rgb(16 15 12 / 0.74) 0%, rgb(16 15 12 / 0.32) 24%, rgb(16 15 12 / 0) 38%),
+      linear-gradient(to top, rgb(16 15 12 / 0.97) 4%, rgb(16 15 12 / 0.9) 32%, rgb(16 15 12 / 0.8) 62%, rgb(16 15 12 / 0.7) 100%);
   }
   @media (min-width: 1024px) {
     .hero-scrim {
       background:
-        linear-gradient(to bottom, rgb(14 12 10 / 0.86) 0%, rgb(14 12 10 / 0.62) 9%, rgb(14 12 10 / 0) 26%),
-        linear-gradient(100deg, rgb(14 12 10 / 0.92) 0%, rgb(14 12 10 / 0.8) 40%, rgb(14 12 10 / 0.5) 62%, rgb(14 12 10 / 0.18) 82%, rgb(14 12 10 / 0.1) 100%),
-        linear-gradient(to top, rgb(14 12 10 / 0.6) 0%, rgb(14 12 10 / 0) 45%);
+        linear-gradient(to bottom, rgb(16 15 12 / 0.86) 0%, rgb(16 15 12 / 0.6) 9%, rgb(16 15 12 / 0) 26%),
+        linear-gradient(100deg, rgb(16 15 12 / 0.94) 0%, rgb(16 15 12 / 0.84) 38%, rgb(16 15 12 / 0.52) 60%, rgb(16 15 12 / 0.16) 82%, rgb(16 15 12 / 0.08) 100%),
+        linear-gradient(to top, rgb(16 15 12 / 0.7) 0%, rgb(16 15 12 / 0) 40%);
     }
+  }
+
+  /* The eyebrow's separator becomes a line break on a phone (see HomePage). */
+  @media (max-width: 639px) {
+    .eyebrow-sep { display: block; height: 0; overflow: hidden; }
+  }
+
+  /* The last line of the headline in italic, set a little in: the turn from
+     "your home, your guests" to "my bar". */
+  .hero-title .line { display: block; }
+  .hero-title .line-last { font-style: italic; font-weight: 400; }
+  @media (min-width: 768px) {
+    .hero-title .line { padding-left: calc(var(--i, 0) * 0.42em); }
+  }
+
+  /* The scroll cue: a jigger's measuring marks with a drop running down them.
+     A link to the next section, so it is also a way down for the keyboard. */
+  .scroll-cue {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.9rem;
+    min-height: 2.75rem;
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--color-ink-3);
+    transition: color 0.25s;
+  }
+  .scroll-cue:hover { color: var(--color-ink); }
+  .scroll-cue .gauge {
+    position: relative;
+    width: 0.75rem;
+    height: 3.5rem;
+    background:
+      linear-gradient(var(--color-brass), var(--color-brass)) 50% 0 / 1px 100% no-repeat,
+      linear-gradient(var(--color-brass), var(--color-brass)) 0 25% / 100% 1px no-repeat,
+      linear-gradient(var(--color-brass), var(--color-brass)) 25% 50% / 50% 1px no-repeat,
+      linear-gradient(var(--color-brass), var(--color-brass)) 0 75% / 100% 1px no-repeat;
+    opacity: 0.85;
+  }
+  .scroll-cue .drop {
+    position: absolute;
+    left: 50%;
+    top: 0;
+    width: 5px;
+    height: 7px;
+    margin-left: -2.5px;
+    border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+    background: var(--color-cream);
+    animation: cue-drop 2.8s var(--ease-out-soft) 2s infinite;
+  }
+  @keyframes cue-drop {
+    0% { transform: translateY(0); opacity: 0; }
+    15% { opacity: 1; }
+    70% { transform: translateY(3rem); opacity: 1; }
+    100% { transform: translateY(3rem); opacity: 0; }
   }
 
   /* --- Theme switch ----------------------------------------------------- */
@@ -636,14 +916,45 @@
   [data-theme='dark'] .theme-toggle:hover .moon { transform: rotate(-14deg); }
 
   /* Photographs in a link come forward a little on hover. */
-  .frame img { transition: transform 0.9s var(--ease-out-soft); }
-  a:hover .frame img { transform: scale(1.03); }
+  .frame img { transition: transform 1.2s var(--ease-out-soft); }
+  a:hover .frame img { transform: scale(1.035); }
+
+  /* --- Mobile menu ------------------------------------------------------ */
+  /* Kept in the page and faded rather than mounted on demand, so it can
+     animate both ways. Closed, it is `visibility: hidden` — out of the tab
+     order and the accessibility tree, exactly like `hidden` — and only after
+     the fade has run. */
+  .mobile-menu {
+    visibility: hidden;
+    opacity: 0;
+    transform: translateY(-0.5rem);
+    transition: opacity 0.35s var(--ease-out-soft), transform 0.45s var(--ease-out-soft), visibility 0s linear 0.45s;
+  }
+  .mobile-menu[data-open='true'] {
+    visibility: visible;
+    opacity: 1;
+    transform: none;
+    transition: opacity 0.35s var(--ease-out-soft), transform 0.45s var(--ease-out-soft), visibility 0s;
+  }
+  .mobile-menu .menu-item {
+    opacity: 0;
+    transform: translateY(0.75rem);
+    transition: opacity 0.4s var(--ease-out-soft), transform 0.6s var(--ease-out-soft);
+  }
+  .mobile-menu[data-open='true'] .menu-item {
+    opacity: 1;
+    transform: none;
+    transition-delay: calc(0.06s + var(--i, 0) * 0.045s);
+  }
 }
 
 /* ==========================================================================
-   Motion — feedback only: colours, the menu rule, the arrow of a link, the
-   sun and moon. Nothing enters the page on scroll: the content is there when
-   the page is. Every transition is opt-out via prefers-reduced-motion.
+   Motion — an opening sequence on the home hero, sections that settle in
+   once as they come into view, and feedback on everything that can be
+   touched. All of it is decoration: nothing is hidden until JavaScript has
+   confirmed it can show it again (see ScrollReveal), the hero sequence is
+   pure CSS that ends on the visible state, and prefers-reduced-motion turns
+   every bit of it off.
    ========================================================================== */
 
 @layer utilities {
@@ -653,16 +964,67 @@
   /* Copy set over a darkened photograph. */
   .text-shadow-hero { text-shadow: 0 2px 30px rgb(0 0 0 / 0.45); }
 
+  /* --- The hero's opening ------------------------------------------------
+     The photograph does not fade (it is the largest paint on the page, and
+     an image that starts transparent delays it): a night veil over it lifts
+     instead, while the picture settles from a slight zoom. The headline
+     rises line by line from behind a mask, then the rest follows. */
+  .hero-photo img { animation: hero-settle 2.6s var(--ease-out-soft) both; }
+  .hero-veil { background: var(--color-night); animation: hero-veil 1.6s var(--ease-out-soft) 0.1s both; }
+  /* The mask is padded so Cormorant's descenders and the italic's overhang
+     are not clipped once the line is in place. */
+  .hero-title .line { overflow: hidden; padding-block: 0.12em 0.2em; margin-block: -0.12em -0.2em; }
+  .hero-title .line-inner { display: block; animation: hero-line 1.25s var(--ease-out-expo) both; animation-delay: calc(0.35s + var(--i, 0) * 0.12s); }
+  .hero-in { animation: hero-in 1s var(--ease-out-soft) both; animation-delay: var(--d, 0.8s); }
+
+  @keyframes hero-settle { from { transform: scale(1.07); } to { transform: none; } }
+  @keyframes hero-veil { from { opacity: 1; } to { opacity: 0; } }
+  @keyframes hero-line { from { transform: translateY(135%); } to { transform: none; } }
+  @keyframes hero-in { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+  /* An inner page's title rises without fading: it is the largest thing on
+     the first screen, and a heading that starts transparent is not counted
+     as painted until it is visible, which delays the page's main paint. */
+  .hero-rise { animation: hero-rise 0.9s var(--ease-out-soft) both; animation-delay: var(--d, 0s); }
+  @keyframes hero-rise { from { transform: translateY(12px); } to { transform: none; } }
+
+  /* --- Entering on scroll ------------------------------------------------
+     `data-reveal` marks what may animate; ScrollReveal sets `data-reveal-state`
+     to `pending` only on elements still below the fold, and to `in` once they
+     are seen. Without JavaScript, or with reduced motion, nothing changes. */
+  /* The individual `translate` property, not `transform`, so a reveal never
+     fights an element's own hover transform; and the state attribute is
+     removed once the entrance has played (ScrollReveal), so nothing here
+     lingers over the element's own transitions. */
+  [data-reveal-state='pending'] { opacity: 0; translate: 0 1.75rem; }
+  [data-reveal-state='in'] {
+    transition: opacity 1s var(--ease-out-soft), translate 1.2s var(--ease-out-expo);
+    transition-delay: var(--reveal-delay, 0s);
+  }
+  /* Photographs open from a slightly tighter crop instead of sliding. */
+  [data-reveal='image'][data-reveal-state='pending'] { opacity: 1; translate: none; clip-path: inset(9% 5% 0 5%); }
+  [data-reveal='image'][data-reveal-state='pending'] img { scale: 1.12; }
+  [data-reveal='image'][data-reveal-state='in'] {
+    clip-path: inset(0 0 0 0);
+    transition: clip-path 1.4s var(--ease-out-expo);
+    transition-delay: var(--reveal-delay, 0s);
+  }
+  [data-reveal='image'][data-reveal-state='in'] img { transition: scale 1.8s var(--ease-out-expo); transition-delay: var(--reveal-delay, 0s); }
+
+  @media print {
+    [data-reveal-state] { opacity: 1 !important; transform: none !important; clip-path: none !important; }
+  }
+
   /* A phone held sideways has ~390px of height: the hero gives up its minimum
      and tightens until the button sits above the fold. Here rather than in
      @layer components because the elements carry pt-/mt- utilities, and in
      Tailwind v4 layer order beats specificity. */
   @media (max-height: 560px) and (orientation: landscape) {
     .hero { min-height: 0; }
-    .hero .hero-content { padding-top: 5.5rem; padding-bottom: 1.75rem; }
-    .hero .display-hero { font-size: 2.1rem; }
+    .hero .hero-content { padding-top: 5.5rem; }
+    .hero .display-hero { font-size: 2.4rem; }
     .hero .lede { margin-top: 0.75rem; font-size: 0.95rem; }
     .hero .hero-actions { margin-top: 1.25rem; }
+    .hero .hero-foot { margin-top: 1.5rem; }
   }
 }
 
@@ -677,9 +1039,12 @@
   html { scroll-behavior: auto; }
   *, *::before, *::after {
     animation-duration: 0.001ms !important;
+    animation-delay: 0s !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.001ms !important;
+    transition-delay: 0s !important;
   }
+  .scroll-cue .drop { display: none; }
 }
 
 /* ==========================================================================

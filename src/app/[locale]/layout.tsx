@@ -78,9 +78,10 @@ export default async function LocaleLayout({
   return (
     <html lang={htmlLang[locale]} data-theme={theme}>
       <head>
-        {/* The two subsets actually used above the fold. */}
-        <link rel="preload" href="/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
-        <link rel="preload" href="/fonts/inter-latin.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
+        {/* The two subsets every page uses above the fold. The italic is
+            preloaded by the home page only, where the headline needs it. */}
+        <link rel="preload" href="/fonts/cormorant-latin.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
+        <link rel="preload" href="/fonts/dmsans-latin.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
       </head>
       <body className="flex min-h-screen flex-col antialiased">
         <SiteShell locale={locale} theme={theme}>

@@ -22,7 +22,7 @@ export async function ThanksPage({ locale, reference }: { locale: Locale; refere
             {reference && (
               <div className="card p-6 text-center">
                 <p className="text-xs uppercase tracking-[0.16em] text-ink-3">{copy.misc.reference}</p>
-                <p className="mt-2 font-[family-name:var(--font-display)] text-3xl tracking-wider text-accent">
+                <p className="mt-2 text-2xl font-medium tabular-nums tracking-[0.12em] text-accent">
                   {reference}
                 </p>
                 <p className="mt-3 text-sm text-ink-3">

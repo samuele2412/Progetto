@@ -3,6 +3,15 @@ export function cn(...values: Array<string | false | null | undefined>): string 
   return values.filter(Boolean).join(' ');
 }
 
+/**
+ * "Bartender privato · Roma e provincia": the space before each dot made
+ * unbreakable, so a narrow screen breaks the line after the dot and never
+ * starts the next line with it.
+ */
+export function keepSeparators(text: string): string {
+  return text.replace(/ · /g, '\u00a0· ');
+}
+
 /** Turn free text into a URL-safe slug (accents folded, punctuation dropped). */
 export function slugify(input: string): string {
   return input

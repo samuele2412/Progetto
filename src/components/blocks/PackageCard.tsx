@@ -53,7 +53,7 @@ export function PackageCard({
 
       <div className="mt-5 sm:mt-6">
         {onRequest ? (
-          <span className="font-[family-name:var(--font-display)] text-2xl text-ink">
+          <span className="font-[family-name:var(--font-display)] text-[1.85rem] leading-tight text-ink">
             {copy.packages.onRequest}
           </span>
         ) : (
@@ -63,7 +63,7 @@ export function PackageCard({
                 single number. */}
             <p className="text-[0.7rem] uppercase tracking-[0.14em] text-ink-3">{copy.packages.from}</p>
             <p className="mt-1 flex items-baseline gap-2">
-              <span className="font-[family-name:var(--font-display)] text-4xl leading-none text-accent">
+              <span className="numeral text-5xl leading-none text-accent">
                 {formatEuro(pkg.pricePerGuestFrom, locale)}
               </span>
               <span className="whitespace-nowrap text-sm text-ink-3">{copy.packages.perGuest}</span>

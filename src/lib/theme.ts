@@ -20,8 +20,8 @@ export const defaultTheme: Theme = 'dark';
 
 /** The browser bar for each theme: the page colour, `--color-paper`. */
 export const themeColor: Record<Theme, string> = {
-  light: '#f7f3ec',
-  dark: '#0e0c0a',
+  light: '#f5f0e6',
+  dark: '#171612',
 };
 
 export function parseTheme(value: string | undefined): Theme {

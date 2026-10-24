@@ -51,22 +51,29 @@ export type SiteSettings = {
     title: L;
     subtitle: L;
     primaryCta: L;
+    /** The quieter way on, next to the button: to the service page. */
+    secondaryCta: L;
+    /** One short line at the foot of the opening, e.g. that the quote is free. */
+    note: L;
     imagePath: string;
     /** Optional short muted loop behind the hero. Leave empty to use the image. */
     videoPath: string;
   };
-  /** Home, section 2: who he is, in three lines. The photo is the one in `about`. */
+  /** Home, section 3: who he is, in three lines. The photo is the one in `about`. */
   intro: {
     eyebrow: L;
     title: L;
     body: L;
     linkLabel: L;
   };
-  /** Home, section 3, and the service page (/pacchetti). */
+  /** Home, section 2, and the service page (/pacchetti). */
   service: {
+    homeEyebrow: L;
     homeTitle: L;
     homeBody: L;
     homeLinkLabel: L;
+    /** The three columns under the home section, each with its photograph (homePhotos). */
+    homeItems: LPairs;
     pageTitle: L;
     pageIntro: L;
     bringTitle: L;
@@ -87,8 +94,12 @@ export type SiteSettings = {
     body: L;
     linkLabel: L;
   };
-  /** Titles shared by pages, and the closing call to action. */
+  /** Titles shared by pages, the home's own steps, and the closing call to action. */
   home: {
+    /** Home, section 6: how a party gets booked, told from the guest's side. */
+    stepsEyebrow: L;
+    stepsTitle: L;
+    steps: LPairs;
     cocktailsTitle: L;
     cocktailsIntro: L;
     galleryTitle: L;
@@ -99,6 +110,27 @@ export type SiteSettings = {
     finalCtaBody: L;
     /** One short line under the call to action. */
     finalCtaNote: L;
+  };
+  /**
+   * The home page's photographs other than the opening and the portrait: one
+   * per column of the service section, and the four of the atmosphere
+   * section. Paths into the media library, each with what it shows.
+   */
+  homePhotos: {
+    service1: string;
+    service1Alt: L;
+    service2: string;
+    service2Alt: L;
+    service3: string;
+    service3Alt: L;
+    mood1: string;
+    mood1Alt: L;
+    mood2: string;
+    mood2Alt: L;
+    mood3: string;
+    mood3Alt: L;
+    mood4: string;
+    mood4Alt: L;
   };
   about: {
     eyebrow: L;
@@ -191,38 +223,28 @@ export const defaultSettings: SiteSettings = {
 
   hero: {
     eyebrow: {
-      it: 'Bartender per feste private · Roma e provincia',
-      en: 'Private party bartender · Rome and province',
+      it: 'Bartender privato · Roma e provincia',
+      en: 'Private bartender · Rome and province',
     },
     title: {
       it: 'La tua casa. I tuoi ospiti. Il mio bancone.',
       en: 'Your home. Your guests. My bar.',
     },
-    // The eyebrow says what and where; the section right under the opening
-    // ("Chi sono") says who.
+    // The eyebrow says what and where; the sections under the opening say
+    // what the service covers and who he is.
     subtitle: {
-      it: 'Porto l’arte della miscelazione ai tuoi eventi privati, con cocktail preparati sul momento e un servizio pensato intorno a te.',
-      en: 'I bring the art of mixology to your private events, with cocktails made on the spot and a service designed around you.',
+      it: 'Cocktail preparati al momento, un servizio bar su misura e tutta la libertà di goderti la tua festa.',
+      en: 'Cocktails made on the spot, a bar service built around you, and all the freedom to enjoy your own party.',
     },
-    primaryCta: { it: 'Chiedimi un preventivo', en: 'Ask me for a quote' },
+    primaryCta: { it: 'Parliamo della tua festa', en: 'Let’s talk about your party' },
+    secondaryCta: { it: 'Scopri il servizio', en: 'Explore the service' },
+    note: { it: 'Preventivo gratuito e senza impegno', en: 'Free quote, no obligation' },
     imagePath: '/images/hero/hero-main.jpg',
     videoPath: '',
   },
 
-  intro: {
-    eyebrow: { it: 'Chi sono', en: 'About me' },
-    title: {
-      it: 'Dietro al bancone da quando avevo 16 anni.',
-      en: 'Behind the bar since I was 16.',
-    },
-    body: {
-      it: 'Ho 21 anni. Ho iniziato per caso, in un piccolo bistrot vicino Roma, e mi sono innamorato del mestiere. Oggi lavoro anche come barman sulle navi Costa Crociere, e tra un imbarco e l’altro porto lo stesso ritmo alle feste private.',
-      en: 'I’m 21. I started by chance, in a small bistro just outside Rome, and fell in love with the job. Today I also work as a bartender on Costa Cruises ships, and between contracts I bring the same pace to private parties.',
-    },
-    linkLabel: { it: 'La mia storia', en: 'My story' },
-  },
-
   service: {
+    homeEyebrow: { it: 'Il servizio', en: 'The service' },
     homeTitle: {
       it: 'Dal compleanno in casa al matrimonio.',
       en: 'From a birthday at home to a wedding.',
@@ -232,6 +254,38 @@ export const defaultSettings: SiteSettings = {
       en: 'I work at a table or a counter I find on site, and from your first question to the last drink, you deal with me.',
     },
     homeLinkLabel: { it: 'Come funziona il servizio', en: 'How the service works' },
+    // Only what the "Cosa porto io" list below already states: nothing here
+    // may promise glassware, a counter or a second pair of hands.
+    homeItems: {
+      it: [
+        {
+          title: 'Preparati al momento',
+          body: 'Ogni drink lo preparo sul posto, partendo da cosa piace a te e ai tuoi ospiti.',
+        },
+        {
+          title: 'Attrezzatura e ghiaccio',
+          body: 'Porto shaker e attrezzi da bar, e il ghiaccio con frigo o borse frigo per tenerlo. A te serve solo un tavolo o un piano dove lavorare.',
+        },
+        {
+          title: 'Bottiglie e bicchieri',
+          body: 'Le bottiglie le compro io. I bicchieri, monouso, li porto io.',
+        },
+      ],
+      en: [
+        {
+          title: 'Made on the spot',
+          body: 'I make every drink on site, starting from what you and your guests like.',
+        },
+        {
+          title: 'Kit and ice',
+          body: 'I bring a shaker and the bar tools, and the ice with a fridge or cool bags to keep it. All you need is a table or a counter for me to work at.',
+        },
+        {
+          title: 'Bottles and cups',
+          body: 'I buy the bottles. The cups, disposable ones, I bring myself.',
+        },
+      ],
+    },
     pageTitle: { it: 'Come funziona il servizio', en: 'How the service works' },
     pageIntro: {
       it: 'Vengo alla tua festa e mi occupo di tutto il bere. Qui trovi cosa porto io, cosa serve a te e come scegliamo cosa preparare.',
@@ -282,6 +336,19 @@ export const defaultSettings: SiteSettings = {
     },
   },
 
+  intro: {
+    eyebrow: { it: 'Chi sono', en: 'About me' },
+    title: {
+      it: 'Dietro al bancone da quando avevo 16 anni.',
+      en: 'Behind the bar since I was 16.',
+    },
+    body: {
+      it: 'Ho 21 anni. Ho iniziato per caso, in un piccolo bistrot vicino Roma, e mi sono innamorato del mestiere. Oggi lavoro anche come barman sulle navi Costa Crociere, e tra un imbarco e l’altro porto lo stesso ritmo alle feste private.',
+      en: 'I’m 21. I started by chance, in a small bistro just outside Rome, and fell in love with the job. Today I also work as a bartender on Costa Cruises ships, and between contracts I bring the same pace to private parties.',
+    },
+    linkLabel: { it: 'La mia storia', en: 'My story' },
+  },
+
   method: {
     eyebrow: { it: 'Il mio modo di lavorare', en: 'How I work' },
     title: {
@@ -296,6 +363,41 @@ export const defaultSettings: SiteSettings = {
   },
 
   home: {
+    stepsEyebrow: { it: 'Come funziona', en: 'How it works' },
+    stepsTitle: {
+      it: 'Dalla prima domanda all’ultimo drink.',
+      en: 'From your first question to the last drink.',
+    },
+    steps: {
+      it: [
+        {
+          title: 'Raccontami la tua festa',
+          body: 'Dal modulo: data, zona, quante persone e che tipo di serata.',
+        },
+        {
+          title: 'Definiamo insieme il servizio',
+          body: 'Ti rispondo io, con una proposta pensata per la tua festa. La data si fissa solo quando ti convince.',
+        },
+        {
+          title: 'Tu accogli gli ospiti, io penso al bar',
+          body: 'Arrivo con attrezzatura, ghiaccio e bottiglie e preparo i drink sul posto. Tu pensi solo alla tua festa.',
+        },
+      ],
+      en: [
+        {
+          title: 'Tell me about your party',
+          body: 'Through the form: date, area, how many people and what kind of night.',
+        },
+        {
+          title: 'We shape the service together',
+          body: 'I reply myself, with a proposal made for your party. The date is fixed only once it works for you.',
+        },
+        {
+          title: 'You welcome your guests, I run the bar',
+          body: 'I arrive with the kit, the ice and the bottles and make the drinks on site. You just enjoy your party.',
+        },
+      ],
+    },
     cocktailsTitle: { it: 'La carta', en: 'The list' },
     cocktailsIntro: {
       it: 'Qualche idea da cui partire. Se cerchi qualcosa che non c’è, chiedimelo: di solito parto da quello che bevi tu.',
@@ -322,6 +424,47 @@ export const defaultSettings: SiteSettings = {
     finalCtaNote: {
       it: 'Se sono a bordo, fisso la data per quando torno.',
       en: 'If I’m on board, I book the date for when I’m back.',
+    },
+  },
+
+  // Temporary stock photographs (docs/photo-sources.md), chosen for one warm,
+  // low light. None of them shows Samuele or one of his parties, and the copy
+  // around them never says they do.
+  homePhotos: {
+    service1: '/images/stock/servizio-limone.webp',
+    service1Alt: {
+      it: 'Mani che spremono un limone con lo spremiagrumi direttamente nello shaker',
+      en: 'Hands squeezing a lemon with a citrus press straight into the shaker',
+    },
+    service2: '/images/stock/servizio-attrezzatura.webp',
+    service2Alt: {
+      it: 'Strainer e shaker accanto a un cocktail con ghiaccio, bottiglie sfocate sullo sfondo',
+      en: 'A strainer and a shaker beside a cocktail on ice, bottles blurred behind',
+    },
+    service3: '/images/stock/evento-aziendale.webp',
+    service3Alt: {
+      it: 'Parete di bottiglie illuminata dietro al bancone',
+      en: 'Backlit wall of bottles behind the bar',
+    },
+    mood1: '/images/stock/atmosfera-sour.webp',
+    mood1Alt: {
+      it: 'Whisky sour in coppa con una fetta d’arancia essiccata, sul bancone di legno',
+      en: 'A whisky sour in a coupe with a dried orange slice, on a wooden bar',
+    },
+    mood2: '/images/stock/galleria-ghiaccio-fiamma.webp',
+    mood2Alt: {
+      it: 'Bicchiere e ghiaccio illuminati da una fiamma su fondo nero',
+      en: 'Glass and ice lit by a flame against a black background',
+    },
+    mood3: '/images/stock/evento-diciottesimo.webp',
+    mood3Alt: {
+      it: 'Cocktail ambrato in un bicchiere lavorato davanti alle luci del bar',
+      en: 'Amber cocktail in a textured glass against bar lights',
+    },
+    mood4: '/images/stock/atmosfera-coppa.webp',
+    mood4Alt: {
+      it: 'Una mano posa una coppa di cristallo sul bancone, tra luci calde sfocate',
+      en: 'A hand setting a crystal coupe down on the bar, warm lights blurred behind',
     },
   },
 

@@ -58,7 +58,7 @@ export async function AboutPage({ locale }: { locale: Locale }) {
               </div>
             )}
             {!isPlaceholder(about.signature) && (
-              <p className="mt-8 font-[family-name:var(--font-display)] text-xl text-accent">{about.signature}</p>
+              <p className="mt-8 font-[family-name:var(--font-display)] text-2xl italic text-accent">{about.signature}</p>
             )}
           </div>
         </div>

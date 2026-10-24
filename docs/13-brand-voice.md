@@ -169,16 +169,20 @@ davanti.
 
 ## 3. La homepage
 
-Cinque sezioni, un solo pulsante principale («Chiedimi un preventivo»), più
-WhatsApp quando il numero è impostato.
+Dopo il redesign di fine ottobre la home è una piccola rivista in sette parti,
+con un solo pulsante principale («Parliamo della tua festa», poi «Chiedimi un
+preventivo») e WhatsApp quando il numero è impostato. Tutti i testi e tutte le
+foto si cambiano dal pannello.
 
 | # | Sezione | Scopo | Dove si modifica |
 | --- | --- | --- | --- |
-| 1 | Apertura | In pochi secondi: chi è, cosa fa, dove | Testi e contatti → Home · 1. Apertura |
-| 2 | Chi sono, in breve | Fiducia con i fatti, risposta al dubbio sull'età | Home · 2. Chi sono, in breve (la foto è quella di «Chi sono») |
-| 3 | Cosa faccio | Il servizio in due righe e i tipi di festa | Il servizio (campi «in home») |
-| 4 | Il mio modo di lavorare | La frase che lo distingue e tre cocktail di esempio | Home · 4 (i cocktail sono i primi tre «in evidenza») |
-| 5 | Contatto | Un passo solo verso la richiesta, più i periodi a Roma | Titoli delle pagine e contatto finale; Contatti → periodi |
+| — | Apertura | In pochi secondi: cosa fa, dove, la promessa; il pulsante e il link al servizio | Testi e contatti → Home · 1. Apertura |
+| I | Il servizio | Cosa porta e come lavora, in tre colonne con foto, e i tipi di festa | Home · 2. Il servizio (campi «in home»); foto in Home · Fotografie |
+| II | Chi sono | Fiducia con i fatti (età, anni dietro al bancone, formazione) | Home · 3. Chi sono, in breve; la formazione e la foto sono quelle di «Chi sono» |
+| III | Il mio modo di lavorare | La frase che lo distingue e tre cocktail della carta | Home · 4 (i cocktail sono i primi tre «in evidenza») |
+| IV | Galleria | Un'idea dell'atmosfera, in quattro foto: nessuna è presentata come una sua serata | Home · 5–6 (titolo e frase della galleria); foto in Home · Fotografie |
+| V | Come funziona | I tre passaggi visti da chi organizza la festa | Home · 5–6 (passaggi «Come funziona») |
+| — | Contatto | Un passo solo verso la richiesta, più i periodi a Roma | Home · 5–6 (contatto finale); Contatti → periodi |
 
 Cosa è uscito dalla home e dove è andato: le formule nella pagina del servizio
 (senza prezzi), gli otto tipi di serata nel menu «Eventi», la galleria nella

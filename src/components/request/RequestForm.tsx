@@ -360,37 +360,43 @@ export function RequestForm(props: Props) {
       ref={formRef}
       onSubmit={handleSubmit}
       noValidate
-      className="rounded-[var(--radius-panel)] border border-[var(--hairline)] bg-paper-2 p-6 md:p-9"
+      className="relative rounded-[var(--radius-panel)] border border-[var(--hairline)] bg-paper-2 p-6 sm:p-8 md:p-10"
     >
-      {/* Progress */}
-      <div className="mb-8">
-        <div className="flex items-center justify-between text-xs text-ink-3">
-          <span>
-            {props.copy.form.step} {step + 1} {props.copy.form.of} {STEPS}
-          </span>
-          <span className="text-accent">{stepTitles[step]}</span>
-        </div>
-        {/* The bars are decorative; without a name a screen reader announces a
-            bare "progress bar, 1". The label reuses the visible caption above,
-            so it stays in whatever language the visitor is reading. */}
+      {/* Progress: the three steps by name, the one in hand in ink, and a
+          gold line that grows under them. */}
+      <div className="mb-10">
+        {/* Visual only: the progress bar below carries the same information
+            for screen readers, in one announcement instead of three. */}
+        <ol aria-hidden className="grid grid-cols-3 gap-3">
+          {stepTitles.map((title, index) => (
+            <li
+              key={title}
+              className={cn(
+                'flex min-w-0 items-baseline gap-2 text-xs transition-colors duration-300',
+                index === step ? 'text-ink' : index < step ? 'text-ink-2' : 'text-ink-3',
+              )}
+            >
+              <span className="numeral text-lg leading-none">{String(index + 1).padStart(2, '0')}</span>
+              <span className={cn('truncate font-medium', index !== step && 'hidden sm:inline')}>{title}</span>
+            </li>
+          ))}
+        </ol>
+        {/* Without a name a screen reader announces a bare "progress bar, 1".
+            The label reuses the visible wording, so it stays in whatever
+            language the visitor is reading. */}
         <div
-          className="mt-3 flex gap-1.5"
+          className="relative mt-4 h-px bg-[var(--hairline-strong)]"
           role="progressbar"
-          aria-label={`${props.copy.form.step} ${step + 1} ${props.copy.form.of} ${STEPS}`}
+          aria-label={`${props.copy.form.step} ${step + 1} ${props.copy.form.of} ${STEPS}: ${stepTitles[step]}`}
           aria-valuemin={1}
           aria-valuemax={STEPS}
           aria-valuenow={step + 1}
-          aria-valuetext={`${props.copy.form.step} ${step + 1} ${props.copy.form.of} ${STEPS}`}
+          aria-valuetext={`${props.copy.form.step} ${step + 1} ${props.copy.form.of} ${STEPS}: ${stepTitles[step]}`}
         >
-          {Array.from({ length: STEPS }, (_, index) => (
-            <span
-              key={index}
-              className={cn(
-                'h-1 flex-1 rounded-full transition-colors duration-300',
-                index <= step ? 'bg-accent' : 'bg-paper-3',
-              )}
-            />
-          ))}
+          <span
+            className="absolute inset-y-[-0.5px] left-0 bg-accent transition-[width] duration-700 ease-[var(--ease-out-soft)]"
+            style={{ width: `${((step + 1) / STEPS) * 100}%` }}
+          />
         </div>
       </div>
 
@@ -420,7 +426,7 @@ export function RequestForm(props: Props) {
 
       {/* ---------------- STEP 1 ---------------- */}
       {step === 0 && (
-        <div className="space-y-7">
+        <div key="step-1" className="form-step space-y-8">
           {/* The message is described on the group, not on each radio: a
               fieldset is what a screen reader announces when entering it. */}
           <fieldset aria-describedby={errors.eventTypeSlug ? 'eventTypeSlug-error' : undefined}>
@@ -539,7 +545,7 @@ export function RequestForm(props: Props) {
 
       {/* ---------------- STEP 2 ---------------- */}
       {step === 1 && (
-        <div className="space-y-7">
+        <div key="step-2" className="form-step space-y-8">
           {/* No formats on offer (no prices yet): the question is not asked. */}
           {props.packages.length > 0 && (
             <fieldset>
@@ -669,7 +675,7 @@ export function RequestForm(props: Props) {
 
       {/* ---------------- STEP 3 ---------------- */}
       {step === 2 && (
-        <div className="space-y-6">
+        <div key="step-3" className="form-step space-y-7">
           <div>
             <label htmlFor="name" className="field-label">
               {props.copy.form.name}
@@ -797,24 +803,40 @@ export function RequestForm(props: Props) {
       )}
 
       {formError && (
-        <p role="alert" className="mt-6 rounded-lg border border-danger/40 bg-danger/10 p-3 text-sm text-ink-2">
+        <p
+          role="alert"
+          className="form-alert mt-8 border-l-2 border-danger bg-danger/10 px-4 py-3 text-sm leading-relaxed text-ink"
+        >
           {formError}
         </p>
       )}
 
       {/* Navigation */}
-      <div className="mt-9 flex flex-col-reverse gap-3 sm:flex-row">
+      <div className="mt-10 flex flex-col-reverse gap-3 border-t border-[var(--hairline)] pt-8 sm:flex-row">
         {step > 0 && (
-          <button type="button" onClick={() => setStep((current) => current - 1)} className="btn btn-ghost sm:w-auto">
+          <button
+            type="button"
+            onClick={() => setStep((current) => current - 1)}
+            className="btn btn-ghost group sm:w-auto"
+          >
+            <span aria-hidden className="transition-transform duration-300 group-hover:-translate-x-1">
+              ←
+            </span>
             {props.copy.form.previous}
           </button>
         )}
         {step < STEPS - 1 ? (
           <button type="button" onClick={goNext} className="btn btn-primary flex-1">
             {props.copy.form.next}
+            <span aria-hidden className="arrow">
+              →
+            </span>
           </button>
         ) : (
-          <button type="submit" disabled={submitting} className="btn btn-primary flex-1">
+          // aria-busy while the request is on its way; the label says so too,
+          // and the button cannot be pressed twice.
+          <button type="submit" disabled={submitting} aria-busy={submitting} className="btn btn-primary flex-1">
+            {submitting && <span aria-hidden className="spinner" />}
             {submitting ? props.copy.form.sending : props.submitLabel}
           </button>
         )}

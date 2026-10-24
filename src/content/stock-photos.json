@@ -498,5 +498,85 @@
       "landing": "https://www.rawpixel.com/image/5917151/photo-image-background-public-domain-free",
       "original": "https://images.rawpixel.com/editor_1024/czNmcy1wcml2YXRlL3Jhd3BpeGVsX2ltYWdlcy93ZWJzaXRlX2NvbnRlbnQvbHIvaXMxNzg0My1pbWFnZS1rd3Z3dXRrNi5qcGc.jpg"
     }
+  },
+  {
+    "name": "servizio-limone",
+    "slot": "home",
+    "file": "public/images/stock/servizio-limone.webp",
+    "bytes": 76522,
+    "w": 1200,
+    "h": 1500,
+    "alt_it": "Mani che spremono un limone con lo spremiagrumi direttamente nello shaker",
+    "alt_en": "Hands squeezing a lemon with a citrus press straight into the shaker",
+    "source": {
+      "provider": "wordpress",
+      "title": "Close-up of a bartender hands squeezing fresh lemon juice through a metal citrus press into a cocktail shaker",
+      "creator": "",
+      "creator_url": "",
+      "license": "cc0-1.0",
+      "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "landing": "https://wordpress.org/photos/photo/486a216f78/",
+      "original": "https://pd.w.org/2026/06/486a216f78b11a76.53487142-1365x2048.jpg"
+    }
+  },
+  {
+    "name": "servizio-attrezzatura",
+    "slot": "home",
+    "file": "public/images/stock/servizio-attrezzatura.webp",
+    "bytes": 67944,
+    "w": 908,
+    "h": 681,
+    "alt_it": "Strainer e shaker accanto a un cocktail con ghiaccio, bottiglie sfocate sullo sfondo",
+    "alt_en": "A strainer and a shaker beside a cocktail on ice, bottles blurred behind",
+    "source": {
+      "provider": "rawpixel",
+      "title": "Manhattan cocktail",
+      "creator": "",
+      "creator_url": "",
+      "license": "cc0-1.0",
+      "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "landing": "https://www.rawpixel.com/image/3371450",
+      "original": "https://images.rawpixel.com/editor_1024/czNmcy1wcml2YXRlL3Jhd3BpeGVsX2ltYWdlcy93ZWJzaXRlX2NvbnRlbnQvd2s3MTMyNjAzMi1pbWFnZS1rcHFtZzMzei5qcGVn.jpeg"
+    }
+  },
+  {
+    "name": "atmosfera-sour",
+    "slot": "home",
+    "file": "public/images/stock/atmosfera-sour.webp",
+    "bytes": 81492,
+    "w": 1020,
+    "h": 1275,
+    "alt_it": "Whisky sour in coppa con una fetta d’arancia essiccata, sul bancone di legno",
+    "alt_en": "A whisky sour in a coupe with a dried orange slice, on a wooden bar",
+    "source": {
+      "provider": "wordpress",
+      "title": "Whiskey sour cocktail",
+      "creator": "",
+      "creator_url": "",
+      "license": "cc0-1.0",
+      "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "landing": "https://wordpress.org/photos/photo/4866536b93/",
+      "original": "https://pd.w.org/2023/10/4866536b9397814f5.21351859-2048x1536.jpg"
+    }
+  },
+  {
+    "name": "atmosfera-coppa",
+    "slot": "home",
+    "file": "public/images/stock/atmosfera-coppa.webp",
+    "bytes": 44882,
+    "w": 1024,
+    "h": 683,
+    "alt_it": "Una mano posa una coppa di cristallo sul bancone, tra luci calde sfocate",
+    "alt_en": "A hand setting a crystal coupe down on the bar, warm lights blurred behind",
+    "source": {
+      "provider": "rawpixel",
+      "title": "Fancy cocktail glass",
+      "creator": "",
+      "creator_url": "",
+      "license": "cc0-1.0",
+      "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "landing": "https://www.rawpixel.com/image/6036261",
+      "original": "https://images.rawpixel.com/editor_1024/czNmcy1wcml2YXRlL3Jhd3BpeGVsX2ltYWdlcy93ZWJzaXRlX2NvbnRlbnQvbHIvZnJpY2VfY29ja3RhaWxfZ2xhc3NfZHJpbmtfMC1pbWFnZS1reWJkaDB0ci5qcGc.jpg"
+    }
   }
 ]

@@ -106,7 +106,7 @@ export async function PackagesPage({ locale }: { locale: Locale }) {
               {addons.map((addon) => (
                 <li key={addon.id} className="flex flex-col border-t border-[var(--hairline-strong)] py-5">
                   <div className="flex items-start justify-between gap-4">
-                    <h3 className="font-[family-name:var(--font-display)] text-lg text-ink">
+                    <h3 className="font-[family-name:var(--font-display)] text-2xl leading-tight text-ink">
                       {t(addon.name, locale)}
                     </h3>
                     <span className="shrink-0 whitespace-nowrap text-sm font-medium text-accent">

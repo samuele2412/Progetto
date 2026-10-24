@@ -33,39 +33,44 @@ const BASE = process.argv[2] || 'http://127.0.0.1:3000';
 const PUBLIC = path.join(ROOT, 'public');
 
 const BRAND = 'Cordiale';
-const DESCRIPTOR = 'Bartender per feste private · Roma e provincia';
+const DESCRIPTOR = 'Bartender privato · Roma e provincia';
 // The hero headline, so a shared link says the same thing the home page does.
 const CLAIM = 'La tua casa. I tuoi ospiti. Il mio bancone.';
 // One sentence per line: balanced wrapping alone broke it as "penso / io.".
-const CLAIM_LINES = CLAIM.split(/(?<=[.!?])\s+/).join('<br>');
+const CLAIM_LINES = CLAIM.split(/(?<=[.!?])\s+/)
+  .map((line, index, lines) => (index === lines.length - 1 && lines.length > 1 ? `<i>${line}</i>` : line))
+  .join('<br>');
 
-// Night and brass, like the site's default theme and its home page: the
-// photograph under the whole card, darkened on the left where the words are,
-// so a shared link looks like the page it opens.
+// Charcoal and champagne, like the site's default theme and its home page:
+// the photograph under the whole card, darkened on the left where the words
+// are, the last sentence of the claim in italic as on the page — so a shared
+// link looks like the page it opens.
 const card = /* html */ `
 <!doctype html>
 <html lang="it"><head><meta charset="utf-8">
 <style>
-  @font-face { font-family: 'Fraunces'; src: url('${BASE}/fonts/fraunces-latin.woff2') format('woff2'); font-weight: 300 700; }
-  @font-face { font-family: 'InterVar'; src: url('${BASE}/fonts/inter-latin.woff2') format('woff2'); font-weight: 300 700; }
+  @font-face { font-family: 'Cormorant Garamond'; src: url('${BASE}/fonts/cormorant-latin.woff2') format('woff2'); font-weight: 300 700; }
+  @font-face { font-family: 'Cormorant Garamond'; font-style: italic; src: url('${BASE}/fonts/cormorant-italic-latin.woff2') format('woff2'); font-weight: 300 700; }
+  @font-face { font-family: 'DM Sans'; src: url('${BASE}/fonts/dmsans-latin.woff2') format('woff2'); font-weight: 100 1000; }
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  body { width: 1200px; height: 630px; overflow: hidden; background: #0e0c0a; }
+  body { width: 1200px; height: 630px; overflow: hidden; background: #100f0c; }
   .card { position: relative; width: 1200px; height: 630px; }
   .photo { position: absolute; inset: 0; }
   .photo img { width: 100%; height: 100%; object-fit: cover; object-position: 62% 50%; display: block; }
   .veil { position: absolute; inset: 0; background:
-    linear-gradient(100deg, rgba(14,12,10,0.95) 0%, rgba(14,12,10,0.84) 42%, rgba(14,12,10,0.34) 74%, rgba(14,12,10,0.14) 100%),
-    linear-gradient(to top, rgba(14,12,10,0.55) 0%, rgba(14,12,10,0) 45%); }
+    linear-gradient(100deg, rgba(16,15,12,0.95) 0%, rgba(16,15,12,0.84) 42%, rgba(16,15,12,0.34) 74%, rgba(16,15,12,0.14) 100%),
+    linear-gradient(to top, rgba(16,15,12,0.55) 0%, rgba(16,15,12,0) 45%); }
   .copy { position: absolute; top: 0; bottom: 0; left: 0; width: 760px; padding: 64px 72px;
     display: flex; flex-direction: column; justify-content: space-between; }
-  .word { font-family: 'Fraunces', serif; font-size: 44px; color: #f6f1e8; letter-spacing: -0.01em; }
-  .desc { font-family: 'InterVar', sans-serif; font-size: 15px; letter-spacing: 0.2em;
-    text-transform: uppercase; color: #d8b87d; margin-top: 10px; font-weight: 500; }
-  .claim { font-family: 'Fraunces', serif; font-size: 60px; line-height: 1.05; color: #f6f1e8;
-    letter-spacing: -0.02em; max-width: 610px; text-wrap: balance; }
-  .rule { width: 64px; height: 2px; background: #c9a46a; margin-bottom: 28px; }
-  .foot { font-family: 'InterVar', sans-serif; font-size: 20px; color: rgba(246,241,232,0.82); }
-  .foot b { color: #d8b87d; font-weight: 600; }
+  .word { font-family: 'Cormorant Garamond', serif; font-size: 56px; font-weight: 500; line-height: 1; color: #f5f0e6; letter-spacing: -0.01em; }
+  .desc { font-family: 'DM Sans', sans-serif; font-size: 15px; letter-spacing: 0.22em;
+    text-transform: uppercase; color: #cdb689; margin-top: 12px; font-weight: 500; }
+  .claim { font-family: 'Cormorant Garamond', serif; font-size: 78px; font-weight: 500; line-height: 0.98; color: #f5f0e6;
+    letter-spacing: -0.02em; max-width: 640px; }
+  .claim i { font-weight: 400; }
+  .rule { width: 64px; height: 1px; background: #b69a68; margin-bottom: 30px; }
+  .foot { font-family: 'DM Sans', sans-serif; font-size: 20px; color: rgba(245,240,230,0.82); }
+  .foot b { color: #cdb689; font-weight: 600; }
 </style></head>
 <body><div class="card">
   <div class="photo"><img src="${BASE}/images/stock/hero-bancone.webp" alt=""></div>
